@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "leaflet": "0.7.7",
-    "leaflet-draw": "0.3"
+    "leaflet-draw": "0.3",
+    "leaflet-reactive_measure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure"
   }
 }
