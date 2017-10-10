@@ -69,6 +69,10 @@
       control = layersControl.getControl()
       @controls.add 'layers', control
 
+      zoomControl = new C.Controls.Zoom(@map, @options)
+      control = zoomControl.getControl()
+      @controls.add 'zoom', control
+
     setView: ->
       @map.fitWorld({ maxZoom: 21 })
 
@@ -153,6 +157,24 @@
 
     getLayers: ->
       @overlayLayers
+
+  class C.Controls.Zoom extends C.Controls
+    options:
+      position: "topleft"
+      zoomInText: ""
+      zoomOutText: ""
+      # zoomInTitle: I18n.t("#{I18n.rootKey}.leaflet.zoomInTitle")
+      zoomInTitle: "zoomIn"
+      # zoomOutTitle: I18n.t("#{I18n.rootKey}.leaflet.zoomOutTitle")
+      zoomOutTitle: "zoomOut"
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      L.Util.setOptions @, options
+      @control = new L.Control.Zoom(@options)
+
+    getControl: ->
+      @control
 
 
 )(window.Cartography = window.Cartography || {}, jQuery)
