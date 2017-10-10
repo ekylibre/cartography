@@ -6,9 +6,17 @@ geographiclib@^1.49.0:
   version "1.49.0"
   resolved "https://registry.yarnpkg.com/geographiclib/-/geographiclib-1.49.0.tgz#20af5d0044a0c2b4840b158ec25cf2f2ec5d0ff2"
 
+jquery@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+
 leaflet-draw@0.3, leaflet-draw@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.3.2.tgz#717ee8fed4c2a9679c12162e1f922d2da503d109"
+
+leaflet-providers@1.1.14:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.14.tgz#90d7715d753de4f91f116e8a299b3e239a085413"
 
 "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.0.1"

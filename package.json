@@ -4,8 +4,10 @@
   "description": "Map tools",
   "license": "MIT",
   "dependencies": {
+    "jquery": "^3.2.1",
     "leaflet": "0.7.7",
     "leaflet-draw": "0.3",
+    "leaflet-providers": "1.1.14",
     "leaflet-reactive_measure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure"
   }
 }
