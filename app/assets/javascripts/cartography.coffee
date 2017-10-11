@@ -5,6 +5,9 @@
     constructor: (map) ->
       @map = map
 
+    getMap: ->
+      @map
+
   class C.Control extends C.BaseClass
     constructor: (map) ->
       super(map)
@@ -23,7 +26,7 @@
         height: '400px'
         width: undefined
       map:
-        scrollWheelZoom: false
+        scrollWheelZoom: true
         zoomControl: false
         attributionControl: true
         setDefaultBackground: false
@@ -60,103 +63,125 @@
         @mapElement.style.width = @options.box.width
 
     initHooks: ->
-      #TODO
+      @getMap().on "draw:created", (e) =>
+        @controls.get('edit').addLayer(e.layer)
+        @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
     controls: ->
-      @controls = new C.Controls(@map, @options)
+      @controls = new C.Controls(@getMap(), @options)
 
-      layersControl = new C.Controls.Layers(@map, @options)
-      control = layersControl.getControl()
-      @controls.add 'layers', control
+      layerSelector = new C.Controls.Layers(undefined, @getMap(), @options)
 
-      zoomControl = new C.Controls.Zoom(@map, @options)
-      control = zoomControl.getControl()
-      @controls.add 'zoom', control
+      @controls.add 'layers', layerSelector
+
+      @controls.add 'backgrounds', new C.Controls.BackgroundLayers(layerSelector.getControl(), @getMap(), @options), false
+      @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
+
+      @controls.add 'zoom', new C.Controls.Zoom(@getMap(), @options)
+
+      editControl = new C.Controls.Edit(@getMap(), @options)
+      @controls.add 'edit', editControl
+
+      # Display selector if shapes are editable
+      if @options.edit? and layerSelector?
+        editControl.addTo layerSelector.getControl()
+
+
+
 
     setView: ->
-      @map.fitWorld({ maxZoom: 21 })
+      @getMap().fitWorld({ maxZoom: 21 })
 
   class C.Controls extends C.Control
-    controls: {}
-
     constructor: (map) ->
+      @controls = {}
+
       super(map)
 
-    add: (id, control) ->
+    add: (id, control, addToMap = true) ->
       @controls[id] = control
-      @map.addControl control
-
+      @getMap().addControl control.getControl() unless !addToMap
 
     remove: (id, control) ->
       @controls[id] = undefined
 
+    get: (id) ->
+      @controls[id]
 
   class C.Controls.Layers extends C.Controls
-
-    constructor: ( map, options = {} ) ->
+    constructor: ( control, map, options = {} ) ->
       super(map)
 
       L.Util.setOptions @, options
 
-      backgroundLayers = new C.BackgroundLayers(map, @options).getLayers()
+      @control = control || new L.Control.Layers()
 
-      overlayLayers = new C.OverlayLayers(map, @options).getLayers()
-      @control = new L.Control.Layers(backgroundLayers, overlayLayers)
+      @layers = {}
+
+    getLayers: ->
+      @layers
 
     getControl: ->
       @control
 
-  class C.BackgroundLayers extends C.Layers
+  class C.Controls.BackgroundLayers extends C.Controls.Layers
     options:
-      backgrounds: ['OpenStreetMap.HOT','OpenStreetMap.Mapnik', 'Thunderforest.Landscape', 'Esri.WorldImagery']
+      backgrounds: [
+        'OpenStreetMap.HOT',
+        'OpenStreetMap.Mapnik',
+        'Thunderforest.Landscape',
+        'Esri.WorldImagery'
+      ]
 
-    backgroundLayers: {}
-
-    constructor: ( map, options = {} )->
-      super(map)
-
+    constructor: ( control, map, options = {} )->
       L.Util.setOptions @, options
+      super(control, map)
 
-      for layer, index in @options.backgrounds
-        @backgroundLayers[layer] = L.tileLayer.provider(layer)
+      @add(@options.backgrounds)
 
-      @setActiveBackground(0)
+      @setActive(0)
 
-    getLayers: ->
-      @backgroundLayers
+    add: (layers) ->
+      layers = [layers] unless layers.constructor.name is "Array"
 
-    setActiveBackground: (index) ->
-      @map.addLayer(@backgroundLayers[Object.keys(@backgroundLayers)[index]])
+      for layer in layers
+        @layers[layer] = L.tileLayer.provider(layer)
+        @getControl().addBaseLayer(@layers[layer], layer)
+
+    setActive: (index) ->
+      @getMap().addLayer(@layers[Object.keys(@layers)[index]])
 
 
-  class C.OverlayLayers extends C.Layers
+  class C.Controls.OverlayLayers extends C.Controls.Layers
     options:
       minZoom: 0
       maxZoom: 25
       overlays: []
 
-    overlayLayers: {}
-
-    constructor: ( map, options = {} )->
-      super(map)
-
+    constructor: ( control, map, options = {} )->
       L.Util.setOptions @, options
+      super(control, map)
 
       return if !@options.overlays.length
+      @add(@options.overlays)
 
-      for layer, index in @options.overlays
+    add: (layers) ->
+      layers = [layers] unless layers.constructor.name is "Array"
+
+      for layer in layers
         opts = {}
-        opts['attribution'] = layer.attribution if layer.attribution?
-        opts['minZoom'] = layer.minZoom || @options.minZoom
-        opts['maxZoom'] = layer.maxZoom || @options.maxZoom
-        opts['subdomains'] = layer.subdomains if layer.subdomains?
-        opts['opacity'] = (layer.opacity / 100).toFixed(1) if layer.opacity? and !isNaN(layer.opacity)
-        opts['tms'] = true if layer.tms
+        opts.attribution = layer.attribution if layer.attribution?
+        opts.minZoom = layer.minZoom || @options.minZoom
+        opts.maxZoom = layer.maxZoom || @options.maxZoom
+        opts.subdomains = layer.subdomains if layer.subdomains?
+        opts.opacity = (layer.opacity / 100).toFixed(1) if layer.opacity? and !isNaN(layer.opacity)
+        opts.tms = true if layer.tms
 
-        @overlayLayers[layer.name] =  L.tileLayer(layer.url, opts)
+        @layers[layer.name] =  L.tileLayer(layer.url, opts)
+        @layers[layer.name].addTo(@getMap())
 
-    getLayers: ->
-      @overlayLayers
+        @getControl().addOverlay(@layers[layer.name], layer.name)
+
 
   class C.Controls.Zoom extends C.Controls
     options:
@@ -176,5 +201,53 @@
     getControl: ->
       @control
 
+  class C.Controls.Edit extends C.Controls
+    options:
+      label: undefined
+      edit: undefined
+      draw:
+        edit:
+          featureGroup: undefined
+          remove: false
+          edit:
+            color: "#A40"
+            popup: false
+        draw:
+          marker: false
+          polyline: false
+          rectangle: false
+          circle: false
+          polygon:
+            allowIntersection: false
+            showArea: false
+          # reactiveMeasure: true
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      L.Util.setOptions @, options
+
+      @editionLayer = L.geoJson()
+
+      @options.draw.edit.featureGroup = @editionLayer
+
+      map.addLayer @editionLayer
+
+      @control = new L.Control.Draw(@options.draw)
+
+      @initHooks()
+
+    initHooks: (->)
+
+    getControl: ->
+      @control
+
+    getLayer: ->
+      @editionLayer
+
+    addLayer: (layer) ->
+      @getLayer().addData layer.toGeoJSON()
+
+    addTo: (control) ->
+      control.addOverlay @getLayer(), @options.label
 
 )(window.Cartography = window.Cartography || {}, jQuery)
