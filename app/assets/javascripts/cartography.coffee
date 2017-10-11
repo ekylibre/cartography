@@ -80,6 +80,8 @@
       editControl = new C.Controls.Edit(@getMap(), @options)
       @controls.add 'edit', editControl
 
+      @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
+
       # Display selector if shapes are editable
       if @options.edit? and layerSelector?
         editControl.addTo layerSelector.getControl()
@@ -179,6 +181,21 @@
         @layers[layer.name].addTo(@getMap())
 
         @getControl().addOverlay(@layers[layer.name], layer.name)
+
+
+  class C.Controls.Scale extends C.Controls
+    options:
+      position: "bottomright"
+      imperial: false
+      maxWidth: 200
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      L.Util.setOptions @, options
+      @control = new L.Control.Scale(@options)
+
+    getControl: ->
+      @control
 
   class C.Controls.Edit extends C.Controls
     options:
