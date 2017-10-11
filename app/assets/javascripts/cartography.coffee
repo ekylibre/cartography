@@ -214,6 +214,7 @@
             popup: false
         draw:
           marker: false
+          circlemarker: false
           polyline: false
           rectangle: false
           circle: false

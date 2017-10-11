@@ -10,17 +10,21 @@ jquery@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
-leaflet-draw@0.3, leaflet-draw@^0.3.2:
+leaflet-draw@0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.12.tgz#04c9f3506e3b3a8a488ad389381331dc5b2affd8"
+
+leaflet-draw@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.3.2.tgz#717ee8fed4c2a9679c12162e1f922d2da503d109"
 
-leaflet-providers@1.1.14:
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.14.tgz#90d7715d753de4f91f116e8a299b3e239a085413"
+leaflet-providers@1.1.17:
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
 "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.0.1"
-  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#7b68e738001b0afcd8ad6448be95aa79055abb5b"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#4178ea4c5f2677f5b16b2d9f964067852e81aec7"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "0.7.7"
@@ -29,3 +33,7 @@ leaflet-providers@1.1.14:
 leaflet@0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
+
+leaflet@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
