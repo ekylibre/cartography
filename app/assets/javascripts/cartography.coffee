@@ -27,7 +27,7 @@
         width: undefined
       map:
         scrollWheelZoom: true
-        zoomControl: false
+        zoomControl: true
         attributionControl: true
         setDefaultBackground: false
         setDefaultOverlay: false
@@ -76,8 +76,6 @@
 
       @controls.add 'backgrounds', new C.Controls.BackgroundLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
-
-      @controls.add 'zoom', new C.Controls.Zoom(@getMap(), @options)
 
       editControl = new C.Controls.Edit(@getMap(), @options)
       @controls.add 'edit', editControl
@@ -181,25 +179,6 @@
         @layers[layer.name].addTo(@getMap())
 
         @getControl().addOverlay(@layers[layer.name], layer.name)
-
-
-  class C.Controls.Zoom extends C.Controls
-    options:
-      position: "topleft"
-      zoomInText: ""
-      zoomOutText: ""
-      # zoomInTitle: I18n.t("#{I18n.rootKey}.leaflet.zoomInTitle")
-      zoomInTitle: "zoomIn"
-      # zoomOutTitle: I18n.t("#{I18n.rootKey}.leaflet.zoomOutTitle")
-      zoomOutTitle: "zoomOut"
-
-    constructor: ( map, options = {} ) ->
-      super(map)
-      L.Util.setOptions @, options
-      @control = new L.Control.Zoom(@options)
-
-    getControl: ->
-      @control
 
   class C.Controls.Edit extends C.Controls
     options:
