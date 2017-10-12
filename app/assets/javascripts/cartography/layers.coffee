@@ -89,6 +89,7 @@
           newLayers[layer.label] = layerGroup
           newLayers[layer.label].addTo(@getMap())
 
+      L.Util.extend(@layers, newLayers)
       newLayers
 
 )(window.Cartography = window.Cartography || {}, jQuery)

@@ -152,4 +152,24 @@
     addTo: (control) ->
       control.addOverlay @getLayer(), @options.label
 
+  class C.Controls.Edit.Snap extends C.Controls
+    options:
+      snap:
+        polyline:
+          guideLayers: []
+          snapDistance: 5
+        polygon:
+          guideLayers: []
+          snapDistance: 5
+
+    constructor: (map, control, options = {}) ->
+      super(map)
+      L.Util.extend @options, options
+
+      control.getControl().setDrawingOptions(@options.snap)
+
+      @initHooks()
+
+    initHooks: (->)
+
 )(window.Cartography = window.Cartography || {}, jQuery)

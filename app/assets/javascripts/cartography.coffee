@@ -22,6 +22,7 @@
         doubleClickZoom: true
         boxZoom: true
         tap: true
+      snap: true
 
     constructor: (id, options = {}) ->
       L.Util.setOptions @, options
@@ -30,9 +31,6 @@
       @mapElement = L.DomUtil.create('div', 'map', @baseElement)
 
       @map = L.map(@mapElement, @options.map)
-
-      #TMP
-      @options.overlays = [{name: "open_weather_map.clouds", attribution: 'Weather from <a href="http://openweathermap.org/" alt="World Map and worldwide Weather Forecast online">OpenWeatherMap</a>', opacity: 100, maxZoom: 18, url: 'http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png'}]
 
       @resize()
 
@@ -71,6 +69,17 @@
       # Display selector if shapes are editable
       if @options.edit? and layerSelector?
         editControl.addTo layerSelector.getControl()
+
+      if @options.snap?
+        layers = @controls.get('overlays').getLayers()
+        snappable_layers = []
+
+        for k,v of layers
+          snappable_layers.push v
+
+        L.Util.setOptions @, {snap: {polygon: {guideLayers: snappable_layers}}}
+
+        new C.Controls.Edit.Snap(@getMap(), editControl, @options)
 
     setView: ->
       @getMap().fitWorld({ maxZoom: 21 })
