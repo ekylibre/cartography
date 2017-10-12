@@ -1,6 +1,7 @@
 #= require cartography/base
 #= require cartography/controls
 #= require cartography/layers
+#= require cartography/layers/simple
 
 ((C, $) ->
   "use strict"
@@ -71,17 +72,7 @@
       if @options.edit? and layerSelector?
         editControl.addTo layerSelector.getControl()
 
-
-
-
     setView: ->
       @getMap().fitWorld({ maxZoom: 21 })
-
-
-
-
-
-
-
 
 )(window.Cartography = window.Cartography || {}, jQuery)

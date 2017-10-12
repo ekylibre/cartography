@@ -72,16 +72,15 @@
       minZoom: 0
       maxZoom: 25
       overlays: []
-      series: []
+      series: {}
 
     constructor: ( control, map, options = {} )->
       L.Util.setOptions @, options
       super(control, map)
 
       @references = new C.OverlayLayers(map, @options)
-
       @add(@options.overlays, 'tiles') unless !@options.overlays.length
-      @add(@options.series, 'series') unless !@options.series.length
+      @add([@options.series, @options.layers], 'series') if @options.series?
 
     add: (layers, type) ->
       newLayers = @references.add(layers, type)

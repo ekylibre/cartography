@@ -2,8 +2,15 @@
   "use strict"
 
   class C.Layer extends C.BaseClass
-    constructor: (map) ->
+    @LAYER_TYPES : {}
+    constructor: (map, layer = undefined, data = undefined, options = {}) ->
       super(map)
+
+      if layer and data and type = @constructor.LAYER_TYPES[layer.type]
+        return new type(map, layer, data, options)
+
+    @registerLayerType: (name, klass) ->
+      @LAYER_TYPES[name] = klass
 
   class C.Layers extends C.Layer
     constructor: (map) ->
@@ -35,7 +42,7 @@
   class C.OverlayLayers extends C.Layers
     @options:
       overlays: []
-      series: []
+      series: {}
 
     constructor: ( map, options = {} ) ->
       L.Util.setOptions @, options
@@ -64,6 +71,24 @@
       L.Util.extend(@layers, newLayers)
       newLayers
 
-    addseries: (layers) ->
+    addseries: (data) ->
+      series = data[0]
+      layers = data[1]
+
+      newLayers = {}
+
+      for layer in layers
+        serie = series[layer.serie]
+        renderedLayer = new C.Layer(@getMap(), layer, serie)
+
+        if renderedLayer and renderedLayer.valid()
+          layerGroup = renderedLayer.buildLayerGroup(@options)
+          layerGroup.name = layer.name
+          layerGroup.renderedLayer = renderedLayer
+
+          newLayers[layer.label] = layerGroup
+          newLayers[layer.label].addTo(@getMap())
+
+      newLayers
 
 )(window.Cartography = window.Cartography || {}, jQuery)
