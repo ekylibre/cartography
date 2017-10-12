@@ -19,6 +19,10 @@
   class C.Layers extends C.Layer
     constructor: (map) ->
       super(map)
+      @layers = {}
+
+    getLayers: ->
+      @layers
 
   class C.Map extends C.BaseClass
     options:
@@ -74,7 +78,7 @@
 
       @controls.add 'layers', layerSelector
 
-      @controls.add 'backgrounds', new C.Controls.BackgroundLayers(layerSelector.getControl(), @getMap(), @options), false
+      @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
 
       editControl = new C.Controls.Edit(@getMap(), @options)
@@ -119,12 +123,15 @@
       @layers = {}
 
     getLayers: ->
-      @layers
+      @references.getLayers()
+
+    getLayer: (name) ->
+      @references.getLayers()[name]
 
     getControl: ->
       @control
 
-  class C.Controls.BackgroundLayers extends C.Controls.Layers
+  class C.Controls.BaseLayers extends C.Controls.Layers
     options:
       backgrounds: [
         'OpenStreetMap.HOT',
@@ -137,36 +144,78 @@
       L.Util.setOptions @, options
       super(control, map)
 
+      @references = new C.BaseLayers(map, @options)
       @add(@options.backgrounds)
 
       @setActive(0)
 
     add: (layers) ->
-      layers = [layers] unless layers.constructor.name is "Array"
+      newLayers = @references.add(layers)
 
-      for layer in layers
-        @layers[layer] = L.tileLayer.provider(layer)
-        @getControl().addBaseLayer(@layers[layer], layer)
+      for name, layer of newLayers
+        @getControl().addBaseLayer(layer, name)
 
     setActive: (index) ->
-      @getMap().addLayer(@layers[Object.keys(@layers)[index]])
-
+      @getMap().addLayer(@getLayers()[Object.keys(@getLayers())[index]])
 
   class C.Controls.OverlayLayers extends C.Controls.Layers
     options:
       minZoom: 0
       maxZoom: 25
       overlays: []
+      series: []
 
     constructor: ( control, map, options = {} )->
       L.Util.setOptions @, options
       super(control, map)
 
-      return if !@options.overlays.length
-      @add(@options.overlays)
+      @references = new C.OverlayLayers(map, @options)
 
-    add: (layers) ->
+      @add(@options.overlays, 'tiles') unless !@options.overlays.length
+      @add(@options.series, 'series') unless !@options.series.length
+
+    add: (layers, type) ->
+      newLayers = @references.add(layers, type)
+
+      for name, layer of newLayers
+        @getControl().addOverlay(layer, name)
+
+
+class C.BaseLayers extends C.Layers
+  @options:
+    backgrounds: []
+
+  constructor: ( map, options = {} ) ->
+    L.Util.setOptions @, options
+    super(map)
+
+  add: (layers) ->
+    layers = [layers] unless layers.constructor.name is "Array"
+
+    newLayers = {}
+
+    for layer in layers
+      newLayers[layer] = L.tileLayer.provider(layer)
+
+    L.Util.extend(@layers, newLayers)
+    newLayers
+    
+  class C.OverlayLayers extends C.Layers
+    @options:
+      overlays: []
+      series: []
+
+    constructor: ( map, options = {} ) ->
+      L.Util.setOptions @, options
+      super(map)
+
+    add: (layers, type) ->
+      @["add#{type}"](layers)
+
+    addtiles: (layers) ->
       layers = [layers] unless layers.constructor.name is "Array"
+
+      newLayers = {}
 
       for layer in layers
         opts = {}
@@ -177,10 +226,13 @@
         opts.opacity = (layer.opacity / 100).toFixed(1) if layer.opacity? and !isNaN(layer.opacity)
         opts.tms = true if layer.tms
 
-        @layers[layer.name] =  L.tileLayer(layer.url, opts)
-        @layers[layer.name].addTo(@getMap())
+        newLayers[layer.name] =  L.tileLayer(layer.url, opts)
+        newLayers[layer.name].addTo(@getMap())
 
-        @getControl().addOverlay(@layers[layer.name], layer.name)
+      L.Util.extend(@layers, newLayers)
+      newLayers
+
+    addseries: (layers) ->
 
 
   class C.Controls.Scale extends C.Controls
