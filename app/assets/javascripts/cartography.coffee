@@ -47,7 +47,7 @@
         @mapElement.style.width = @options.box.width
 
     initHooks: ->
-      @getMap().on "draw:created", (e) =>
+      @getMap().on L.Draw.Event.CREATED, (e) =>
         @controls.get('edit').addLayer(e.layer)
         @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
