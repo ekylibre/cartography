@@ -22,7 +22,10 @@
         doubleClickZoom: true
         boxZoom: true
         tap: true
-      snap: true
+      controls:
+        edit: true
+        snap: true
+        reactiveMeasure: true
 
     constructor: (id, options = {}) ->
       L.Util.setOptions @, options
@@ -67,10 +70,10 @@
       @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
 
       # Display selector if shapes are editable
-      if @options.edit? and layerSelector?
+      if @options.controls.edit? and layerSelector?
         editControl.addTo layerSelector.getControl()
 
-      if @options.snap?
+      if @options.controls.snap?
         layers = @controls.get('overlays').getLayers()
         snappable_layers = []
 
@@ -80,6 +83,9 @@
         L.Util.setOptions @, {snap: {polygon: {guideLayers: snappable_layers}}}
 
         new C.Controls.Edit.Snap(@getMap(), editControl, @options)
+
+      if @options.controls.reactiveMeasure?
+        @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
 
     setView: ->
       @getMap().fitWorld({ maxZoom: 21 })

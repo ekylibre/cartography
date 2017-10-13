@@ -106,6 +106,7 @@
     options:
       label: undefined
       edit: undefined
+      reactiveMeasure: true
       draw:
         edit:
           featureGroup: undefined
@@ -164,12 +165,32 @@
 
     constructor: (map, control, options = {}) ->
       super(map)
-      L.Util.extend @options, options
+      L.Util.setOptions @, options
 
       control.getControl().setDrawingOptions(@options.snap)
 
       @initHooks()
 
     initHooks: (->)
+
+  class C.Controls.Edit.ReactiveMeasure extends C.Controls
+    options:
+      reactiveMeasure:
+        position: 'bottomright'
+        metric: true
+        feet: false
+
+    constructor: (map, control, options = {}) ->
+      super(map)
+      L.Util.setOptions @, options
+
+      @control = new L.ReactiveMeasureControl(control.getLayer(), @options.reactiveMeasure)
+
+      @initHooks()
+
+    initHooks: (->)
+
+    getControl: ->
+      @control
 
 )(window.Cartography = window.Cartography || {}, jQuery)
