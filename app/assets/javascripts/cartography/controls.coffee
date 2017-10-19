@@ -102,18 +102,10 @@
     getControl: ->
       @control
 
-  class C.Controls.Edit extends C.Controls
+  class C.Controls.Draw extends C.Controls
     options:
-      label: undefined
-      edit: undefined
-      reactiveMeasure: true
       draw:
-        edit:
-          featureGroup: undefined
-          remove: false
-          edit:
-            color: "#A40"
-            popup: false
+        edit: false
         draw:
           marker: false
           circlemarker: false
@@ -123,38 +115,6 @@
           polygon:
             allowIntersection: false
             showArea: false
-          # reactiveMeasure: true
-
-    constructor: ( map, options = {} ) ->
-      super(map)
-      L.Util.setOptions @, options
-
-      @editionLayer = L.geoJson()
-
-      @options.draw.edit.featureGroup = @editionLayer
-
-      map.addLayer @editionLayer
-
-      @control = new L.Control.Draw(@options.draw)
-
-      @initHooks()
-
-    initHooks: (->)
-
-    getControl: ->
-      @control
-
-    getLayer: ->
-      @editionLayer
-
-    addLayer: (layer) ->
-      @getLayer().addData layer.toGeoJSON()
-
-    addTo: (control) ->
-      control.addOverlay @getLayer(), @options.label
-
-  class C.Controls.Edit.Snap extends C.Controls
-    options:
       snap:
         polyline:
           guideLayers: []
@@ -163,15 +123,68 @@
           guideLayers: []
           snapDistance: 5
 
-    constructor: (map, control, options = {}) ->
+    constructor: ( map, options = {} ) ->
       super(map)
       L.Util.setOptions @, options
 
-      control.getControl().setDrawingOptions(@options.snap)
+      @control = new L.Control.Draw(@options.draw)
+      @control.setDrawingOptions(@options.snap)
 
       @initHooks()
 
     initHooks: (->)
+
+    getControl: ->
+      @control
+
+  class C.Controls.Edit extends C.Controls
+    options:
+      edit:
+        label: undefined
+        reactiveMeasure: true
+        featureGroup: undefined
+        remove: false
+          # edit:
+            # color: "#A40"
+            # popup: false
+        snap:
+          polyline:
+            guideLayers: []
+            snapDistance: 5
+          polygon:
+            guideLayers: []
+            snapDistance: 5
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      L.Util.setOptions @, options
+
+      @editionLayer = L.geoJson()
+      @options.featureGroup = @editionLayer
+
+      map.addLayer @editionLayer
+
+      @control = new L.Control.SnapEdit(@options)
+
+      @initHooks()
+
+    initHooks: ->
+      @getMap().on "draw:editstart", (e) =>
+
+    getControl: ->
+      @control
+
+    getLayer: ->
+      @editionLayer
+
+    addLayer: (layer) ->
+      # @getLayer().addData layer.toGeoJSON()
+      @getLayer().addLayer layer
+
+    addTo: (control) ->
+      control.addOverlay @getLayer(), @options.label
+
 
   class C.Controls.Edit.ReactiveMeasure extends C.Controls
     options:
@@ -193,5 +206,109 @@
 
     getControl: ->
       @control
+
+
+  class L.Control.SnapEdit extends L.Control
+    options:
+      position: 'topleft'
+      draw: {}
+      edit: false
+
+    constructor: (options) ->
+      L.Util.setOptions @, options
+      super options
+      toolbar = undefined
+      @_toolbar = {}
+      if L.SnapEditToolbar
+        @options.snap.guideLayers = @options.snap.polygon.guideLayers
+
+        @_toolbar = new L.SnapEditToolbar @options
+      L.toolbar = this
+      return
+
+    onAdd: (map) ->
+      container = L.DomUtil.create('div', 'leaflet-draw')
+      topClassName = 'leaflet-draw-toolbar-top'
+      toolbarContainer = @_toolbar.addToolbar(map)
+      if toolbarContainer
+        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
+        container.appendChild toolbarContainer
+      container
+
+    onRemove: ->
+      @_toolbar.removeToolbar()
+
+
+  class L.SnapEditToolbar extends L.EditToolbar
+    @TYPE: 'snapedit'
+
+    options:
+      edit:
+        selectedPathOptions:
+          dashArray: '10, 10'
+          fill: true
+          fillColor: '#fe57a1'
+          fillOpacity: 0.1
+          maintainColor: false
+      remove: {}
+      poly: null
+      featureGroup: null
+
+    constructor: (options = {}) ->
+      L.Util.setOptions @, options
+      @type = @TYPE
+
+      super @options
+      @_selectedFeatureCount = 0
+      this
+
+    #Get mode handlers information
+    getModeHandlers: (map) ->
+      featureGroup = @options.featureGroup
+      [
+        {
+          enabled: @options.edit
+          handler: new L.EditToolbar.SnapEdit map,
+            snapOptions: @options.snap
+            featureGroup: featureGroup
+            selectedPathOptions: @options.edit.selectedPathOptions
+            poly: @options.poly
+
+          title: L.drawLocal.edit.toolbar.buttons.edit
+        },
+        {
+          enabled: @options.remove
+          handler: new L.EditToolbar.Delete map,
+            featureGroup: featureGroup
+
+          title: L.drawLocal.edit.toolbar.buttons.remove
+        }
+      ]
+
+    #Get actions information
+    getActions: (handler) ->
+      actions = [
+        {
+          title: L.drawLocal.edit.toolbar.actions.save.title
+          text: L.drawLocal.edit.toolbar.actions.save.text
+          callback: @_save
+          context: @
+        }
+        {
+          title: L.drawLocal.edit.toolbar.actions.cancel.title
+          text: L.drawLocal.edit.toolbar.actions.cancel.text
+          callback: @disable
+          context: @
+        }
+      ]
+
+      if handler.removeAllLayers
+        actions.push({
+          title: L.drawLocal.edit.toolbar.actions.clearAll.title
+          text: L.drawLocal.edit.toolbar.actions.clearAll.text
+          callback: @_clearAllLayers
+          context: @ })
+
+      actions
 
 )(window.Cartography = window.Cartography || {}, jQuery)

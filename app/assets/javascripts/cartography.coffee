@@ -64,30 +64,32 @@
       @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
 
-      editControl = new C.Controls.Edit(@getMap(), @options)
-      @controls.add 'edit', editControl
-
-      @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
-
-      # Display selector if shapes are editable
-      if @options.controls.edit? and layerSelector?
-        editControl.addTo layerSelector.getControl()
-
       if @options.controls.snap?
         layers = @controls.get('overlays').getLayers()
         snappable_layers = []
 
-        for k,v of layers
-          snappable_layers.push v
+        L.Util.setOptions @, snap: {polygon: {guideLayers: Object.values(layers)}}
 
-        L.Util.setOptions @, {snap: {polygon: {guideLayers: snappable_layers}}}
+      drawControl = new C.Controls.Draw(@getMap(), @options)
+      @controls.add 'draw', drawControl
 
-        new C.Controls.Edit.Snap(@getMap(), editControl, @options)
+      # Display selector if shapes are editable
+      # if @options.controls.edit? and layerSelector?
+        # editControl.addTo layerSelector.getControl()
+
+      @controls.add 'edit', new C.Controls.Edit(@getMap(), @options)
+      @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
 
       if @options.controls.reactiveMeasure?
         @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
 
     setView: ->
-      @getMap().fitWorld({ maxZoom: 21 })
+      #TMP
+      layers = @controls.get('overlays').getLayers()
+      bounds = []
+      for k,v of layers
+        bounds = v.getBounds()
+
+      @getMap().fitBounds(bounds,{ maxZoom: 21 })
 
 )(window.Cartography = window.Cartography || {}, jQuery)
