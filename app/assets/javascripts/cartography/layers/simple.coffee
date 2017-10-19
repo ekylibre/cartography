@@ -8,7 +8,9 @@
       super(map)
 
     buildLayerGroup: (style = {}) ->
-      L.geoJson(@data)
+      L.geoJson @data,
+        style: (feature) ->
+          color: "#3498db"
 
     valid: () ->  true
 
