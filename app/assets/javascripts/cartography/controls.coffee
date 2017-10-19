@@ -126,18 +126,19 @@
     constructor: ( map, options = {} ) ->
       super(map)
       L.Util.setOptions @, options
-      console.error @options.draw
+
       @control = new L.Control.Draw(@options.draw)
-      @control.setDrawingOptions(@options.snap)
-      @control.setDrawingOptions(
-        polygon:
-          allowIntersection: false
-          guidelineDistance: 8
-          shapeOptions:
-            dashArray: '8, 8'
-            fill: true
-            color: '#8e44ad'
-      )
+      drawingOptions = {polygon:
+        guideLayers: @options.snap.polygon.guideLayers
+        snapDistance: @options.snap.polygon.snapDistance
+        allowIntersection: false
+        guidelineDistance: 8
+        shapeOptions:
+          dashArray: '8, 8'
+          fill: true
+          color: '#8e44ad'}
+
+      @control.setDrawingOptions(drawingOptions)
 
       @initHooks()
 
