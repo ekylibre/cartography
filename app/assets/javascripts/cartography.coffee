@@ -37,9 +37,9 @@
 
       @resize()
 
-      @controls()
-
       @initHooks()
+
+      @controls()
 
       @setView()
 
@@ -54,6 +54,21 @@
         @controls.get('edit').addLayer(e.layer)
         @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
+      @getMap().on L.Selectable.Event.SELECT, (e) ->
+        console.error 'select',e.layer
+
+      @getMap().on L.Selectable.Event.UNSELECT, (e) ->
+        console.error 'unselect', e.layer
+
+      @getMap().on L.Selectable.Event.SELECTED, (e) ->
+        console.error 'selected layers', e
+
+      @getMap().on L.Selectable.Event.START, (e) ->
+        console.error "Starting selection mode"
+
+      @getMap().on L.Selectable.Event.STOP, (e) ->
+        console.error "Stopping selection mode"
+
     controls: ->
       @controls = new C.Controls(@getMap(), @options)
 
@@ -66,7 +81,6 @@
 
       if @options.controls.snap?
         layers = @controls.get('overlays').getLayers()
-        snappable_layers = []
 
         L.Util.setOptions @, snap: {polygon: {guideLayers: Object.values(layers)}}
 
@@ -82,6 +96,13 @@
 
       if @options.controls.reactiveMeasure?
         @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
+
+
+      #TODO:
+      layers = L.featureGroup(Object.values(@controls.get('overlays').getLayers())[0].getLayers())
+      L.Util.setOptions @, layerSelection: {featureGroup: layers}
+
+      @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
 
     setView: ->
       #TMP
