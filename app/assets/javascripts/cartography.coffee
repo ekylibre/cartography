@@ -9,7 +9,7 @@
   class C.Map extends C.BaseClass
     options:
       box:
-        height: '400px'
+        height: '85vh'
         width: undefined
       map:
         scrollWheelZoom: true
@@ -26,6 +26,10 @@
         edit: true
         snap: true
         reactiveMeasure: true
+      snap:
+        polygon:
+          snapDistance: 15
+          snapOriginDistance: 15
 
     constructor: (id, options = {}) ->
       L.Util.setOptions @, options
@@ -82,7 +86,7 @@
       if @options.controls.snap?
         layers = @controls.get('overlays').getLayers()
 
-        L.Util.setOptions @, snap: {polygon: {guideLayers: Object.values(layers)}}
+        @options.snap.polygon.guideLayers = Object.values(layers)
 
       drawControl = new C.Controls.Draw(@getMap(), @options)
       @controls.add 'draw', drawControl

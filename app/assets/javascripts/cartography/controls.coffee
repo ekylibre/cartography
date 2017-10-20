@@ -118,10 +118,11 @@
       snap:
         polyline:
           guideLayers: []
-          snapDistance: 5
+          snapDistance: 15
         polygon:
           guideLayers: []
-          snapDistance: 5
+          snapDistance: 15
+          snapOriginDistance: 30
 
     constructor: ( map, options = {} ) ->
       super(map)
@@ -131,11 +132,12 @@
       drawingOptions = {polygon:
         guideLayers: @options.snap.polygon.guideLayers
         snapDistance: @options.snap.polygon.snapDistance
+        snapOriginDistance: @options.snap.polygon.snapOriginDistance
         allowIntersection: false
         guidelineDistance: 8
         shapeOptions:
           dashArray: '8, 8'
-          fill: true
+          fill: false
           color: '#8e44ad'}
 
       @control.setDrawingOptions(drawingOptions)
@@ -189,8 +191,8 @@
       @editionLayer
 
     addLayer: (layer) ->
-      # @getLayer().addData layer.toGeoJSON()
-      @getLayer().addLayer layer
+      @getLayer().addData layer.toGeoJSON()
+      # @getLayer().addLayer layer
 
     addTo: (control) ->
       control.addOverlay @getLayer(), @options.label
