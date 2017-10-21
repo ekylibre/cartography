@@ -43,6 +43,9 @@
     options:
       overlays: []
       series: {}
+      properties:
+        color: "#263238"
+        fillOpacity: 0.5
 
     constructor: ( map, options = {} ) ->
       C.Util.setOptions @, options
@@ -83,7 +86,7 @@
         renderedLayer = new C.Layer(@getMap(), layer, serie)
 
         if renderedLayer and renderedLayer.valid()
-          layerGroup = renderedLayer.buildLayerGroup(@options)
+          layerGroup = renderedLayer.buildLayerGroup(@options.properties)
           layerGroup.name = layer.name
           layerGroup.renderedLayer = renderedLayer
 

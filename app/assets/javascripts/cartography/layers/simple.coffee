@@ -10,7 +10,7 @@
     buildLayerGroup: (style = {}) ->
       L.geoJson @data,
         style: (feature) ->
-          style
+          C.Util.extend style, feature.properties
 
     valid: () ->  true
 

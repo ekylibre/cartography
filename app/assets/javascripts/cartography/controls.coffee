@@ -116,31 +116,24 @@
             allowIntersection: false
             showArea: false
       snap:
-        polyline:
-          guideLayers: []
-          snapDistance: 15
         polygon:
           guideLayers: []
           snapDistance: 15
           snapOriginDistance: 30
+          allowIntersection: false
+          guidelineDistance: 8
+          shapeOptions:
+            dashArray: '8, 8'
+            fill: false
+            color: '#FF5722'
+            opacity: 1
 
     constructor: ( map, options = {} ) ->
       super(map)
       C.Util.setOptions @, options
 
       @control = new L.Control.Draw(@options.draw)
-      drawingOptions = {polygon:
-        guideLayers: @options.snap.polygon.guideLayers
-        snapDistance: @options.snap.polygon.snapDistance
-        snapOriginDistance: @options.snap.polygon.snapOriginDistance
-        allowIntersection: false
-        guidelineDistance: 8
-        shapeOptions:
-          dashArray: '8, 8'
-          fill: false
-          color: '#8e44ad'}
-
-      @control.setDrawingOptions(drawingOptions)
+      @control.setDrawingOptions(@options.snap)
 
       @initHooks()
 
@@ -156,9 +149,10 @@
         reactiveMeasure: true
         featureGroup: undefined
         remove: false
-          # edit:
-            # color: "#A40"
-            # popup: false
+        shapeOptions:
+          color: "#3498db"
+          fillOpacity: 0.8
+          popup: false
         snap:
           polyline:
             guideLayers: []
@@ -172,7 +166,11 @@
 
       C.Util.setOptions @, options
 
-      @editionLayer = L.geoJson()
+      # @editionLayer = L.geoJson()
+      @editionLayer = L.geoJson(undefined,
+        style: (feature) =>
+          C.Util.extend @options.edit.shapeOptions, feature.properties)
+
       @options.featureGroup = @editionLayer
 
       map.addLayer @editionLayer
@@ -224,7 +222,6 @@
     options:
       position: 'topleft'
       draw: {}
-      edit: false
 
     constructor: (options) ->
       C.Util.setOptions @, options
