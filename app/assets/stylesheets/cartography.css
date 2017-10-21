@@ -18,17 +18,27 @@
   margin-top: -8px !important;
   width: 16px !important;
   height: 16px !important;
+  box-sizing: border-box;
 }
 
 .leaflet-draw-guide-dash {
   border-radius: 50%;
   opacity: 1;
 }
-/*
-.leaflet-mouse-marker {
-  opacity: 1 !important;
-  margin-left: -10px !important;
-  margin-top: -10px !important;
-  width: 20px !important;
-  height: 20px !important;
-}*/
+
+.marker-origin {
+  animation: beat 1s infinite linear;
+	transform-origin: center;
+}
+
+@keyframes beat{
+  0% {
+    border-width: 1px;
+  }
+  50% {
+    border-width: 3px;
+  }
+  100% {
+    border-width: 1px;
+  }
+}
