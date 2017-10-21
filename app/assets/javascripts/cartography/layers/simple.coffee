@@ -10,7 +10,7 @@
     buildLayerGroup: (style = {}) ->
       L.geoJson @data,
         style: (feature) ->
-          color: "#3498db"
+          style
 
     valid: () ->  true
 

@@ -21,11 +21,11 @@
       @layers
 
   class C.BaseLayers extends C.Layers
-    @options:
+    options:
       backgrounds: []
 
     constructor: ( map, options = {} ) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       super(map)
 
     add: (layers) ->
@@ -40,12 +40,13 @@
       newLayers
 
   class C.OverlayLayers extends C.Layers
-    @options:
+    options:
       overlays: []
       series: {}
 
     constructor: ( map, options = {} ) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
+
       super(map)
 
     add: (layers, type) ->

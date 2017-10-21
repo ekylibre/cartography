@@ -25,7 +25,7 @@
     constructor: ( control, map, options = {} ) ->
       super(map)
 
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @control = control || new L.Control.Layers()
 
@@ -50,7 +50,7 @@
       ]
 
     constructor: ( control, map, options = {} )->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       super(control, map)
 
       @references = new C.BaseLayers(map, @options)
@@ -75,7 +75,7 @@
       series: {}
 
     constructor: ( control, map, options = {} )->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       super(control, map)
 
       @references = new C.OverlayLayers(map, @options)
@@ -96,7 +96,7 @@
 
     constructor: ( map, options = {} ) ->
       super(map)
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       @control = new L.Control.Scale(@options)
 
     getControl: ->
@@ -126,7 +126,7 @@
 
     constructor: ( map, options = {} ) ->
       super(map)
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @control = new L.Control.Draw(@options.draw)
       drawingOptions = {polygon:
@@ -170,7 +170,7 @@
     constructor: (map, options = {}) ->
       super(map)
 
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @editionLayer = L.geoJson()
       @options.featureGroup = @editionLayer
@@ -208,7 +208,7 @@
 
     constructor: (map, control, options = {}) ->
       super(map)
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @control = new L.ReactiveMeasureControl(control.getLayer(), @options.reactiveMeasure)
 
@@ -227,7 +227,7 @@
       edit: false
 
     constructor: (options) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       super options
       toolbar = undefined
       @_toolbar = {}
@@ -267,7 +267,7 @@
       featureGroup: null
 
     constructor: (options = {}) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       @type = @constructor.TYPE
 
 
@@ -332,7 +332,7 @@
     constructor: (map, options = {}) ->
       super(map)
 
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @control = new L.Control.LayerSelection(@options.layerSelection)
 
@@ -352,7 +352,7 @@
       featureGroup: undefined
 
     constructor: (options) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       super options
 
       if L.LayerSelectionToolbar && !@_toolbar
@@ -387,7 +387,7 @@
         maintainColor: false
 
     constructor: (options = {}) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
       @type = @constructor.TYPE
 
       super @options
@@ -478,7 +478,7 @@
       @type = @constructor.TYPE
       @_map = map
       super map
-      L.setOptions @, options
+      C.Util.setOptions @, options
       # Store the selectable layer group for ease of access
       @_featureGroup = options.featureGroup
 

@@ -1,3 +1,5 @@
+require 'lodash-rails'
+
 module Cartography
   class Engine < ::Rails::Engine
     initializer 'cartography.assets.precompile' do |app|

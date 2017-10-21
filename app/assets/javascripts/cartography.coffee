@@ -1,3 +1,4 @@
+#= require cartography/util
 #= require cartography/base
 #= require cartography/controls
 #= require cartography/layers
@@ -32,7 +33,7 @@
           snapOriginDistance: 15
 
     constructor: (id, options = {}) ->
-      L.Util.setOptions @, options
+      C.Util.setOptions @, options
 
       @baseElement = L.DomUtil.get(id)
       @mapElement = L.DomUtil.create('div', 'map', @baseElement)
@@ -104,7 +105,7 @@
 
       #TODO:
       layers = L.featureGroup(Object.values(@controls.get('overlays').getLayers())[0].getLayers())
-      L.Util.setOptions @, layerSelection: {featureGroup: layers}
+      C.Util.setOptions @, layerSelection: {featureGroup: layers}
 
       @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
 
