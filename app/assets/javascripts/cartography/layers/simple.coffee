@@ -8,9 +8,12 @@
       super(map)
 
     buildLayerGroup: (style = {}) ->
-      L.geoJson @data,
+      klass = if @layer.index then L.IndexedGeoJSON else L.GeoJSON
+
+      new klass @data,
         style: (feature) ->
           C.Util.extend style, feature.properties
+
 
     valid: () ->  true
 

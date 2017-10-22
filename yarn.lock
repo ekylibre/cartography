@@ -24,6 +24,13 @@ leaflet-geometryutil@*:
   dependencies:
     leaflet ">=0.7.0"
 
+leaflet-layerindex@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/leaflet-layerindex/-/leaflet-layerindex-0.0.1.tgz#ceeada994134cfc597669e8a75dd167ef82cb258"
+  dependencies:
+    leaflet "*"
+    rtree "*"
+
 leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
@@ -44,10 +51,14 @@ leaflet-snap@../Leaflet.Snap:
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
-leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
+leaflet@*, leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
 
 leaflet@^0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
+
+rtree@*:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/rtree/-/rtree-1.4.2.tgz#8b8c588c58a1f87fea5da2d497ae3b2c5e4bb32e"
