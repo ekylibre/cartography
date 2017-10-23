@@ -109,6 +109,9 @@
 
       @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
 
+      C.Util.setOptions @, cut: {featureGroup: layers}
+      @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
+
     setView: ->
       #TMP
       layers = @controls.get('overlays').getLayers()

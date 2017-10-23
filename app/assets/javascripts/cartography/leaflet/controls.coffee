@@ -58,4 +58,30 @@
     onRemove: ->
       @_toolbar.removeToolbar()
 
+  class L.Control.Cut extends L.Control
+    @_toolbar: {}
+
+    options:
+      position: 'topleft'
+      featureGroup: undefined
+
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super options
+
+      if L.CutToolbar && !@_toolbar
+        @_toolbar = new L.CutToolbar @options
+
+    onAdd: (map) ->
+      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
+      topClassName = 'leaflet-draw-toolbar-top'
+      toolbarContainer = @_toolbar.addToolbar(map)
+      if toolbarContainer
+        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
+      container.appendChild toolbarContainer
+      container
+
+    onRemove: ->
+      @_toolbar.removeToolbar()
+
 )(window.Cartography = window.Cartography || {})

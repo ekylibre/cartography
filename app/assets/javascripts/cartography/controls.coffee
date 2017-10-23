@@ -237,4 +237,24 @@
     getControl: ->
       @control
 
+  class C.Controls.Cut extends C.Controls
+    options:
+      cut:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.Cut(@options.cut)
+
+      @initHooks()
+
+    initHooks: ->
+      # @getMap().on "draw:editstart", (e) =>
+
+    getControl: ->
+      @control
+
 )(window.Cartography = window.Cartography || {}, jQuery)

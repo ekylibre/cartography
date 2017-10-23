@@ -166,4 +166,110 @@
 
       button.setAttribute 'title', title
 
+
+  class L.CutToolbar extends L.Toolbar
+    @TYPE: 'cut'
+
+    options:
+      position: 'topleft'
+      featureGroup: undefined
+      # color: "#A40"
+      disabledPathOptions:
+        dashArray: null
+        fill: true
+        fillColor: '#fe57a1'
+        fillOpacity: 0.1
+        maintainColor: true
+      selectedPathOptions:
+        dashArray: null
+        fill: true
+        fillColor: '#fe57a1'
+        fillOpacity: 0.9
+        maintainColor: true
+      cuttingPathOptions:
+        dashArray: '10, 10'
+        fill: false
+        color: '#fe57a1'
+        # fillOpacity: 0.9
+        # maintainColor: false
+
+    constructor: (options = {}) ->
+      C.Util.setOptions @, options
+      @type = @constructor.TYPE
+
+      super @options
+      this
+
+    #Get mode handlers information
+    getModeHandlers: (map) ->
+      featureGroup = @options.featureGroup
+      [
+        {
+          enabled: true
+          handler: new L.Cut map,
+            featureGroup: featureGroup
+            selectedPathOptions: @options.selectedPathOptions
+            disabledPathOptions: @options.disabledPathOptions
+            cuttingPathOptions: @options.cuttingPathOptions
+
+          title: L.drawLocal.edit.toolbar.buttons.edit
+        }
+      ]
+
+    #Get actions information
+    getActions: (handler) ->
+      [
+        {
+          title: L.drawLocal.edit.toolbar.actions.save.title
+          text: L.drawLocal.edit.toolbar.actions.save.text
+          callback: @_save
+          context: @
+        },
+        {
+          title: L.drawLocal.edit.toolbar.actions.cancel.title
+          text: L.drawLocal.edit.toolbar.actions.cancel.text
+          callback: @disable
+          context: @
+        }
+      ]
+
+    addToolbar: (map) ->
+      container = super map
+
+      @_checkDisabled()
+
+      @options.featureGroup.on 'layeradd layerremove', @_checkDisabled, @
+
+      container
+
+    removeToolbar: ->
+      @options.featureGroup.off 'layeradd layerremove', @_checkDisabled, @
+      super
+
+    disable: ->
+      if !@.enabled()
+        return
+
+      super
+
+    _save: ->
+      @_activeMode.handler.save()
+
+      if @_activeMode
+        @_activeMode.handler.disable()
+
+    _checkDisabled: ->
+      featureGroup = @options.featureGroup
+      hasLayers = featureGroup.getLayers().length != 0
+      button = this._modes[L.Cut.TYPE].button
+
+      if hasLayers
+        L.DomUtil.removeClass button, 'leaflet-disabled'
+      else
+        L.DomUtil.addClass button, 'leaflet-disabled'
+
+      title = if hasLayers then L.drawLocal.edit.toolbar.buttons.edit else L.drawLocal.edit.toolbar.buttons.editDisabled
+
+      button.setAttribute 'title', title
+
 )(window.Cartography = window.Cartography || {})
