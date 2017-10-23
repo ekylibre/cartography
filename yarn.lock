@@ -10,6 +10,14 @@ jquery@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
+leaflet-draw-cut@../Leaflet.Draw.Cut:
+  version "0.0.1"
+  dependencies:
+    geographiclib "^1.49.0"
+    leaflet "^1.2.0"
+    leaflet-draw "^0.4.12"
+    lodash "^4.17.4"
+
 leaflet-draw@0.4.12, leaflet-draw@^0.4.12:
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.12.tgz#04c9f3506e3b3a8a488ad389381331dc5b2affd8"
@@ -59,6 +67,10 @@ leaflet@*, leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
 leaflet@^0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
+
+lodash@^4.17.4:
+  version "4.17.4"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
 rtree@*:
   version "1.4.2"
