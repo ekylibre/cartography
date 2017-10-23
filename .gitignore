@@ -9,3 +9,4 @@
 /tmp/
 /vendor/assets/components/
 /vendor/node_modules/
+.ruby-version

@@ -10,6 +10,6 @@
     "leaflet-layerindex": "^0.0.1",
     "leaflet-providers": "1.1.17",
     "leaflet-reactive_measure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure",
-    "leaflet-snap": "../Leaflet.Snap"
+    "leaflet-snap": "https://github.com/ekylibre/Leaflet.Snap"
   }
 }

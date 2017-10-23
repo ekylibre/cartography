@@ -43,8 +43,9 @@ leaflet-providers@1.1.17:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
 
-leaflet-snap@../Leaflet.Snap:
+"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
   version "0.0.4"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#ca587eee0937bfd36489c6d4e8a8cb24ca2b7e6f"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"
