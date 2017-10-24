@@ -135,6 +135,8 @@
       @control = new L.Control.Draw(@options.draw)
       @control.setDrawingOptions(@options.snap)
 
+      @toolbar = @control._toolbars['draw']
+
       @initHooks()
 
     initHooks: (->)

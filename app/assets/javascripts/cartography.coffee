@@ -42,9 +42,9 @@
 
       @resize()
 
-      @initHooks()
-
       @controls()
+
+      @initHooks()
 
       @setView()
 
@@ -55,9 +55,14 @@
         @mapElement.style.width = @options.box.width
 
     initHooks: ->
-      @getMap().on L.Draw.Event.CREATED, (e) =>
-        @controls.get('edit').addLayer(e.layer)
-        @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+
+      @controls.get('draw').toolbar.on 'enable', (e) =>
+        @getMap().on L.Draw.Event.CREATED, (e) =>
+          @controls.get('edit').addLayer(e.layer)
+          @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+
+      @controls.get('draw').toolbar.on 'disable', (e) =>
+        @getMap().off L.Draw.Event.CREATED
 
       @getMap().on L.Selectable.Event.SELECT, (e) ->
         console.error 'select',e.layer
