@@ -114,7 +114,7 @@
 
       @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
 
-      C.Util.setOptions @, cut: {featureGroup: layers}
+      C.Util.setOptions @, cut: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
 
     setView: ->

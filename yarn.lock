@@ -15,13 +15,6 @@
     "@mapbox/geojson-area" "^0.2.2"
     "@turf/meta" "^4.7.3"
 
-"@turf/bbox@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/bbox/-/bbox-5.0.0.tgz#c179e533328120ca29b5dbd215a5f54e5c7940d3"
-  dependencies:
-    "@turf/helpers" "5.0.0"
-    "@turf/meta" "5.0.0"
-
 "@turf/difference@^4.7.4":
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/@turf/difference/-/difference-4.7.4.tgz#9286190d7dd151dda57bae39fe92e4b88bc3361a"
@@ -31,10 +24,6 @@
     "@turf/invariant" "^4.7.3"
     "@turf/meta" "^4.7.3"
     jsts "1.3.0"
-
-"@turf/helpers@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.0.0.tgz#732cb570e6aebca9ef7375e8e42fafa8e16e5d47"
 
 "@turf/helpers@^4.7.3":
   version "4.7.3"
@@ -48,25 +37,9 @@
     "@turf/truncate" "^4.7.3"
     jsts "1.3.0"
 
-"@turf/invariant@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.0.0.tgz#da9b4d7b044cffa300d654b3e0444969fc19d850"
-
 "@turf/invariant@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-4.7.3.tgz#538f367d23c113fc849d70c9a524b8563874601d"
-
-"@turf/linestring-to-polygon@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/linestring-to-polygon/-/linestring-to-polygon-5.0.0.tgz#d8c33d879fcbc71224fd6a69d41978562d2005e8"
-  dependencies:
-    "@turf/bbox" "5.0.0"
-    "@turf/helpers" "5.0.0"
-    "@turf/invariant" "5.0.0"
-
-"@turf/meta@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.0.0.tgz#75b100e9854cd7b2fa63e68561e1298dac09d7b4"
 
 "@turf/meta@^4.7.3":
   version "4.7.4"
@@ -95,7 +68,6 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
   dependencies:
     "@turf/difference" "^4.7.4"
     "@turf/intersect" "^4.7.4"
-    "@turf/linestring-to-polygon" "^5.0.0"
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
