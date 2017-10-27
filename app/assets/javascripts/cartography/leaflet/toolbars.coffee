@@ -197,17 +197,18 @@
       C.Util.setOptions @, options
       @type = @constructor.TYPE
 
+      @_toolbarClass = 'leaflet-cut-polyline'
+
       super @options
       this
 
     #Get mode handlers information
     getModeHandlers: (map) ->
-      featureGroup = @options.featureGroup
       [
         {
           enabled: true
-          handler: new L.Cut map,
-            featureGroup: featureGroup
+          handler: new L.Cut.Polyline map,
+            featureGroup: @options.featureGroup
             selectedPathOptions: @options.selectedPathOptions
             disabledPathOptions: @options.disabledPathOptions
             cuttingPathOptions: @options.cuttingPathOptions
@@ -261,7 +262,7 @@
     _checkDisabled: ->
       featureGroup = @options.featureGroup
       hasLayers = featureGroup.getLayers().length != 0
-      button = this._modes[L.Cut.TYPE].button
+      button = this._modes[L.Cut.Polyline.TYPE].button
 
       if hasLayers
         L.DomUtil.removeClass button, 'leaflet-disabled'
