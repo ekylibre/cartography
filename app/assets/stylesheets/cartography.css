@@ -23,6 +23,7 @@
 .leaflet-draw-guide-dash {
   border-radius: 50%;
   opacity: 1;
+  z-index: 1000;
 }
 
 .marker-origin {

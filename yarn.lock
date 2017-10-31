@@ -51,6 +51,13 @@
     "@turf/helpers" "^4.7.3"
     "@turf/invariant" "^4.7.3"
 
+"@turf/flatten@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/flatten/-/flatten-4.7.3.tgz#7ea409fbc6fb4ee2f142834b4186d0f69da8350a"
+  dependencies:
+    "@turf/helpers" "^4.7.3"
+    "@turf/meta" "^4.7.3"
+
 "@turf/flip@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/flip/-/flip-4.7.3.tgz#9d7c956facf6512111f104d43e167cb64f7cdc16"
@@ -60,6 +67,10 @@
 "@turf/helpers@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-4.7.3.tgz#bc312ac43cab3c532a483151c4c382c5649429e9"
+
+"@turf/helpers@^5.0.0":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.0.1.tgz#d950df25b10c9ed347f7811927ec14e72ccc58b2"
 
 "@turf/inside@^5.0.0":
   version "5.0.0"
@@ -82,6 +93,12 @@
 "@turf/invariant@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.0.0.tgz#da9b4d7b044cffa300d654b3e0444969fc19d850"
+
+"@turf/kinks@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/kinks/-/kinks-4.7.3.tgz#64e1851f8dd16ed212eb2b27bfd43802fe403565"
+  dependencies:
+    "@turf/helpers" "^4.7.3"
 
 "@turf/line-intersect@^4.7.3":
   version "4.7.3"
@@ -108,9 +125,29 @@
     "@turf/helpers" "^4.7.3"
     "@turf/point-on-line" "^4.7.3"
 
+"@turf/line-split@^4.7.3":
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/@turf/line-split/-/line-split-4.7.3.tgz#22d81162da37861b7d22859073adef22f8af53db"
+  dependencies:
+    "@turf/flatten" "^4.7.3"
+    "@turf/helpers" "^4.7.3"
+    "@turf/invariant" "^4.7.3"
+    "@turf/line-intersect" "^4.7.3"
+    "@turf/line-segment" "^4.7.3"
+    "@turf/meta" "^4.7.3"
+    "@turf/point-on-line" "^4.7.3"
+    "@turf/truncate" "^4.7.3"
+    geojson-rbush "^1.0.1"
+
 "@turf/meta@^4.6.0", "@turf/meta@^4.7.3":
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-4.7.4.tgz#6de2f1e9890b8f64b669e4b47c09b20893063977"
+
+"@turf/meta@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.0.2.tgz#712ff485cdaa6024d1f97d6fbed69d3f8e31e686"
+  dependencies:
+    "@turf/helpers" "^5.0.0"
 
 "@turf/point-on-line@^4.7.3":
   version "4.7.3"
@@ -165,11 +202,17 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     "@turf/flip" "^4.7.3"
     "@turf/inside" "^5.0.0"
     "@turf/intersect" "^4.7.4"
+    "@turf/invariant" "^5.0.0"
+    "@turf/kinks" "^4.7.3"
     "@turf/line-slice" "^4.7.3"
+    "@turf/line-split" "^4.7.3"
+    "@turf/meta" "^5.0.2"
     "@turf/rewind" "^4.7.3"
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
+    leaflet-geometryutil "^0.8.0"
+    leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
 leaflet-draw@0.4.12, leaflet-draw@^0.4.12:
@@ -180,7 +223,7 @@ leaflet-draw@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.3.2.tgz#717ee8fed4c2a9679c12162e1f922d2da503d109"
 
-leaflet-geometryutil@*:
+leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.0.tgz#c09c0fc37628f402846ad5723c80ef95b3d2057c"
   dependencies:
@@ -205,9 +248,8 @@ leaflet-providers@1.1.17:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
 
-"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
+leaflet-snap@../Leaflet.Snap:
   version "0.0.4"
-  resolved "https://github.com/ekylibre/Leaflet.Snap#ca587eee0937bfd36489c6d4e8a8cb24ca2b7e6f"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

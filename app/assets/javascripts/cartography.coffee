@@ -120,10 +120,7 @@
     setView: ->
       #TMP
       layers = @controls.get('overlays').getLayers()
-      bounds = []
-      for k,v of layers
-        bounds = v.getBounds()
 
-      @getMap().fitBounds(bounds,{ maxZoom: 21 })
+      @getMap().fitBounds(layers[Object.keys(layers)[0]].getLayers()[0].getBounds(),{ maxZoom: 21 })
 
 )(window.Cartography = window.Cartography || {}, jQuery)

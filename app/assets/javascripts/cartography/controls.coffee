@@ -43,8 +43,8 @@
   class C.Controls.BaseLayers extends C.Controls.Layers
     options:
       backgrounds: [
-        'OpenStreetMap.HOT',
         'OpenStreetMap.Mapnik',
+        'OpenStreetMap.HOT',
         'Thunderforest.Landscape',
         'Esri.WorldImagery'
       ]
