@@ -74,7 +74,7 @@
         @_toolbar = new L.CutToolbar @options
 
       if @options.panel
-        new L.Control.ControlPanel @_toolbar
+        new L.Control.ControlPanel.Cut @_toolbar
 
     onAdd: (map) ->
       container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
@@ -87,5 +87,33 @@
 
     onRemove: ->
       @_toolbar.removeToolbar()
+
+  class L.Control.ControlPanel.Cut extends L.Control.ControlPanel
+
+    onAdd: (map) ->
+      super map
+      @addProperties()
+      @_container
+
+    addProperties: ->
+      @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
+
+    _addCreatedPolygons: (e) ->
+      console.error 'created', e
+      layers = e.layers
+
+      for layer in layers
+        legend = L.DomUtil.create 'div', 'legend', @_propertiesContainer
+        area = L.DomUtil.create("span", '', legend)
+        # layer.options.fillColor
+
+        if typeof layer.getLatLngs is 'function'
+          legend.style.backgroundColor = layer.options.fillColor
+          latlngs = layer.getLatLngs()
+        else
+          legend.style.backgroundColor = layer.getLayers()[0].options.fillColor
+          latlngs = layer.getLayers()[0].getLatLngs()
+
+        area.innerHTML = L.GeometryUtil.geodesicArea(latlngs)
 
 )(window.Cartography = window.Cartography || {})
