@@ -64,6 +64,7 @@
     options:
       position: 'topleft'
       featureGroup: undefined
+      panel: true
 
     constructor: (options) ->
       C.Util.setOptions @, options
@@ -71,6 +72,9 @@
 
       if L.CutToolbar && !@_toolbar
         @_toolbar = new L.CutToolbar @options
+
+      if @options.panel
+        new L.Control.ControlPanel @_toolbar
 
     onAdd: (map) ->
       container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')

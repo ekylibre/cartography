@@ -10,3 +10,5 @@
 /vendor/assets/components/
 /vendor/node_modules/
 .ruby-version
+npm-debug.log
+yarn-error.log

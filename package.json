@@ -6,6 +6,7 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "leaflet": "1.2.0",
+    "leaflet-controlpanel": "../Leaflet.ControlPanel",
     "leaflet-draw": "0.4.12",
     "leaflet-draw-cut": "../Leaflet.Draw.Cut",
     "leaflet-layerindex": "^0.0.1",
