@@ -97,6 +97,31 @@
 
     addProperties: ->
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
+      @_addPointerCoordinates()
+
+    _addPointerCoordinates: () ->
+
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = "Coordinates"
+
+      @_pointerCoordinatesContainer = L.DomUtil.create 'div', 'property-content', container
+
+      @_map.on 'mousemove', @_onUpdateCoordinates, @
+
+    _onUpdateCoordinates: (e) ->
+      coordinates = e.latlng
+      L.DomUtil.empty(@_pointerCoordinatesContainer)
+
+      latRow = L.DomUtil.create 'div', 'coordinates-row', @_pointerCoordinatesContainer
+      lat = L.DomUtil.create 'div', 'coordinate', latRow
+      lat.innerHTML = "lat: " + coordinates.lat
+
+      lngRow = L.DomUtil.create 'div', 'coordinates-row', @_pointerCoordinatesContainer
+      lng = L.DomUtil.create 'div', 'coordinate', lngRow
+      lng.innerHTML = "lng: " + coordinates.lng
+
 
     _addCreatedPolygons: (e) ->
 
@@ -107,11 +132,11 @@
 
       @_areaContainer = L.DomUtil.create 'div', 'property-content', container
 
-      @_updateArea(e)
+      @_onUpdateArea(e)
 
-      @_map.on L.Cutting.Polyline.Event.UPDATED, @_updateArea, @
+      @_map.on L.Cutting.Polyline.Event.UPDATED, @_onUpdateArea, @
 
-    _updateArea: (e) ->
+    _onUpdateArea: (e) ->
       layers = e.layers
 
       L.DomUtil.empty(@_areaContainer)
