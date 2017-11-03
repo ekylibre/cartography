@@ -44,8 +44,26 @@
   }
 }
 
-.leaflet-control-controlPanel-properties > .legend{
+.legend{
     border: 1px solid black;
     width: 20px;
     height: 10px;
+    display: inline-block;
+}
+
+.legend-area {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+
+.leaflet-control-controlPanel-properties {
+  padding: 1%;
+  width: 98%;
+}
+
+.property-title {
+  color: grey;
+  font-weight: bold;
+  font-size: larger;
 }

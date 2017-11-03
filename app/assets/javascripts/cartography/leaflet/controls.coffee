@@ -99,12 +99,27 @@
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
 
     _addCreatedPolygons: (e) ->
-      console.error 'created', e
+
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = "Surfaces"
+
+      @_areaContainer = L.DomUtil.create 'div', 'property-content', container
+
+      @_updateArea(e)
+
+      @_map.on L.Cutting.Polyline.Event.UPDATED, @_updateArea, @
+
+    _updateArea: (e) ->
       layers = e.layers
 
+      L.DomUtil.empty(@_areaContainer)
+
       for layer in layers
-        legend = L.DomUtil.create 'div', 'legend', @_propertiesContainer
-        area = L.DomUtil.create("span", '', legend)
+        legendRow = L.DomUtil.create 'div', 'legend-row', @_areaContainer
+        legend = L.DomUtil.create 'div', 'legend', legendRow
+        area = L.DomUtil.create("div", 'legend-area', legendRow)
         # layer.options.fillColor
 
         if typeof layer.getLatLngs is 'function'
@@ -114,6 +129,6 @@
           legend.style.backgroundColor = layer.getLayers()[0].options.fillColor
           latlngs = layer.getLayers()[0].getLatLngs()
 
-        area.innerHTML = L.GeometryUtil.geodesicArea(latlngs)
+        area.innerHTML = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(latlngs[0]), true)
 
 )(window.Cartography = window.Cartography || {})
