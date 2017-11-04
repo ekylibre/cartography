@@ -35,6 +35,10 @@
         panel:
           title: 'Splitter tool'
           animatedHelper: 'http://placehold.it/200x150'
+      merge:
+        panel:
+          title: 'Merger tool'
+          animatedHelper: 'http://placehold.it/200x150'
       draw:
         panel:
           title: 'Create plot'
@@ -124,6 +128,9 @@
 
       C.Util.setOptions @, cut: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
+
+      C.Util.setOptions @, merge: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
+      @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
     setView: ->
       #TMP

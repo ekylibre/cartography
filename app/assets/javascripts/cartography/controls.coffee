@@ -261,4 +261,23 @@
     getControl: ->
       @control
 
+  class C.Controls.Merge extends C.Controls
+    options:
+      merge:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.Merge(@options.merge)
+
+      @initHooks()
+
+    initHooks: (->)
+
+    getControl: ->
+      @control
+
 )(window.Cartography = window.Cartography || {}, jQuery)

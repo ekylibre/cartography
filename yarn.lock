@@ -193,6 +193,16 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
+leaflet-draw-merge@../Leaflet.Draw.Merge:
+  version "0.0.1"
+  dependencies:
+    "@turf/meta" "^5.0.2"
+    geographiclib "^1.49.0"
+    leaflet "^1.2.0"
+    leaflet-draw "^0.4.12"
+    leaflet-geometryutil "^0.8.0"
+    lodash "^4.17.4"
+
 leaflet-draw@0.4.12, leaflet-draw@^0.4.12:
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.12.tgz#04c9f3506e3b3a8a488ad389381331dc5b2affd8"
