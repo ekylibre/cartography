@@ -33,6 +33,7 @@
           snapOriginDistance: 15
       cut:
         panel:
+          title: 'Splitter tool'
           animatedHelper: 'http://placehold.it/200x150'
 
     constructor: (id, options = {}) ->

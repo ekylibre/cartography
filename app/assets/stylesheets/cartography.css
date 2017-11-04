@@ -44,6 +44,16 @@
   }
 }
 
+
+
+.leaflet-control-controlPanel-title {
+  color: black;
+  font-weight: bold;
+  font-size: small;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  text-align: center;
+}
+
 .legend{
     border: 1px solid black;
     width: 20px;
