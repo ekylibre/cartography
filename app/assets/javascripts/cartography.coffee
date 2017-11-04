@@ -35,6 +35,10 @@
         panel:
           title: 'Splitter tool'
           animatedHelper: 'http://placehold.it/200x150'
+      draw:
+        panel:
+          title: 'Create plot'
+          animatedHelper: 'http://placehold.it/200x150'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options

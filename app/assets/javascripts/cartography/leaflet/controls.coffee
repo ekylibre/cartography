@@ -90,50 +90,17 @@
       @_toolbar.removeToolbar()
 
   class L.Control.ControlPanel.Cut extends L.Control.ControlPanel
-
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super
+      
     onAdd: (map) ->
       super map
-      @addProperties()
       @_container
 
     addProperties: ->
-      @_addAnimatedHelper()
+      super
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
-      @_addPointerCoordinates()
-
-    _addAnimatedHelper: () ->
-
-      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
-
-      @_animatedHelperContainer = L.DomUtil.create 'div', 'property-content', container
-
-      if @options.animatedHelper
-        img = L.DomUtil.create 'img', 'animated-helper', @_animatedHelperContainer
-        img.src = @options.animatedHelper
-
-    _addPointerCoordinates: () ->
-
-      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
-
-      containerTitle = L.DomUtil.create 'div', 'property-title', container
-      containerTitle.innerHTML = "Coordinates"
-
-      @_pointerCoordinatesContainer = L.DomUtil.create 'div', 'property-content', container
-
-      @_map.on 'mousemove', @_onUpdateCoordinates, @
-
-    _onUpdateCoordinates: (e) ->
-      coordinates = e.latlng
-      L.DomUtil.empty(@_pointerCoordinatesContainer)
-
-      latRow = L.DomUtil.create 'div', 'coordinates-row', @_pointerCoordinatesContainer
-      lat = L.DomUtil.create 'div', 'coordinate', latRow
-      lat.innerHTML = "lat: " + coordinates.lat
-
-      lngRow = L.DomUtil.create 'div', 'coordinates-row', @_pointerCoordinatesContainer
-      lng = L.DomUtil.create 'div', 'coordinate', lngRow
-      lng.innerHTML = "lng: " + coordinates.lng
-
 
     _addCreatedPolygons: (e) ->
 
@@ -167,5 +134,40 @@
           latlngs = layer.getLayers()[0].getLatLngs()
 
         area.innerHTML = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(latlngs[0]), true)
+
+
+  class L.Control.ControlPanel.Draw extends L.Control.ControlPanel
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super
+
+    onAdd: (map) ->
+      super map
+      @_container
+
+    addProperties: ->
+      super
+      @_addDrawingPolygon()
+
+    _addDrawingPolygon: ->
+
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = "Surface"
+
+      @_areaContainer = L.DomUtil.create 'div', 'property-content', container
+
+      @_onDrawingPolygon()
+      @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
+
+    _onDrawingPolygon: (e) ->
+      area = if e and e.measure then e.measure.area else 0
+
+      L.DomUtil.empty(@_areaContainer)
+
+      surface = L.DomUtil.create 'div', 'surface-row', @_areaContainer
+      surface.innerHTML = L.GeometryUtil.readableArea(area, true)
+
 
 )(window.Cartography = window.Cartography || {})

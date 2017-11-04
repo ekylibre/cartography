@@ -136,6 +136,8 @@
       @control.setDrawingOptions(@options.snap)
 
       @toolbar = @control._toolbars['draw']
+      if @options.draw.panel
+        new L.Control.ControlPanel.Draw @toolbar, @options.draw.panel
 
       @initHooks()
 
