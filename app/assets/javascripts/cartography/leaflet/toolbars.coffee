@@ -298,22 +298,12 @@
         fillColor: '#fe57a1'
         fillOpacity: 0.9
         maintainColor: true
-      cuttingPathOptions:
+      mergingPathOptions:
         dashArray: '10, 10'
         fill: true
         color: '#3f51b5'
         # fillOpacity: 0.9
         maintainColor: false
-      snap:
-        guideLayers: []
-        snapDistance: 30
-        allowIntersection: false
-        guidelineDistance: 8
-        shapeOptions:
-          dashArray: '8, 8'
-          fill: false
-          color: '#FF5722'
-          opacity: 1
 
     constructor: (options = {}) ->
       C.Util.setOptions @, options
