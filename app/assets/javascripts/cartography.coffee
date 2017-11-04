@@ -31,6 +31,9 @@
         polygon:
           snapDistance: 15
           snapOriginDistance: 15
+      cut:
+        panel:
+          animatedHelper: 'http://placehold.it/200x150'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options

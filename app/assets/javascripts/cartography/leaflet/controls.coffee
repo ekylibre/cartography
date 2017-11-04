@@ -64,7 +64,8 @@
     options:
       position: 'topleft'
       featureGroup: undefined
-      panel: true
+      panel:
+        position: 'bottomleft'
 
     constructor: (options) ->
       C.Util.setOptions @, options
@@ -74,7 +75,7 @@
         @_toolbar = new L.CutToolbar @options
 
       if @options.panel
-        new L.Control.ControlPanel.Cut @_toolbar
+        new L.Control.ControlPanel.Cut @_toolbar, @options.panel
 
     onAdd: (map) ->
       container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
@@ -96,8 +97,19 @@
       @_container
 
     addProperties: ->
+      @_addAnimatedHelper()
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
       @_addPointerCoordinates()
+
+    _addAnimatedHelper: () ->
+
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+
+      @_animatedHelperContainer = L.DomUtil.create 'div', 'property-content', container
+
+      if @options.animatedHelper
+        img = L.DomUtil.create 'img', 'animated-helper', @_animatedHelperContainer
+        img.src = @options.animatedHelper
 
     _addPointerCoordinates: () ->
 
