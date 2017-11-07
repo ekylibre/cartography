@@ -5,6 +5,9 @@
     options:
       position: 'topleft'
       draw: {}
+      edit:
+        panel:
+          position: 'bottomleft'
 
     constructor: (options) ->
       C.Util.setOptions @, options
@@ -15,6 +18,10 @@
         @options.snap.guideLayers = @options.snap.polygon.guideLayers
 
         @_toolbar = new L.SnapEditToolbar @options
+
+      if @options.edit.panel
+        new L.Control.ControlPanel.SnapEdit @_toolbar, @options.edit.panel
+
       L.toolbar = this
       return
 
@@ -29,6 +36,40 @@
 
     onRemove: ->
       @_toolbar.removeToolbar()
+
+  class L.Control.ControlPanel.SnapEdit extends L.Control.ControlPanel
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super
+
+    onAdd: (map) ->
+      super map
+
+      @_container
+
+    addProperties: ->
+      super
+      @_addEditPolygon()
+
+    _addEditPolygon: ->
+
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = "Surface"
+
+      @_areaContainer = L.DomUtil.create 'div', 'property-content', container
+
+      @_onEditingPolygon()
+      @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
+
+    _onEditingPolygon: (e) ->
+      area = if e and e.measure then e.measure.area else 0
+
+      L.DomUtil.empty(@_areaContainer)
+
+      surface = L.DomUtil.create 'div', 'surface-row', @_areaContainer
+      surface.innerHTML = L.GeometryUtil.readableArea(area, true)
 
   class L.Control.LayerSelection extends L.Control
     @_toolbar: {}

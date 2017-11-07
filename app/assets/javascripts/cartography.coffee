@@ -44,6 +44,10 @@
           title: 'Create plot'
           animatedHelper: 'http://placehold.it/200x150'
           ignoreActions: true
+      edit:
+        panel:
+          title: 'Edit plot'
+          animatedHelper: 'http://placehold.it/200x150'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options
