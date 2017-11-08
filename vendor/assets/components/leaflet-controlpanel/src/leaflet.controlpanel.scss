@@ -1,0 +1,39 @@
+.leaflet-control-controlPanel {
+  background-color: #fff;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-radius: 2px;
+
+  &.large {
+    width: 200px;
+    height: 390px;
+  }
+
+  .leaflet-control-controlPanel-properties {
+    width: 98%;
+    height: 80%;
+    padding: 1%;
+    float: left;
+
+    .property {
+      margin-top: 10px;
+    }
+  }
+  .leaflet-control-controlPanel-actions {
+    padding: 2%;
+    width: 96%;
+    height: 16%;
+    float: left;
+    text-align: center;
+    border-top: 1px solid rgba(0,0,0,0.2);
+
+    .button {
+      border: 2px solid rgba(0,0,0,0.2);
+      font-size: 0.8em;
+      display: inline-block;
+      margin-right: 5%;
+      padding: 1%;
+      border-radius: 2px;
+      margin-top: 8%;
+    }
+  }
+}

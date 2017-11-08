@@ -1,0 +1,38 @@
+{
+  "name": "rtree",
+  "version": "1.4.2",
+  "description": "rtree library for javascript",
+  "keywords": [
+    "rtree"
+  ],
+  "contributors": [
+    "Jon-Carlos Rivera <imbcmdth@hotmail.com> (https://github.com/imbcmdth/RTree)",
+    "Calvin Metcalf <calvin.metalf@gmail.com> (https://github.com/calvinmetcalf)"
+  ],
+  "bugs": {
+    "url": "https://github.com/leaflet-extras/RTree/issues"
+  },
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run build && jshint lib && tape spec test/*.test.js | tspec",
+    "build": "npm run build-js && npm run min",
+    "build-js": "browserify . -s RTree > dist/rtree.js",
+    "min": "uglifyjs ./dist/rtree.js > dist/rtree.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/leaflet-extras/RTree.git"
+  },
+  "devDependencies": {
+    "browserify": "^3.41.0",
+    "jshint": "^2.5.0",
+    "tap-spec": "^0.1.8",
+    "tape": "^2.12.3",
+    "uglify-js": "^2.4.13"
+  }
+}

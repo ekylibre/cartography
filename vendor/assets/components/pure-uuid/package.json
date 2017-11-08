@@ -1,0 +1,40 @@
+{
+    "name":        "pure-uuid",
+    "homepage":    "http://github.com/rse/pure-uuid",
+    "description": "Pure JavaScript Based Universally Unique Identifier (UUID)",
+    "version":     "1.4.10",
+    "license":     "MIT",
+    "author": {
+        "name":    "Ralf S. Engelschall",
+        "email":   "rse@engelschall.com",
+        "url":     "http://engelschall.com"
+    },
+    "keywords": [
+        "uuid", "identifier"
+    ],
+    "repository": {
+        "type": "git",
+        "url":  "git://github.com/rse/pure-uuid.git"
+    },
+    "bugs": {
+        "url":  "http://github.com/rse/pure-uuid/issues"
+    },
+    "main":  "./uuid.js",
+    "types": "./uuid.d.ts",
+    "devDependencies": {
+        "grunt":                "~1.0.1",
+        "grunt-cli":            "~1.2.0",
+        "grunt-contrib-jshint": "~1.1.0",
+        "grunt-contrib-uglify": "~3.1.0",
+        "grunt-contrib-clean":  "~1.1.0",
+        "grunt-eslint":         "~20.1.0",
+        "grunt-mocha-test":     "~0.13.3",
+        "chai":                 "~4.1.2",
+        "mocha":                "~4.0.1"
+    },
+    "dependencies" : {
+    },
+    "engines": {
+        "node":                 ">=4.0.0"
+    }
+}
