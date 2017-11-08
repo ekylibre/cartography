@@ -80,6 +80,9 @@
         @getMap().on L.Draw.Event.DRAWSTART, =>
           @getMap().fire C.Events.new.start
 
+        @getMap().on L.Draw.Event.DRAWSTOP, =>
+          @getMap().fire C.Events.new.cancel
+
         @getMap().on L.Draw.Event.CREATED, (e) =>
           @controls.get('edit').addLayer(e.layer)
           @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
@@ -196,5 +199,10 @@
       layer = @select uuid, false
       if layer
         layer.setStyle color: "#D84315", fillOpacity: 0.5
+
+    destroy: (uuid) ->
+      layer = @select uuid, true
+      if layer
+        Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
 
 )(window.Cartography = window.Cartography || {}, jQuery)
