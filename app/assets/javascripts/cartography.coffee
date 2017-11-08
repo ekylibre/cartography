@@ -1,3 +1,4 @@
+#= require cartography/events
 #= require cartography/util
 #= require cartography/base
 #= require cartography/controls
@@ -57,6 +58,8 @@
 
       @map = L.map(@mapElement, @options.map)
 
+      @setMode @options.mode
+
       @resize()
 
       @controls()
@@ -74,9 +77,25 @@
     initHooks: ->
 
       @controls.get('draw').toolbar.on 'enable', (e) =>
+        @getMap().on L.Draw.Event.DRAWSTART, =>
+          @getMap().fire C.Events.new.start
+
         @getMap().on L.Draw.Event.CREATED, (e) =>
           @controls.get('edit').addLayer(e.layer)
           @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+
+          # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
+          feature = e.layer.toGeoJSON()
+          uuid = feature.properties.uuid = new UUID(4).format()
+          type = feature.properties.type = @getMode()
+          area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(e.layer.getLatLngs()), true)
+
+          Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
+
+          layer = Object.values(@controls.get('overlays').getLayers())[0].getLayers()[..].pop()
+          centroid = layer.getCenter()
+
+          @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
       @controls.get('draw').toolbar.on 'disable', (e) =>
         @getMap().off L.Draw.Event.CREATED
@@ -118,7 +137,9 @@
       # if @options.controls.edit? and layerSelector?
         # editControl.addTo layerSelector.getControl()
 
+      C.Util.setOptions @, edit: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
       @controls.add 'edit', new C.Controls.Edit(@getMap(), @options)
+
       @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
 
       if @options.controls.reactiveMeasure?
@@ -142,5 +163,15 @@
       layers = @controls.get('overlays').getLayers()
 
       @getMap().fitBounds(layers[Object.keys(layers)[0]].getLayers()[0].getBounds(),{ maxZoom: 21 })
+
+    setMode: (mode) ->
+      @_mode = mode
+
+    getMode: ->
+      @_mode
+
+    center: (obj) ->
+      return unless obj.lat && obj.lng
+      @getMap().flyTo L.latLng(obj)
 
 )(window.Cartography = window.Cartography || {}, jQuery)
