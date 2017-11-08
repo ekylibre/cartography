@@ -230,7 +230,14 @@
     highlight: (uuid) ->
       layer = @select uuid, false
       if layer
+        layer.options.highlightOriginal = L.extend({}, layer.options)
         layer.setStyle color: "#D84315", fillOpacity: 0.5
+
+    unhighlight: (uuid) ->
+      layer = @select uuid, false
+      if layer
+        layer.setStyle layer.options.highlightOriginal
+        delete layer.options.highlightOriginal
 
     destroy: (uuid) ->
       layer = @select uuid, true
@@ -242,7 +249,6 @@
         geojson = JSON.parse(el.shape)
         geojson.properties ||= {}
         geojson.properties.uuid ||= el.uuid
-        console.error geojson
         Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
       @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
