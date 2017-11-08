@@ -174,4 +174,27 @@
       return unless obj.lat && obj.lng
       @getMap().flyTo L.latLng(obj)
 
+    _findLayerByUUID: (featureGroup, uuid) ->
+      containerLayer = undefined
+      featureGroup.eachLayer (layer) ->
+        if layer.feature and layer.feature.properties.uuid == uuid
+          containerLayer = layer
+          return
+      containerLayer
+
+    select: (uuid, center = true) ->
+      featureGroup = Object.values(@controls.get('overlays').getLayers())[0]
+      layer = @_findLayerByUUID(featureGroup, uuid)
+
+      if center
+        @center(layer.getCenter())
+
+      layer
+
+
+    highlight: (uuid) ->
+      layer = @select uuid, false
+      if layer
+        layer.setStyle color: "#D84315", fillOpacity: 0.5
+
 )(window.Cartography = window.Cartography || {}, jQuery)
