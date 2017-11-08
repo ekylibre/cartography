@@ -245,4 +245,7 @@
         console.error geojson
         Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
+      @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
+
+
 )(window.Cartography = window.Cartography || {}, jQuery)

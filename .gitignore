@@ -7,7 +7,6 @@
 /pkg/
 /spec/reports/
 /tmp/
-/vendor/assets/components/
 /vendor/node_modules/
 .ruby-version
 npm-debug.log
