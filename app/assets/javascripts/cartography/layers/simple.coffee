@@ -14,6 +14,10 @@
         style: (feature) ->
           C.Util.extend style, feature.properties
 
+        onEachFeature: (feature, layer) ->
+          feature.properties ||= {}
+          feature.properties.uuid ||= new UUID(4).format()
+
 
     valid: () ->  true
 

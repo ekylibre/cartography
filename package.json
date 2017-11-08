@@ -13,6 +13,7 @@
     "leaflet-layerindex": "^0.0.1",
     "leaflet-providers": "1.1.17",
     "leaflet-reactive_measure": "../Leaflet.ReactiveMeasure",
-    "leaflet-snap": "../Leaflet.Snap"
+    "leaflet-snap": "../Leaflet.Snap",
+    "pure-uuid": "^1.4.10"
   }
 }

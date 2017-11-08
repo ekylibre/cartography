@@ -307,6 +307,10 @@ lodash@^4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+pure-uuid@^1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/pure-uuid/-/pure-uuid-1.4.10.tgz#884903c01a811a59a69d49959591b5147a51ca18"
+
 quickselect@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/quickselect/-/quickselect-1.0.0.tgz#02630818f9aae4ecab26f0103f98d061c17c58f3"
