@@ -217,15 +217,17 @@ jsts@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/jsts/-/jsts-1.3.0.tgz#e93a76f97ac9bda7d4625d9d6470f0d60ac80e45"
 
-leaflet-controlpanel@../Leaflet.ControlPanel:
+"leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.ControlPanel#dd92cccda988c99fcfc91ec8ab09284f3b5167e0"
   dependencies:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     lodash "^4.17.4"
 
-leaflet-draw-cut@../Leaflet.Draw.Cut:
+"leaflet-draw-cut@https://github.com/ekylibre/Leaflet.Draw.Cut":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.Draw.Cut#73e0e4e38a4f7f683fb590f16db5c43259c55f68"
   dependencies:
     "@turf/difference" "^4.7.4"
     "@turf/flip" "^4.7.3"
@@ -242,8 +244,9 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
-leaflet-draw-merge@../Leaflet.Draw.Merge:
+"leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.Draw.Merge#84f788b086672bb244c708e36d1f143a0bea6e9d"
   dependencies:
     "@turf/boolean-overlap" "^4.7.3"
     "@turf/flip" "^4.7.3"
@@ -280,8 +283,9 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
+"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#f1af9de1b6107bce5e18a9cb58e314e8e77904ae"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
@@ -289,6 +293,15 @@ leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
 
 leaflet-snap@../Leaflet.Snap:
   version "0.0.4"
+  dependencies:
+    leaflet "^0.7.7"
+    leaflet-geometryutil "*"
+  optionalDependencies:
+    leaflet-draw "^0.3.2"
+
+"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
+  version "0.0.4"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#ca587eee0937bfd36489c6d4e8a8cb24ca2b7e6f"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"
