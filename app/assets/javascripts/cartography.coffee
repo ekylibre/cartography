@@ -88,12 +88,14 @@
           @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
           # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-          feature = e.layer.toGeoJSON()
-          uuid = feature.properties.uuid = new UUID(4).format()
-          type = feature.properties.type = @getMode()
           area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(e.layer.getLatLngs()), true)
 
+          feature = e.layer.toGeoJSON()
           Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
+
+          uuid = feature.properties.uuid
+          type = feature.properties.type = @getMode()
+
 
           layer = Object.values(@controls.get('overlays').getLayers())[0].getLayers()[..].pop()
           centroid = layer.getCenter()
@@ -117,6 +119,33 @@
 
       @getMap().on L.Selectable.Event.STOP, (e) ->
         console.error "Stopping selection mode"
+
+      @getMap().on L.Cutting.Polyline.Event.START, =>
+        @getMap().fire C.Events.split.start
+
+      @getMap().on L.Cutting.Polyline.Event.STOP, =>
+        @getMap().fire C.Events.split.cancel
+
+      @getMap().on L.Cutting.Polyline.Event.SELECT, (e) =>
+        uuid = e.layer.feature.properties.uuid
+        type = e.layer.feature.properties.type || @getMode()
+        @getMap().fire C.Events.split.select, data: { uuid: uuid, type: type }
+
+      @getMap().on L.Cutting.Polyline.Event.UPDATED, (e) =>
+
+      @getMap().on L.Cutting.Polyline.Event.SAVED, (e) =>
+        newLayers = []
+
+        for l in e.layers
+          p = l.feature.properties
+
+          area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(l.getLatLngs()), true)
+          centroid = l.getCenter()
+
+          newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
+
+        @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
+
 
     controls: ->
       @controls = new C.Controls(@getMap(), @options)
