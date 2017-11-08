@@ -194,7 +194,10 @@
       #TMP
       layers = @controls.get('overlays').getLayers()
 
-      @getMap().fitBounds(layers[Object.keys(layers)[0]].getLayers()[0].getBounds(),{ maxZoom: 21 })
+      if layers[Object.keys(layers)[0]].getLayers()[0]
+        @getMap().fitBounds(layers[Object.keys(layers)[0]].getLayers()[0].getBounds(),{ maxZoom: 21 })
+      else
+        @getMap().fitWorld()
 
     setMode: (mode) ->
       @_mode = mode
@@ -233,5 +236,13 @@
       layer = @select uuid, true
       if layer
         Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
+
+    sync: (data) =>
+      for el in data
+        geojson = JSON.parse(el.shape)
+        geojson.properties ||= {}
+        geojson.properties.uuid ||= el.uuid
+        console.error geojson
+        Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
 )(window.Cartography = window.Cartography || {}, jQuery)
