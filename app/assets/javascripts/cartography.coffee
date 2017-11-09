@@ -84,8 +84,8 @@
           @getMap().fire C.Events.new.cancel
 
         @getMap().on L.Draw.Event.CREATED, (e) =>
-          @controls.get('edit').addLayer(e.layer)
-          @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+          # @controls.get('edit').addLayer(e.layer)
+          # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
           # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
           area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(e.layer.getLatLngs()), true)
@@ -245,6 +245,7 @@
         Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
 
     sync: (data) =>
+      Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
       for el in data
         geojson = JSON.parse(el.shape)
         geojson.properties ||= {}
