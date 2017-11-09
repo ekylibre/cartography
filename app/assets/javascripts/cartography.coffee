@@ -247,15 +247,16 @@
     sync: (data) =>
       Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
       for el in data
-        geojson = JSON.parse(el.shape)
-        geojson.properties ||= {}
-        geojson.properties.uuid ||= el.uuid
-        Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
+        if el.shape
+          geojson = JSON.parse(el.shape)
+          geojson.properties ||= {}
+          geojson.properties.uuid ||= el.uuid
+          Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
-        # Object.values(@controls.get('overlays').getLayers())[0].eachLayer (layer) =>
-          # if layer._ghostIcon
-            # centroid = layer.getCenter()
-            # L.marker(layer.getBounds().getCenter(), icon: layer._ghostIcon).addTo @getMap()
+          # Object.values(@controls.get('overlays').getLayers())[0].eachLayer (layer) =>
+            # if layer._ghostIcon
+              # centroid = layer.getCenter()
+              # L.marker(layer.getBounds().getCenter(), icon: layer._ghostIcon).addTo @getMap()
 
 
 
