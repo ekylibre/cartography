@@ -14,3 +14,9 @@ class L.IndexedGeoJSON extends L.GeoJSON
     super geojson, options
 
 L.IndexedGeoJSON.include L.LayerIndexMixin
+
+class L.GhostIcon extends L.DivIcon
+  options:
+    iconSize: [20, 20]
+    className: "plus-ghost-icon"
+    html: ""

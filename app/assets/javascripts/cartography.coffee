@@ -252,6 +252,13 @@
         geojson.properties.uuid ||= el.uuid
         Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
+        # Object.values(@controls.get('overlays').getLayers())[0].eachLayer (layer) =>
+          # if layer._ghostIcon
+            # centroid = layer.getCenter()
+            # L.marker(layer.getBounds().getCenter(), icon: layer._ghostIcon).addTo @getMap()
+
+
+
       @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
 
 

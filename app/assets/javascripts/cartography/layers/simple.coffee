@@ -19,6 +19,12 @@
           feature.properties.uuid ||= new UUID(4).format()
           layer.feature.properties = feature.properties
 
+          # icon = new L.GhostIcon
+          # L.marker([50.505, 30.57], {icon: icon}).addTo layer._map
+          layer._ghostIcon = new L.GhostIcon
+
+          
+
 
     valid: () ->  true
 
