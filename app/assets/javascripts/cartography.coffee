@@ -248,7 +248,7 @@
       Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
       for el in data
         if el.shape
-          geojson = JSON.parse(el.shape)
+          geojson = el.shape
           geojson.properties ||= {}
           geojson.properties.uuid ||= el.uuid
           Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
