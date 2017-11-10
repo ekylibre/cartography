@@ -190,6 +190,7 @@
       C.Util.setOptions @, merge: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
       @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
+    ##### PUBLIC API ######
     setView: ->
       #TMP
       layers = @controls.get('overlays').getLayers()
@@ -261,6 +262,12 @@
 
 
       @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
+
+    addOverlay: (serie, type = "series") =>
+      @controls.get('overlays').add(serie, type)
+
+    removeOverlay: (name) =>
+      @controls.get('overlays').remove(name)
 
 
 )(window.Cartography = window.Cartography || {}, jQuery)

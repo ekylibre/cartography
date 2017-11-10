@@ -88,6 +88,12 @@
       for name, layer of newLayers
         @getControl().addOverlay(layer, name)
 
+    remove: (name) ->
+      layer = @getLayer name
+      @getControl().removeLayer layer
+      @getMap().removeLayer layer
+      delete @references[name]
+
   class C.Controls.Scale extends C.Controls
     options:
       position: "bottomright"
