@@ -83,27 +83,23 @@
         @getMap().on L.Draw.Event.DRAWSTOP, =>
           @getMap().fire C.Events.new.cancel
 
-        @getMap().on L.Draw.Event.CREATED, (e) =>
-          # @controls.get('edit').addLayer(e.layer)
-          # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+      @getMap().on L.Draw.Event.CREATED, (e) =>
+        # @controls.get('edit').addLayer(e.layer)
+        # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
-          # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-          area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(e.layer.getLatLngs()), true)
+        # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
+        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs())
 
-          feature = e.layer.toGeoJSON()
-          Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
+        feature = e.layer.toGeoJSON()
+        Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
 
-          uuid = feature.properties.uuid
-          type = feature.properties.type = @getMode()
+        uuid = feature.properties.uuid
+        type = feature.properties.type = @getMode()
 
+        layer = Object.values(@controls.get('overlays').getLayers())[0].getLayers()[..].pop()
+        centroid = layer.getCenter()
 
-          layer = Object.values(@controls.get('overlays').getLayers())[0].getLayers()[..].pop()
-          centroid = layer.getCenter()
-
-          @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
-
-      @controls.get('draw').toolbar.on 'disable', (e) =>
-        @getMap().off L.Draw.Event.CREATED
+        @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
       @getMap().on L.Selectable.Event.SELECT, (e) ->
         console.error 'select',e.layer
@@ -267,13 +263,6 @@
           geojson.properties.uuid ||= el.uuid
           Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
-          # Object.values(@controls.get('overlays').getLayers())[0].eachLayer (layer) =>
-            # if layer._ghostIcon
-              # centroid = layer.getCenter()
-              # L.marker(layer.getBounds().getCenter(), icon: layer._ghostIcon).addTo @getMap()
-
-
-
       @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
 
     addOverlay: (serie, type = "series") =>
@@ -282,5 +271,7 @@
     removeOverlay: (name) =>
       @controls.get('overlays').remove(name)
 
+    getOverlay: (name) =>
+      @controls.get('overlays').getLayer(name)
 
 )(window.Cartography = window.Cartography || {}, jQuery)

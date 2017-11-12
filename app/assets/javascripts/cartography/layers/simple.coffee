@@ -11,19 +11,20 @@
       klass = if @layer.index then L.IndexedGeoJSON else L.GeoJSON
 
       new klass @data,
-        style: (feature) ->
-          C.Util.extend style, feature.properties
+        style: (feature) =>
+          if @layer.style
+            @layer.style.apply @, arguments
+          else
+            C.Util.extend style, feature.properties
 
-        onEachFeature: (feature, layer) ->
+        onEachFeature: (feature, layer) =>
           feature.properties ||= {}
           feature.properties.uuid ||= new UUID(4).format()
           layer.feature.properties = feature.properties
 
-          # icon = new L.GhostIcon
-          # L.marker([50.505, 30.57], {icon: icon}).addTo layer._map
-          layer._ghostIcon = new L.GhostIcon
+          if @layer.onEachFeature
+            @layer.onEachFeature.apply @, arguments
 
-          
 
 
     valid: () ->  true
