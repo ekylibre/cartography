@@ -206,9 +206,22 @@
     getMode: ->
       @_mode
 
+    setOffset: (obj) ->
+      @_offset = L.point obj
+
+    resetOffset: ->
+      delete @_offset
+
     center: (obj) ->
       return unless obj.lat && obj.lng
-      @getMap().flyTo L.latLng(obj)
+
+      center = @getMap().project(obj)
+
+      if @_offset
+        offset = L.point(@_offset).round()
+        center = center.add(offset)
+
+      @getMap().flyTo @getMap().unproject(center)
 
     _findLayerByUUID: (featureGroup, uuid) ->
       containerLayer = undefined
