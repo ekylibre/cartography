@@ -49,6 +49,8 @@
         panel:
           title: 'Edit plot'
           animatedHelper: 'http://placehold.it/200x150'
+      controlLayers:
+        position: 'topleft'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options
@@ -253,6 +255,11 @@
       layer = @select uuid, true
       if layer
         Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
+
+    edit: (uuid) ->
+      layer = @select uuid, true
+      # if layer
+        # Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
 
     sync: (data) =>
       Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
