@@ -22,12 +22,14 @@
       @controls[id]
 
   class C.Controls.Layers extends C.Controls
+    options:
+      position: 'topleft'
     constructor: ( control, map, options = {} ) ->
       super(map)
 
       C.Util.setOptions @, options
 
-      @control = control || new L.Control.Layers()
+      @control = control || new L.Control.Layers(undefined, undefined, @options)
 
       @layers = {}
 
