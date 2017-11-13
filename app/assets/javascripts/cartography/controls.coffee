@@ -43,10 +43,10 @@
   class C.Controls.BaseLayers extends C.Controls.Layers
     options:
       backgrounds: [
+        'Esri.WorldImagery'
         'OpenStreetMap.Mapnik',
         'OpenStreetMap.HOT',
         'Thunderforest.Landscape',
-        'Esri.WorldImagery'
       ]
 
     constructor: ( control, map, options = {} )->
