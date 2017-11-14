@@ -13,5 +13,10 @@
   C.Events.split.cancel = "cartography:events:split:cancel"
   C.Events.split.change = "cartography:events:split:change"
   C.Events.split.select = "cartography:events:split:select"
+  C.Events.edit = {}
+  C.Events.edit.start = "cartography:events:edit:start"
+  C.Events.edit.complete = "cartography:events:edit:complete"
+  C.Events.edit.cancel = "cartography:events:edit:cancel"
+  C.Events.edit.change = "cartography:events:edit:change"
 
 )(window.Cartography = window.Cartography || {})

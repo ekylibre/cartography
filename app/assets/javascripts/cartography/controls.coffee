@@ -85,16 +85,24 @@
       @add([@options.series, @options.layers], 'series') if @options.series?
 
     add: (layers, type) ->
+      add = @references.getLayers()[layers[1][0]['label']] is undefined
+
       newLayers = @references.add(layers, type)
+
+      return unless add
 
       for name, layer of newLayers
         @getControl().addOverlay(layer, name)
 
     remove: (name) ->
       layer = @getLayer name
-      @getControl().removeLayer layer
+      # @getControl().removeLayer layer
+      layer.eachLayer (l) =>
+        @getMap().removeLayer l
+
       @getMap().removeLayer layer
       delete @references[name]
+
 
   class C.Controls.Scale extends C.Controls
     options:
@@ -183,9 +191,10 @@
         style: (feature) =>
           C.Util.extend @options.edit.shapeOptions, feature.properties)
 
-      @options.featureGroup = @editionLayer
+      # @options.featureGroup = @editionLayer
 
-      map.addLayer @editionLayer
+
+      # map.addLayer @editionLayer
 
       @control = new L.Control.SnapEdit(@options)
 

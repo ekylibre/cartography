@@ -9,6 +9,17 @@
   L.Selectable.Event.UNSELECT = "layerSelection:unselect"
   L.Selectable.Event.SELECTED = "layerSelection:selected"
 
+
+  L.SnapEditing = {}
+  L.SnapEditing = {}
+  L.SnapEditing.Event = {}
+  L.SnapEditing.Event.START = "snapedit:start"
+  L.SnapEditing.Event.STOP = "snapedit:stop"
+  L.SnapEditing.Event.SELECT = "snapedit:select"
+  L.SnapEditing.Event.UNSELECT = "snapedit:unselect"
+  L.SnapEditing.Event.EDITED = "snapedit:edited"
+  L.SnapEditing.Event.CHANGE = "snapedit:change"
+
   class L.LayerSelection extends L.Handler
     @TYPE: 'LayerSelection'
 
@@ -108,5 +119,232 @@
       @_featureGroup.getLayers().length != 0
 
   L.LayerSelection.include(L.Mixin.Events)
+
+
+  class L.EditToolbar.SelectableSnapEdit extends L.EditToolbar.SnapEdit
+    options:
+      snapOptions:
+        snapDistance: 15
+        snapVertices: true
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super map, options
+
+      console.error 'featureGroup', @options.featureGroup, @options
+      @featureGroup = @options.featureGroup
+
+      # @featureGroup.on 'layeradd', @_enableLayer, @
+      # @featureGroup.on 'layerremove', @_removeLayer, @
+      @_activeLayer = undefined
+
+
+      if @options.snapOptions
+        L.Util.extend @snapOptions, @options.snapOptions
+
+      if Array.isArray(@snapOptions.guideLayers)
+        @_guideLayers = @snapOptions.guideLayers
+
+      else if @options.guideLayers instanceof L.LayerGroup
+        @_guideLayers = @snapOptions.guideLayers.getLayers()
+      else
+        @_guideLayers = []
+      return
+
+    # edit: (layer) ->
+    #   console.error "layer",layer
+    #   @featureGroup = [layer]
+    #   console.error 'edition'
+
+    enable: ->
+      console.error 'enable'
+      @featureGroup.on 'layeradd', @_enableLayer, @
+      @featureGroup.on 'layerremove', @_disableLayer, @
+
+      @featureGroup.eachLayer (l) =>
+        @_enableLayer(l)
+
+      @_map.on L.SnapEditing.Event.SELECT, @_editMode, @
+      #
+  		# if (this._enabled || !this._hasAvailableLayers()) {
+  		# 	return;
+  		# }
+  		# this.fire('enabled', { handler: this.type });
+  		# //this disable other handlers
+      #
+  		# this._map.fire(L.Draw.Event.EDITSTART, { handler: this.type });
+  		# //allow drawLayer to be updated before beginning edition.
+      #
+  		# L.Handler.prototype.enable.call(this);
+  		# this._featureGroup
+  		# 	.on('layeradd', this._enableLayerEdit, this)
+      # 	.on('layerremove', this._disableLayerEdit, this)
+
+
+    _enableLayer: (e) ->
+      layer = e.layer or e.target or e
+
+      layer.options.original = L.extend({}, layer.options)
+
+      if @options.disabledPathOptions
+        pathOptions = L.Util.extend {}, @options.disabledPathOptions
+
+        # Use the existing color of the layer
+        if pathOptions.maintainColor
+          pathOptions.color = layer.options.color
+          pathOptions.fillColor = layer.options.fillColor
+
+        layer.options.disabled = pathOptions
+
+      if @options.selectedPathOptions
+        pathOptions = L.Util.extend {}, @options.selectedPathOptions
+
+        # Use the existing color of the layer
+        if pathOptions.maintainColor
+          pathOptions.color = layer.options.color
+          pathOptions.fillColor = layer.options.fillColor
+
+        layer.options.selected = pathOptions
+
+      layer.setStyle layer.options.disabled
+
+      layer.on 'click', @_activate, @
+
+    _activate: (e) ->
+      console.error 'activeta'
+      layer = e.target || e.layer || e
+
+      if !layer.selected
+        layer.selected = true
+        layer.setStyle layer.options.selected
+
+        if @_activeLayer
+          @_unselectLayer @_activeLayer
+
+        @_activeLayer = layer
+
+        @_map.fire L.SnapEditing.Event.SELECT, layer: @_activeLayer
+      else
+        layer.selected = false
+        layer.setStyle(layer.options.disabled)
+
+        @_activeLayer = null
+        @_map.fire L.SnapEditing.Event.UNSELECT, layer: layer
+
+    _unselectLayer: (e) ->
+      layer = e.layer or e.target or e
+      layer.selected = false
+      if @options.selectedPathOptions
+        layer.setStyle layer.options.disabled
+
+      # if layer.merging
+        # layer.merging.disable()
+        # delete layer.merging
+
+      # @_map.on 'mousemove', @_selectLayer, @
+
+      @_activeLayer = null
+
+    _disableLayer: (e) ->
+      layer = e.layer or e.target or e
+      layer.selected = false
+      # Reset layer styles to that of before select
+      if @options.selectedPathOptions
+        layer.setStyle layer.options.original
+
+      delete layer.options.disabled
+      delete layer.options.selected
+      delete layer.options.original
+
+    _editMode: (e) ->
+      console.error 'editmode', e
+      layer = e.layer
+      if(layer.editing)
+        if layer.editing._poly.editing._verticesHandlers
+          layer.editing._poly.editing._verticesHandlers[0]._markerGroup.clearLayers()
+        delete layer.editing
+      layer.editing = layer.snapediting = new L.Handler.PolylineSnap(layer._map, layer, @options.snapOptions)
+      layer.editing.enable()
+
+      layer.editing._poly.on 'editdrag', (e) ->
+        layer = e.target
+        console.error 'edit vertex', layer
+        layer._map.fire L.SnapEditing.Event.CHANGE, layer: layer
+
+
+      # @_enableLayerEdit(e)
+
+    #
+    # addGuideLayer: (layer) ->
+    #   index = @_guideLayers.findIndex((guideLayer) ->
+    #     L.stamp(layer) == L.stamp(guideLayer)
+    #   )
+    #   if index == -1
+    #     @_guideLayers.push layer
+    #     @_featureGroup.eachLayer (layer) ->
+    #       if layer.snapediting
+    #         layer.snapediting._guides.push layer
+    #       return
+    #   return
+    # removeGuideLayer: (layer) ->
+    #   index = @_guideLayers.findIndex((guideLayer) ->
+    #     L.stamp(layer) == L.stamp(guideLayer)
+    #   )
+    #   if index != -1
+    #     @_guideLayers.splice index, 1
+    #     @_featureGroup.eachLayer (layer) ->
+    #       if layer.snapediting
+    #         layer.snapediting._guides.splice index, 1
+    #       return
+    #   return
+    # clearGuideLayers: ->
+    #   @_guideLayers = []
+    #   @_featureGroup.eachLayer (layer) ->
+    #     if layer.snapediting
+    #       layer.snapediting._guides = []
+    #     return
+    #   return
+    #
+    # _enableLayerEdit: (e) ->
+    #   super e
+    #
+    #   layer = e.layer or e.target or e
+    #
+    #   if !layer.snapediting
+    #     if layer.hasOwnProperty('_mRadius')
+    #       if layer.editing
+    #         layer.editing._markerGroup.clearLayers()
+    #         delete layer.editing
+    #       layer.editing = layer.snapediting = new (L.Handler.CircleSnap)(layer._map, layer, @snapOptions)
+    #     else if layer.getLatLng
+    #       layer.snapediting = new (L.Handler.MarkerSnap)(layer._map, layer, @snapOptions)
+    #     else
+    #       if layer.editing
+    #         if layer.editing.hasOwnProperty('_shape')
+    #           layer.editing._markerGroup.clearLayers()
+    #           if layer.editing._shape instanceof L.Rectangle
+    #             delete layer.editing
+    #             layer.editing = layer.snapediting = new (L.Handler.RectangleSnap)(layer._map, layer, @snapOptions)
+    #           else if layer.editing._shape instanceof L.FeatureGroup
+    #             delete layer.editing
+    #             layer.editing = layer.snapediting = new (L.Handler.FeatureGroupSnap)(layer._map, layer, @snapOptions)
+    #           else
+    #             delete layer.editing
+    #             layer.editing = layer.snapediting = new (L.Handler.CircleSnap)(layer._map, layer, @snapOptions)
+    #         else
+    #           # layer.editing._markerGroup.clearLayers();
+    #           # layer.editing._verticesHandlers[0]._markerGroup.clearLayers();
+    #           layer.editing._poly.editing._verticesHandlers[0]._markerGroup.clearLayers()
+    #           delete layer.editing
+    #           layer.editing = layer.snapediting = new (L.Handler.PolylineSnap)(layer._map, layer, @snapOptions)
+    #       else
+    #         layer.editing = layer.snapediting = new (L.Handler.PolylineSnap)(layer._map, layer, @snapOptions)
+    #     i = 0
+    #     n = @_guideLayers.length
+    #     while i < n
+    #       layer.snapediting.addGuideLayer @_guideLayers[i]
+    #       i++
+    #   layer.snapediting.enable()
+    #   return
 
 )(window.Cartography = window.Cartography || {})

@@ -4,7 +4,6 @@
   "description": "Map tools",
   "license": "MIT",
   "dependencies": {
-    "jquery": "^3.2.1",
     "leaflet": "1.2.0",
     "leaflet-controlpanel": "https://github.com/ekylibre/Leaflet.ControlPanel",
     "leaflet-draw": "0.4.12",

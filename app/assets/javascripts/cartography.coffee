@@ -90,7 +90,7 @@
         # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
         # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs())
+        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
 
         feature = e.layer.toGeoJSON()
         Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
@@ -137,12 +137,25 @@
         for l in e.layers
           p = l.feature.properties
 
-          area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(l.getLatLngs()), true)
+          # area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(l.getLatLngs()), true)
+          area = L.GeometryUtil.geodesicArea(l.getLatLngs())
           centroid = l.getCenter()
 
           newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
 
         @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
+
+      @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
+        console.error 'snapedit', e
+        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs())
+        feature = e.layer.toGeoJSON()
+
+        uuid = feature.properties.uuid
+        type = feature.properties.type = @getMode()
+
+        centroid = e.layer.getCenter()
+
+        @getMap().fire C.Events.edit.change, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
 
     controls: ->
@@ -256,10 +269,33 @@
       if layer
         Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
 
-    edit: (uuid) ->
+    edit: (uuid, options = {}) ->
       layer = @select uuid, true
-      # if layer
-        # Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
+      if layer
+        if options.cancel && layer._editToolbar
+          console.error "canceling"
+          @getMap().removeLayer layer._editFeatureGroup
+          layer._editToolbar.disable()
+          delete layer._editToolbar
+          delete layer._editFeatureGroup
+          return
+        layer._editFeatureGroup = new L.featureGroup()
+        layer._editFeatureGroup.addTo @getMap()
+        # layer._editFeatureGroup.addLayer layer
+
+        snapOptions = {polygon:
+            guideLayers: Object.values(@controls.get('overlays').getLayers())[0]}
+
+        options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
+
+        layer._editToolbar = new L.EditToolbar.SelectableSnapEdit @getMap(),
+          snapOptions: options.snap
+          featureGroup: layer._editFeatureGroup
+          selectedPathOptions: options.edit.selectedPathOptions
+          disabledPathOptions: options.edit.disabledPathOptions
+          poly: options.poly
+        layer._editToolbar.enable()
+        layer._editToolbar._activate layer
 
     sync: (data) =>
       Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
@@ -268,9 +304,11 @@
           geojson = el.shape
           geojson.properties ||= {}
           geojson.properties.uuid ||= el.uuid
-          Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
+          try
+            Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
 
-      @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
+      if Object.values(@controls.get('overlays').getLayers())[0].getLayers().length
+        @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
 
     addOverlay: (serie, type = "series") =>
       @controls.get('overlays').add(serie, type)

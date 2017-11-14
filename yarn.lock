@@ -205,10 +205,6 @@ geojson-rbush@^1.0.1:
     "@turf/meta" "^4.6.0"
     rbush "^2.0.1"
 
-jquery@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
-
 jsts-es@*:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/jsts-es/-/jsts-es-1.5.4.tgz#1089a8ffe2b404dbf8042b1bdca5f21f6061baf6"

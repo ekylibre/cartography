@@ -12,6 +12,12 @@
           fillColor: '#fe57a1'
           fillOpacity: 0.1
           maintainColor: false
+        disabledPathOptions:
+          dashArray: null
+          fill: true
+          fillColor: '#fe57a1'
+          fillOpacity: 0.1
+          maintainColor: true
       remove: {}
       poly: null
       featureGroup: null
@@ -19,6 +25,9 @@
     constructor: (options = {}) ->
       C.Util.setOptions @, options
       @type = @constructor.TYPE
+
+      # fallback for toolbar
+      @options.featureGroup = @options.edit.featureGroup
 
 
       super @options
@@ -31,10 +40,11 @@
       [
         {
           enabled: @options.edit
-          handler: new L.EditToolbar.SnapEdit map,
+          handler: new L.EditToolbar.SelectableSnapEdit map,
             snapOptions: @options.snap
             featureGroup: featureGroup
             selectedPathOptions: @options.edit.selectedPathOptions
+            disabledPathOptions: @options.edit.disabledPathOptions
             poly: @options.poly
 
           title: L.drawLocal.edit.toolbar.buttons.edit
