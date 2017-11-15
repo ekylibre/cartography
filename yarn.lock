@@ -295,15 +295,6 @@ leaflet-snap@../Leaflet.Snap:
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
-"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
-  version "0.0.4"
-  resolved "https://github.com/ekylibre/Leaflet.Snap#ca587eee0937bfd36489c6d4e8a8cb24ca2b7e6f"
-  dependencies:
-    leaflet "^0.7.7"
-    leaflet-geometryutil "*"
-  optionalDependencies:
-    leaflet-draw "^0.3.2"
-
 leaflet@*, leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"

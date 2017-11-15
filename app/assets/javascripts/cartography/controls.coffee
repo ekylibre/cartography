@@ -90,7 +90,7 @@
       @add([@options.series, @options.layers], 'series') if @options.series?
 
     add: (layers, type) ->
-      add = @references.getLayers()[layers[1][0]['label']] is undefined
+      add = @references.getLayers()[layers[1][0]['name']] is undefined
 
       newLayers = @references.add(layers, type)
 
@@ -101,7 +101,7 @@
 
     remove: (name) ->
       layer = @getLayer name
-      # @getControl().removeLayer layer
+      @getControl().removeLayer layer
       layer.eachLayer (l) =>
         @getMap().removeLayer l
 
