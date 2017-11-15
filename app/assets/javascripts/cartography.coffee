@@ -49,6 +49,7 @@
         panel:
           title: 'Edit plot'
           animatedHelper: 'http://placehold.it/200x150'
+      remove: false
       controlLayers:
         position: 'topleft'
 
