@@ -197,8 +197,8 @@
 
 
       #TODO:
-      layers = L.featureGroup(@getFeatureGroup().getLayers())
-      C.Util.setOptions @, layerSelection: {featureGroup: layers}
+      # layers = L.featureGroup(@getFeatureGroup().getLayers())
+      C.Util.setOptions @, layerSelection: {featureGroup: @getFeatureGroup()}
 
       @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
 
@@ -304,7 +304,7 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
-    sync: (data, layerName, callback) =>
+    sync: (data, layerName) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
 
       layerGroup.clearLayers()
