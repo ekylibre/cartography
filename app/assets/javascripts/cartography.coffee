@@ -137,8 +137,12 @@
         for l in e.layers
           p = l.feature.properties
 
-          # area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(l.getLatLngs()), true)
-          area = L.GeometryUtil.geodesicArea(l.getLatLngs())
+          if l.getLatLngs().constructor.name is 'Array'
+            latlngs = l.getLatLngs()[0]
+          else
+            latlngs = l.getLatLngs()
+
+          area = L.GeometryUtil.geodesicArea(latlngs)
           centroid = l.getCenter()
 
           newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
@@ -146,8 +150,12 @@
         @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
 
       @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
-        console.error 'snapedit', e
-        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs())
+        if e.layer.getLatLngs().constructor.name is 'Array'
+          latlngs = e.layer.getLatLngs()[0]
+        else
+          latlngs = e.layer.getLatLngs()
+
+        area = L.GeometryUtil.geodesicArea(latlngs)
         feature = e.layer.toGeoJSON()
 
         uuid = feature.properties.uuid
@@ -245,7 +253,7 @@
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
 
-      if center
+      if center && layer
         @center(layer.getCenter())
 
       layer
@@ -296,7 +304,7 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
-    sync: (data, layerName) =>
+    sync: (data, layerName, callback) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
 
       layerGroup.clearLayers()
