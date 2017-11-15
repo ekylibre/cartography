@@ -15,7 +15,9 @@
       @controls[id] = control
       @getMap().addControl control.getControl() unless !addToMap
 
-    remove: (id, control) ->
+    remove: (id) ->
+      if control = @get(id)
+        @getMap().removeControl control.getControl()
       @controls[id] = undefined
 
     get: (id) ->
@@ -35,6 +37,9 @@
 
     getLayers: ->
       @references.getLayers()
+
+    getMainLayer: ->
+      @references.getMainLayer()
 
     getLayer: (name) ->
       @references.getLayers()[name]
