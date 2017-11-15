@@ -18,5 +18,12 @@
   C.Events.edit.complete = "cartography:events:edit:complete"
   C.Events.edit.cancel = "cartography:events:edit:cancel"
   C.Events.edit.change = "cartography:events:edit:change"
+  C.Events.select = {}
+  C.Events.select.select = "cartography:events:select:select"
+  C.Events.select.unselect = "cartography:events:select:unselect"
+  C.Events.select.selected = "cartography:events:select:selected"
+  C.Events.select.start = "cartography:events:select:start"
+  C.Events.select.stop = "cartography:events:select:stop"
+
 
 )(window.Cartography = window.Cartography || {})

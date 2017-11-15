@@ -103,11 +103,11 @@
 
         @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
-      @getMap().on L.Selectable.Event.SELECT, (e) ->
-        console.error 'select',e.layer
+      @getMap().on L.Selectable.Event.SELECT, (e) =>
+        @getMap().fire C.Events.select.select, data: { uuid: e.layer.feature.properties.uuid }
 
-      @getMap().on L.Selectable.Event.UNSELECT, (e) ->
-        console.error 'unselect', e.layer
+      @getMap().on L.Selectable.Event.UNSELECT, (e) =>
+        @getMap().fire C.Events.select.unselect, data: { uuid: e.layer.feature.properties.uuid }
 
       @getMap().on L.Selectable.Event.SELECTED, (e) ->
         console.error 'selected layers', e
