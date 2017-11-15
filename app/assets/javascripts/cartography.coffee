@@ -171,7 +171,7 @@
 
       layerSelector = new C.Controls.Layers(undefined, @getMap(), @options)
 
-      @controls.add 'layers', layerSelector
+      @controls.add 'layers', layerSelector, false
 
       @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
