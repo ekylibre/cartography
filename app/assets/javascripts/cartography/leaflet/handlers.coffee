@@ -35,7 +35,7 @@
         throw new Error('options.featureGroup must be a L.FeatureGroup')
 
     enable: ->
-      if @_enabled or !@_hasAvailableLayers()
+      if @_enabled
         return
 
       @fire 'enabled', handler: @type

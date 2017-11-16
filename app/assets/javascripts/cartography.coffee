@@ -199,9 +199,18 @@
 
       #TODO:
       # layers = L.featureGroup(@getFeatureGroup().getLayers())
-      C.Util.setOptions @, layerSelection: {featureGroup: @getFeatureGroup()}
+      layerSelectionOpts = layerSelection:
+        featureGroup: @getFeatureGroup()
+        selectedPathOptions:
+          dashArray: '10, 10'
+          fill: true
+          fillColor: '#fe57a1'
+          fillOpacity: 0.1
+          maintainColor: false
+      C.Util.setOptions @, layerSelectionOpts
 
-      @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
+      selection = new L.LayerSelection @getMap(), @options.layerSelection
+      selection.enable()
 
       C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
