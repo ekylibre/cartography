@@ -232,16 +232,10 @@
     resetOffset: ->
       delete @_offset
 
-    center: (obj, zoom = 21) ->
+    center: (obj, zoom = 18) ->
       return unless obj.lat && obj.lng
 
-      center = @getMap().project(obj)
-
-      if @_offset
-        offset = L.point(@_offset).round()
-        center = center.add(offset)
-
-      @getMap().flyTo @getMap().unproject(center), zoom
+      @getMap().flyTo L.latLng(obj), zoom
 
     _findLayerByUUID: (featureGroup, uuid) ->
       containerLayer = undefined
@@ -256,7 +250,8 @@
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if center && layer
-        @center(layer.getCenter())
+        # @center(layer.getCenter())
+        @getMap().fitBounds layer.getBounds()
 
       layer
 
@@ -326,10 +321,8 @@
             if options.onEachFeature.constructor.name is 'Function' && newLayer
               options.onEachFeature.call @, newLayer
 
-      if layerGroup.getLayers().length
+      if layerGroup.getLayers().length && layerGroup == @getFeatureGroup()
         @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
-      else
-        @center @defaultCenter(), 6
 
     defaultCenter: =>
       @options.defaultCenter
