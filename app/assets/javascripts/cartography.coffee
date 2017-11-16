@@ -197,19 +197,7 @@
         @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
 
 
-      #TODO:
-      # layers = L.featureGroup(@getFeatureGroup().getLayers())
-      layerSelectionOpts = layerSelection:
-        featureGroup: @getFeatureGroup()
-        selectedPathOptions:
-          dashArray: '10, 10'
-          fill: true
-          fillColor: '#fe57a1'
-          fillOpacity: 0.1
-          maintainColor: false
-      C.Util.setOptions @, layerSelectionOpts
-
-      selection = new L.LayerSelection @getMap(), @options.layerSelection
+      selection = new L.LayerSelection @getMap(), featureGroup: @getFeatureGroup()
       selection.enable()
 
       C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
