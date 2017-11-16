@@ -20,6 +20,10 @@
     getLayers: ->
       @layers
 
+    getMainLayer: ->
+      Object.values(@layers).filter((l) ->
+        l.renderedLayer.layer.serie == "main")[0]
+
   class C.BaseLayers extends C.Layers
     options:
       backgrounds: []
@@ -34,7 +38,10 @@
       newLayers = {}
 
       for layer in layers
-        newLayers[layer] = L.tileLayer.provider(layer)
+        if layer.constructor.name is "Array"
+          newLayers[layer] = L.tileLayer.provider(layer[0], layer[1])
+        else
+          newLayers[layer] = L.tileLayer.provider(layer)
 
       L.Util.extend(@layers, newLayers)
       newLayers
@@ -68,7 +75,6 @@
         opts.subdomains = layer.subdomains if layer.subdomains?
         opts.opacity = (layer.opacity / 100).toFixed(1) if layer.opacity? and !isNaN(layer.opacity)
         opts.tms = true if layer.tms
-
         newLayers[layer.name] =  L.tileLayer(layer.url, opts)
         newLayers[layer.name].addTo(@getMap())
 
@@ -90,8 +96,8 @@
           layerGroup.name = layer.name
           layerGroup.renderedLayer = renderedLayer
 
-          newLayers[layer.label] = layerGroup
-          newLayers[layer.label].addTo(@getMap())
+          newLayers[layer.name] = layerGroup
+          newLayers[layer.name].addTo(@getMap())
 
       L.Util.extend(@layers, newLayers)
       newLayers

@@ -49,6 +49,7 @@
         panel:
           title: 'Edit plot'
           animatedHelper: 'http://placehold.it/200x150'
+      remove: false
       controlLayers:
         position: 'topleft'
 
@@ -93,21 +94,21 @@
         area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
 
         feature = e.layer.toGeoJSON()
-        Object.values(@controls.get('overlays').getLayers())[0].addData(feature)
+        @getFeatureGroup().addData(feature)
 
         uuid = feature.properties.uuid
         type = feature.properties.type = @getMode()
 
-        layer = Object.values(@controls.get('overlays').getLayers())[0].getLayers()[..].pop()
+        layer = @getFeatureGroup().getLayers()[..].pop()
         centroid = layer.getCenter()
 
         @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
-      @getMap().on L.Selectable.Event.SELECT, (e) ->
-        console.error 'select',e.layer
+      @getMap().on L.Selectable.Event.SELECT, (e) =>
+        @getMap().fire C.Events.select.select, data: { uuid: e.layer.feature.properties.uuid }
 
-      @getMap().on L.Selectable.Event.UNSELECT, (e) ->
-        console.error 'unselect', e.layer
+      @getMap().on L.Selectable.Event.UNSELECT, (e) =>
+        @getMap().fire C.Events.select.unselect, data: { uuid: e.layer.feature.properties.uuid }
 
       @getMap().on L.Selectable.Event.SELECTED, (e) ->
         console.error 'selected layers', e
@@ -137,8 +138,12 @@
         for l in e.layers
           p = l.feature.properties
 
-          # area = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(l.getLatLngs()), true)
-          area = L.GeometryUtil.geodesicArea(l.getLatLngs())
+          if l.getLatLngs().constructor.name is 'Array'
+            latlngs = l.getLatLngs()[0]
+          else
+            latlngs = l.getLatLngs()
+
+          area = L.GeometryUtil.geodesicArea(latlngs)
           centroid = l.getCenter()
 
           newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
@@ -146,8 +151,12 @@
         @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
 
       @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
-        console.error 'snapedit', e
-        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs())
+        if e.layer.getLatLngs().constructor.name is 'Array'
+          latlngs = e.layer.getLatLngs()[0]
+        else
+          latlngs = e.layer.getLatLngs()
+
+        area = L.GeometryUtil.geodesicArea(latlngs)
         feature = e.layer.toGeoJSON()
 
         uuid = feature.properties.uuid
@@ -163,7 +172,7 @@
 
       layerSelector = new C.Controls.Layers(undefined, @getMap(), @options)
 
-      @controls.add 'layers', layerSelector
+      @controls.add 'layers', layerSelector, false
 
       @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
@@ -175,12 +184,11 @@
 
       drawControl = new C.Controls.Draw(@getMap(), @options)
       @controls.add 'draw', drawControl
-
       # Display selector if shapes are editable
       # if @options.controls.edit? and layerSelector?
         # editControl.addTo layerSelector.getControl()
 
-      C.Util.setOptions @, edit: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
+      C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
       @controls.add 'edit', new C.Controls.Edit(@getMap(), @options)
 
       @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
@@ -189,16 +197,13 @@
         @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
 
 
-      #TODO:
-      layers = L.featureGroup(Object.values(@controls.get('overlays').getLayers())[0].getLayers())
-      C.Util.setOptions @, layerSelection: {featureGroup: layers}
+      selection = new L.LayerSelection @getMap(), featureGroup: @getFeatureGroup()
+      selection.enable()
 
-      @controls.add 'selection', new C.Controls.LayerSelection(@getMap(), @options)
-
-      C.Util.setOptions @, cut: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
+      C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
 
-      C.Util.setOptions @, merge: {featureGroup: Object.values(@controls.get('overlays').getLayers())[0]}
+      C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
       @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
     ##### PUBLIC API ######
@@ -243,14 +248,18 @@
       containerLayer
 
     select: (uuid, center = true) ->
-      featureGroup = Object.values(@controls.get('overlays').getLayers())[0]
+      featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
 
-      if center
+      if center && layer
         @center(layer.getCenter())
 
       layer
 
+    unselect: (uuid) ->
+      featureGroup = @getFeatureGroup()
+      layer = @_findLayerByUUID(featureGroup, uuid)
+      layer.fire 'click'
 
     highlight: (uuid) ->
       layer = @select uuid, false
@@ -267,7 +276,7 @@
     destroy: (uuid) ->
       layer = @select uuid, true
       if layer
-        Object.values(@controls.get('overlays').getLayers())[0].removeLayer layer
+        @getFeatureGroup().removeLayer layer
 
     edit: (uuid, options = {}) ->
       layer = @select uuid, true
@@ -284,7 +293,7 @@
         # layer._editFeatureGroup.addLayer layer
 
         snapOptions = {polygon:
-            guideLayers: Object.values(@controls.get('overlays').getLayers())[0]}
+            guideLayers: @getFeatureGroup()}
 
         options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
 
@@ -297,18 +306,24 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
-    sync: (data) =>
-      Object.values(@controls.get('overlays').getLayers())[0].clearLayers()
+    sync: (data, layerName, options = {}) =>
+      layerGroup =  @controls.get('overlays').getLayers()[layerName]
+
+      layerGroup.clearLayers()
       for el in data
         if el.shape
           geojson = el.shape
           geojson.properties ||= {}
           geojson.properties.uuid ||= el.uuid
           try
-            Object.values(@controls.get('overlays').getLayers())[0].addData(geojson)
+            layerGroup.addData(geojson)
+            newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
 
-      if Object.values(@controls.get('overlays').getLayers())[0].getLayers().length
-        @getMap().fitBounds(Object.values(@controls.get('overlays').getLayers())[0].getBounds(),{ maxZoom: 21 })
+            if options.onEachFeature.constructor.name is 'Function' && newLayer
+              options.onEachFeature.call @, newLayer
+
+      if layerGroup.getLayers().length
+        @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
 
     addOverlay: (serie, type = "series") =>
       @controls.get('overlays').add(serie, type)
@@ -318,5 +333,17 @@
 
     getOverlay: (name) =>
       @controls.get('overlays').getLayer(name)
+
+    removeControl: (name) =>
+      @controls.remove(name)
+
+    getFeatureGroup: (options = {}) =>
+      options.main ||= true
+
+      if options.name
+        @controls.get('overlays').getLayers()[options.name]
+
+      if options.main
+        @controls.get('overlays').getMainLayer()
 
 )(window.Cartography = window.Cartography || {}, jQuery)

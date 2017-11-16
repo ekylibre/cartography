@@ -726,6 +726,16 @@ L.Draw.Feature.SnapMixin = {
     },
 
     _snap_on_disabled: function () {
+        this._map.off('touchstart', this._snap_on_click, this);
+
+        this._snapper._markers.forEach(function(m){
+          m.off('click');
+          m.off('snap');
+          m.off('unsnap');
+          m.off('touchstart');
+          m.off('move');
+        });
+
         delete this._snapper;
     },
 };

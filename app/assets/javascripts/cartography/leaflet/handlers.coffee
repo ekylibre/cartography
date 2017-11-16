@@ -23,6 +23,14 @@
   class L.LayerSelection extends L.Handler
     @TYPE: 'LayerSelection'
 
+    options:
+      selectedPathOptions:
+        dashArray: '10, 10'
+        fill: true
+        fillColor: '#fe57a1'
+        fillOpacity: 0.1
+        maintainColor: false
+
     constructor: (map, options) ->
       @type = @constructor.TYPE
       @_map = map
@@ -35,7 +43,7 @@
         throw new Error('options.featureGroup must be a L.FeatureGroup')
 
     enable: ->
-      if @_enabled or !@_hasAvailableLayers()
+      if @_enabled
         return
 
       @fire 'enabled', handler: @type
