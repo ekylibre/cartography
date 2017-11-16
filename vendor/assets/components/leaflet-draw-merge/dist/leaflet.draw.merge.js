@@ -20017,7 +20017,6 @@ L.Merge = (function(superClass) {
   }
 
   Merge.prototype.enable = function() {
-    var poly, poly2;
     if (this._enabled || !this._featureGroup.getLayers().length) {
       return;
     }
@@ -20032,10 +20031,6 @@ L.Merge = (function(superClass) {
     this._availableLayers.on('layerremove', this._disableLayer, this);
     this._featureGroup.on('layeradd', this.refreshAvailableLayers, this);
     this._featureGroup.on('layerremove', this.refreshAvailableLayers, this);
-    poly = new L.Polygon([[[45.824114, -0.796735], [45.824244, -0.796029], [45.824409, -0.795145], [45.824509, -0.794611], [45.824811, -0.795321], [45.824579, -0.79664], [45.824114, -0.796735]]]);
-    this._featureGroup.addData(poly.toGeoJSON());
-    poly2 = new L.Polygon([[[45.824483, -0.794565], [45.824308, -0.794476], [45.82399, -0.794315], [45.82394, -0.79429], [45.823719, -0.794154], [45.82434, -0.793379], [45.824728, -0.793706], [45.824483, -0.794565]]]);
-    this._featureGroup.addData(poly2.toGeoJSON());
     this._map.on(L.Merging.Event.SELECT, this._mergeMode, this);
     return this._map.on('zoomend moveend', (function(_this) {
       return function() {
@@ -20118,6 +20113,7 @@ L.Merge = (function(superClass) {
   Merge.prototype._enableLayer = function(e) {
     var layer, pathOptions;
     layer = e.layer || e.target || e;
+    console.error('enabling');
     layer.options.original = L.extend({}, layer.options);
     if (this.options.disabledPathOptions) {
       pathOptions = L.Util.extend({}, this.options.disabledPathOptions);
@@ -20127,24 +20123,23 @@ L.Merge = (function(superClass) {
       }
       layer.options.disabled = pathOptions;
     }
-    if (this.options.selectedPathOptions) {
-      pathOptions = L.Util.extend({}, this.options.selectedPathOptions);
+    if (this.options.mergeSelectedPathOptions) {
+      pathOptions = L.Util.extend({}, this.options.mergeSelectedPathOptions);
       if (pathOptions.maintainColor) {
         pathOptions.color = layer.options.color;
         pathOptions.fillColor = layer.options.fillColor;
       }
-      layer.options.selected = pathOptions;
+      layer.options.mergeSelected = pathOptions;
     }
     layer.setStyle(layer.options.disabled);
-    layer.bindPopup("stamp" + L.stamp(layer));
     return layer.on('click', this._activate, this);
   };
 
   Merge.prototype._unselectLayer = function(e) {
     var layer;
     layer = e.layer || e.target || e;
-    layer.selected = false;
-    if (this.options.selectedPathOptions) {
+    layer.mergeSelected = false;
+    if (this.options.mergeSelectedPathOptions) {
       layer.setStyle(layer.options.disabled);
     }
     return this._activeLayer = null;
@@ -20153,30 +20148,29 @@ L.Merge = (function(superClass) {
   Merge.prototype._disableLayer = function(e) {
     var layer;
     layer = e.layer || e.target || e;
-    layer.selected = false;
-    if (this.options.selectedPathOptions) {
+    layer.mergeSelected = false;
+    if (this.options.mergeSelectedPathOptions) {
       layer.setStyle(layer.options.original);
     }
     delete layer.options.disabled;
-    delete layer.options.selected;
+    delete layer.options.mergeSelected;
     return delete layer.options.original;
   };
 
   Merge.prototype._activate = function(e) {
     var layer;
     layer = e.target || e.layer || e;
-    if (!layer.selected) {
-      layer.selected = true;
-      layer.setStyle(layer.options.selected);
-      if (this._activeLayer) {
-        this._unselectLayer(this._activeLayer);
+    if (!layer.mergeSelected) {
+      layer.mergeSelected = true;
+      layer.setStyle(layer.options.mergeSelected);
+      if (!this._activeLayer) {
+        this._activeLayer = layer;
       }
-      this._activeLayer = layer;
       return this._map.fire(L.Merging.Event.SELECT, {
         layer: this._activeLayer
       });
     } else {
-      layer.selected = false;
+      layer.mergeSelected = false;
       layer.setStyle(layer.options.disabled);
       this._activeLayer = null;
       return this._map.fire(L.Merging.Event.UNSELECT, {
@@ -20191,7 +20185,7 @@ L.Merge = (function(superClass) {
     k = 0;
     return this._availableLayers.eachLayer((function(_this) {
       return function(layer) {
-        var activePoly, closest, coord, coord2, j, len, m, outerRing, overlap, point, poly3, pt, ref, turfCoords, turfLayer, turfPoly, union;
+        var activePoly, overlap, turfLayer;
         if (L.stamp(layer) !== L.stamp(_this._activeLayer) && k === 0) {
           console.error("try:", L.stamp(layer));
           activePoly = _this._activeLayer.toTurfFeature();
@@ -20201,47 +20195,22 @@ L.Merge = (function(superClass) {
           console.error(overlap);
           if (overlap) {
             console.error(turfLayer.geometry.coordinates);
-            outerRing = _this._activeLayer.outerRingAsTurfLineString();
-            j = 0;
-            turfCoords = [];
-            ref = turfLayer.geometry.coordinates[0];
-            for (m = 0, len = ref.length; m < len; m++) {
-              coord = ref[m];
-              closest = void 0;
-              coord2 = void 0;
-              if (j === 1 || j === 2) {
-                closest = L.GeometryUtil.closest(_this._map, _this._activeLayer, L.latLng(coord[1], coord[0]));
-                console.error("closest:", closest);
-              }
-              if (closest) {
-                coord2 = [closest.lng, closest.lat];
-                console.error('prev: ', coord, 'next:', coord2);
-                console.error('retest', L.GeometryUtil.closest(_this._map, _this._activeLayer, L.latLng(coord2[1], coord2[0])));
-              }
-              if (coord2) {
-                point = turf.point(coord2);
-                pt = L.latLng(coord2[1], coord2[0]);
-                turfCoords.push(coord2);
-              } else {
-                point = turf.point(coord);
-                pt = L.latLng(coord[1], coord[0]);
-                turfCoords.push(coord);
-              }
-              console.error(point);
-              L.marker(pt).addTo(_this._map);
-              console.error('on the line:', booleanPointOnLine["default"](point, outerRing));
-              j++;
-            }
-            turfPoly = turf.polygon([turfCoords]);
-            console.error(turfPoly);
-            union = turfUnion["default"](activePoly, turfPoly);
-            poly3 = new L.Polygon([], {
-              color: 'red'
+            console.error('overlap');
+            layer.options.original = layer.options;
+            layer.on('mouseover', function(e) {
+              console.error('mouseover');
+              return e.target.setStyle({
+                fillColor: "#000",
+                opacity: 1,
+                fillOpacity: 1
+              });
             });
-            console.error(union);
-            poly3.fromTurfFeature(union);
-            poly3.addTo(_this._map);
-            k = 1;
+            layer.on('mouseout', function(e) {
+              console.error('mouseout');
+              return e.target.setStyle(layer.options.disabled);
+            });
+            layer.off('click', _this._enableLayer, _this);
+            layer.on('click', _this._merge, _this);
           }
           return i++;
         }
@@ -20249,7 +20218,53 @@ L.Merge = (function(superClass) {
     })(this));
   };
 
-  Merge.prototype._merge = (function() {});
+  Merge.prototype._merge = function(e) {
+    var activePoly, closest, coord, coord2, j, k, layer, len, m, outerRing, point, poly3, pt, ref, turfCoords, turfLayer, turfPoly, union;
+    layer = e.layer || e.target || e;
+    console.error(layer, this._activeLayer);
+    L.marker(this._activeLayer.getCenter()).addTo(this._map);
+    outerRing = this._activeLayer.outerRingAsTurfLineString();
+    turfLayer = layer.toTurfFeature();
+    activePoly = this._activeLayer.toTurfFeature();
+    j = 0;
+    turfCoords = [];
+    ref = turfLayer.geometry.coordinates[0];
+    for (m = 0, len = ref.length; m < len; m++) {
+      coord = ref[m];
+      closest = void 0;
+      coord2 = void 0;
+      if (j === 1 || j === 2) {
+        closest = L.GeometryUtil.closest(this._map, this._activeLayer, L.latLng(coord[1], coord[0]));
+        console.error("closest:", closest);
+      }
+      if (closest) {
+        coord2 = [closest.lng, closest.lat];
+        console.error('prev: ', coord, 'next:', coord2);
+        console.error('retest', L.GeometryUtil.closest(this._map, this._activeLayer, L.latLng(coord2[1], coord2[0])));
+      }
+      if (coord2) {
+        point = turf.point(coord2);
+        pt = L.latLng(coord2[1], coord2[0]);
+        turfCoords.push(coord2);
+      } else {
+        point = turf.point(coord);
+        pt = L.latLng(coord[1], coord[0]);
+        turfCoords.push(coord);
+      }
+      console.error(point);
+      console.error('on the line:', booleanPointOnLine["default"](point, outerRing));
+      j++;
+    }
+    turfPoly = turf.polygon([turfCoords]);
+    console.error(turfPoly);
+    union = turfUnion["default"](activePoly, turfPoly);
+    poly3 = new L.Polygon([], {
+      color: '#AB47BC'
+    });
+    poly3.fromTurfFeature(union);
+    poly3.addTo(this._map);
+    return k = 1;
+  };
 
   Merge.prototype._hasAvailableLayers = function() {
     return this._availableLayers.getLayers().length !== 0;

@@ -240,9 +240,8 @@ jsts@1.3.0:
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
-"leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
+leaflet-draw-merge@../Leaflet.Draw.Merge:
   version "0.0.1"
-  resolved "https://github.com/ekylibre/Leaflet.Draw.Merge#84f788b086672bb244c708e36d1f143a0bea6e9d"
   dependencies:
     "@turf/boolean-overlap" "^4.7.3"
     "@turf/flip" "^4.7.3"
@@ -289,6 +288,15 @@ leaflet-providers@1.1.17:
 
 leaflet-snap@../Leaflet.Snap:
   version "0.0.4"
+  dependencies:
+    leaflet "^0.7.7"
+    leaflet-geometryutil "*"
+  optionalDependencies:
+    leaflet-draw "^0.3.2"
+
+"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
+  version "0.0.4"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#a8a044cf0e220d35fbd936c68518644e30eafc4d"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

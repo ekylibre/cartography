@@ -9,6 +9,6 @@
 //= require leaflet-geometryutil/src/leaflet.geometryutil.js
 //= require leaflet-reactive_measure/dist/reactive_measure.js
 //= require leaflet-draw-cut/dist/leaflet.draw.cut.js
-//= require leaflet-draw-merge/dist/leaflet.draw.merge.js
+// require leaflet-draw-merge/dist/leaflet.draw.merge.js
 //= require leaflet-controlpanel/dist/leaflet.controlpanel.js
 //= require_tree .
