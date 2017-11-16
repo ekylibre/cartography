@@ -228,7 +228,7 @@
     resetOffset: ->
       delete @_offset
 
-    center: (obj) ->
+    center: (obj, zoom = 21) ->
       return unless obj.lat && obj.lng
 
       center = @getMap().project(obj)
@@ -237,7 +237,7 @@
         offset = L.point(@_offset).round()
         center = center.add(offset)
 
-      @getMap().flyTo @getMap().unproject(center)
+      @getMap().flyTo @getMap().unproject(center), zoom
 
     _findLayerByUUID: (featureGroup, uuid) ->
       containerLayer = undefined
@@ -324,6 +324,11 @@
 
       if layerGroup.getLayers().length
         @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
+      else
+        @center @defaultCenter(), 6
+
+    defaultCenter: =>
+      @options.defaultCenter
 
     addOverlay: (serie, type = "series") =>
       @controls.get('overlays').add(serie, type)
