@@ -203,8 +203,8 @@
       C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
 
-      C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
-      @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
+      # C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
+      # @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
     ##### PUBLIC API ######
     setView: ->
