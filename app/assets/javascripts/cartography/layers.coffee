@@ -51,7 +51,7 @@
       overlays: []
       series: {}
       properties:
-        color: "#263238"
+        color: "#00BCD4"
         fillOpacity: 0.5
 
     constructor: ( map, options = {} ) ->
