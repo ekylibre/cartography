@@ -9,6 +9,7 @@
   "use strict"
 
   class C.Map extends C.BaseClass
+    @IDS: 0
     options:
       box:
         height: '85vh'
@@ -57,6 +58,9 @@
       C.Util.setOptions @, options
 
       @baseElement = L.DomUtil.get(id)
+      @baseElement.setAttribute "data-map-id", @constructor.IDS
+      @constructor.IDS++
+
       @mapElement = L.DomUtil.create('div', 'map', @baseElement)
 
       @map = L.map(@mapElement, @options.map)
