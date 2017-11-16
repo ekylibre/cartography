@@ -313,8 +313,8 @@
       for el in data
         if el.shape
           geojson = el.shape
-          geojson.properties ||= {}
-          geojson.properties.uuid ||= el.uuid
+          geojson.properties ||= el
+          delete geojson.properties.shape
           try
             layerGroup.addData(geojson)
             newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
