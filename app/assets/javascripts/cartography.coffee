@@ -259,6 +259,10 @@
 
       layer
 
+    unselect: (uuid) ->
+      featureGroup = @getFeatureGroup()
+      layer = @_findLayerByUUID(featureGroup, uuid)
+      layer.fire 'click'
 
     highlight: (uuid) ->
       layer = @select uuid, false
@@ -305,7 +309,7 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
-    sync: (data, layerName) =>
+    sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
 
       layerGroup.clearLayers()
@@ -316,6 +320,10 @@
           geojson.properties.uuid ||= el.uuid
           try
             layerGroup.addData(geojson)
+            newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
+
+            if options.onEachFeature.constructor.name is 'Function' && newLayer
+              options.onEachFeature.call @, newLayer
 
       if layerGroup.getLayers().length
         @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
