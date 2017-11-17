@@ -28,7 +28,7 @@
         dashArray: '10, 10'
         fill: true
         fillColor: '#fe57a1'
-        fillOpacity: 0.5
+        fillOpacity: 0.7
         maintainColor: false
 
     constructor: (map, options) ->
