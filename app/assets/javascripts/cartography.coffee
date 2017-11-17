@@ -247,8 +247,8 @@
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
 
-      if center && layer
-        # @center(layer.getCenter())
+      if center && layer && !layer.selected
+        layer.fire 'click'
         @getMap().fitBounds layer.getBounds()
 
       layer
@@ -256,7 +256,8 @@
     unselect: (uuid) ->
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
-      layer.fire 'click'
+      if layer.selected
+        layer.fire 'click'
 
     highlight: (uuid) ->
       layer = @select uuid, false
