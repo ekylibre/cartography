@@ -213,10 +213,8 @@
     ##### PUBLIC API ######
     setView: ->
       #TMP
-      layers = @controls.get('overlays').getLayers()
-
-      if layers[Object.keys(layers)[0]].getLayers()[0]
-        @getMap().fitBounds(layers[Object.keys(layers)[0]].getLayers()[0].getBounds(),{ maxZoom: 21 })
+      if @getFeatureGroup().getLayers().length
+        @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
       else
         @getMap().fitWorld()
 
@@ -321,8 +319,8 @@
             if options.onEachFeature.constructor.name is 'Function' && newLayer
               options.onEachFeature.call @, newLayer
 
-      if layerGroup.getLayers().length && layerGroup == @getFeatureGroup()
-        @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
+      # if layerGroup.getLayers().length && layerGroup == @getFeatureGroup()
+        # @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
 
     defaultCenter: =>
       @options.defaultCenter
