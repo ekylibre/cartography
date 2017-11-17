@@ -86,14 +86,6 @@
 
     _enableLayerSelection: (e) ->
       layer = e.layer or e.target or e
-      if @options.selectedPathOptions
-        pathOptions = L.Util.extend {}, @options.selectedPathOptions
-        # Use the existing color of the layer
-        if pathOptions.maintainColor
-          pathOptions.color = layer.options.color
-          pathOptions.fillColor = layer.options.fillColor
-        layer.options.original = L.extend({}, layer.options)
-        layer.options.selecting = pathOptions
 
       layer.on('click', @_onClick)
       layer.on('touchstart', @_onClick, this)
@@ -111,15 +103,25 @@
       delete layer.options.selecting
       delete layer.options.original
 
-    _onClick: (e) ->
+    _onClick: (e) =>
       layer = e.target
 
       if !layer.selected
         layer.selected = true
+        if @options.selectedPathOptions
+          pathOptions = L.Util.extend {}, @options.selectedPathOptions
+          # Use the existing color of the layer
+          if pathOptions.maintainColor
+            pathOptions.color = layer.options.color
+            pathOptions.fillColor = layer.options.fillColor
+          layer.options.original = L.extend({}, layer.options)
+          layer.options.selecting = pathOptions
+
         layer.setStyle(layer.options.selecting)
         @_map.fire L.Selectable.Event.SELECT, layer: layer
       else
         layer.selected = false
+
         layer.setStyle(layer.options.original)
         @_map.fire L.Selectable.Event.UNSELECT, layer: layer
 
