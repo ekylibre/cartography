@@ -73,8 +73,6 @@
 
       @initHooks()
 
-      @setView()
-
     resize: ->
       if @options.box? and @options.box.height?
         @mapElement.style.height = @options.box.height
@@ -210,13 +208,15 @@
       # C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
       # @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
+      @setView()
+
     ##### PUBLIC API ######
     setView: ->
       #TMP
       if @getFeatureGroup().getLayers().length
         @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
       else
-        @getMap().fitWorld()
+        @center @defaultCenter(), 6
 
     setMode: (mode) ->
       @_mode = mode
@@ -233,7 +233,7 @@
     center: (obj, zoom = 18) ->
       return unless obj.lat && obj.lng
 
-      @getMap().flyTo L.latLng(obj), zoom
+      @getMap().setView L.latLng(obj), zoom
 
     _findLayerByUUID: (featureGroup, uuid) ->
       containerLayer = undefined
