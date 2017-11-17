@@ -221,9 +221,8 @@ jsts@1.3.0:
     leaflet-draw "^0.4.12"
     lodash "^4.17.4"
 
-"leaflet-draw-cut@https://github.com/ekylibre/Leaflet.Draw.Cut":
+leaflet-draw-cut@../Leaflet.Draw.Cut:
   version "0.0.1"
-  resolved "https://github.com/ekylibre/Leaflet.Draw.Cut#73e0e4e38a4f7f683fb590f16db5c43259c55f68"
   dependencies:
     "@turf/difference" "^4.7.4"
     "@turf/flip" "^4.7.3"
@@ -240,8 +239,9 @@ jsts@1.3.0:
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
-leaflet-draw-merge@../Leaflet.Draw.Merge:
+"leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.Draw.Merge#84f788b086672bb244c708e36d1f143a0bea6e9d"
   dependencies:
     "@turf/boolean-overlap" "^4.7.3"
     "@turf/flip" "^4.7.3"

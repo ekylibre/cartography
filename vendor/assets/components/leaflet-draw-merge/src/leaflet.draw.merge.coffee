@@ -50,6 +50,16 @@ class L.Merge extends L.Handler
     @_featureGroup.on 'layeradd', @refreshAvailableLayers, @
     @_featureGroup.on 'layerremove', @refreshAvailableLayers, @
 
+    # poly = new L.Polygon [[45.824114, -0.796735],[45.824368, -0.795362],[45.82453, -0.794588],[45.826915, -0.795758],[45.826863, -0.796927],[45.825629, -0.79771],[45.824114, -0.796735]]
+    # @_featureGroup.addData poly.toGeoJSON()
+    poly = new L.Polygon [[[45.824114, -0.796735],[45.824244,-0.796029],[45.824409,-0.795145],[45.824509,-0.794611],[45.824811,-0.795321],[45.824579, -0.79664],[45.824114, -0.796735]]]
+    @_featureGroup.addData poly.toGeoJSON()
+
+    poly2 = new L.Polygon [[[45.824483, -0.794565],[45.824308, -0.794476],[45.82399, -0.794315],[45.82394, -0.79429],[45.823719,-0.794154],[45.82434,-0.793379],[45.824728,-0.793706],[45.824483,-0.794565]]]
+    @_featureGroup.addData poly2.toGeoJSON()
+
+
+
     @_map.on L.Merging.Event.SELECT, @_mergeMode, @
 
     @_map.on 'zoomend moveend', () =>
@@ -108,12 +118,12 @@ class L.Merge extends L.Handler
     @_featureGroup.eachLayer @_disableLayer, @
 
   save: ->
-    # mergeSelectedLayers = new L.LayerGroup
+    # selectedLayers = new L.LayerGroup
     # @_featureGroup.eachLayer (layer) ->
-    #   if layer.mergeSelected
-    #     mergeSelectedLayers.addLayer layer
-    #     layer.mergeSelected = false
-    # @_map.fire L.Merging.Event.SELECTED, layers: mergeSelectedLayers
+    #   if layer.selected
+    #     selectedLayers.addLayer layer
+    #     layer.selected = false
+    # @_map.fire L.Merging.Event.SELECTED, layers: selectedLayers
 
     #TMP
     @_featureGroup.eachLayer (l) =>
@@ -127,7 +137,6 @@ class L.Merge extends L.Handler
 
   _enableLayer: (e) ->
     layer = e.layer or e.target or e
-    console.error 'enabling'
 
     layer.options.original = L.extend({}, layer.options)
 
@@ -141,18 +150,19 @@ class L.Merge extends L.Handler
 
       layer.options.disabled = pathOptions
 
-    if @options.mergeSelectedPathOptions
-      pathOptions = L.Util.extend {}, @options.mergeSelectedPathOptions
+    if @options.selectedPathOptions
+      pathOptions = L.Util.extend {}, @options.selectedPathOptions
 
       # Use the existing color of the layer
       if pathOptions.maintainColor
         pathOptions.color = layer.options.color
         pathOptions.fillColor = layer.options.fillColor
 
-      layer.options.mergeSelected = pathOptions
+      layer.options.selected = pathOptions
 
     layer.setStyle layer.options.disabled
 
+    layer.bindPopup("stamp" + L.stamp(layer))
     layer.on 'click', @_activate, @
     #
     # poly1 = turf.polygon([[[0,0],[0,5],[5,5],[5,0],[0,0]]])
@@ -177,8 +187,8 @@ class L.Merge extends L.Handler
 
   _unselectLayer: (e) ->
     layer = e.layer or e.target or e
-    layer.mergeSelected = false
-    if @options.mergeSelectedPathOptions
+    layer.selected = false
+    if @options.selectedPathOptions
       layer.setStyle layer.options.disabled
 
     # if layer.merging
@@ -191,33 +201,30 @@ class L.Merge extends L.Handler
 
   _disableLayer: (e) ->
     layer = e.layer or e.target or e
-    layer.mergeSelected = false
+    layer.selected = false
     # Reset layer styles to that of before select
-    if @options.mergeSelectedPathOptions
+    if @options.selectedPathOptions
       layer.setStyle layer.options.original
 
     delete layer.options.disabled
-    delete layer.options.mergeSelected
+    delete layer.options.selected
     delete layer.options.original
 
   _activate: (e) ->
     layer = e.target || e.layer || e
 
-    if !layer.mergeSelected
-      layer.mergeSelected = true
-      layer.setStyle layer.options.mergeSelected
+    if !layer.selected
+      layer.selected = true
+      layer.setStyle layer.options.selected
 
-      # if @_activeLayer
-        # @_unselectLayer @_activeLayer
-      if !@_activeLayer
-        @_activeLayer = layer
+      if @_activeLayer
+        @_unselectLayer @_activeLayer
 
-      # @_availableLayers.eachLayer (layer) =>
-        # layer.off 'click', @_activate, @
+      @_activeLayer = layer
 
       @_map.fire L.Merging.Event.SELECT, layer: @_activeLayer
     else
-      layer.mergeSelected = false
+      layer.selected = false
       layer.setStyle(layer.options.disabled)
 
       @_activeLayer = null
@@ -248,76 +255,54 @@ class L.Merge extends L.Handler
 
         if overlap
           console.error turfLayer.geometry.coordinates
-          console.error 'overlap'
 
-          layer.options.original = layer.options
+          outerRing = @_activeLayer.outerRingAsTurfLineString()
 
-          layer.on 'mouseover', (e) ->
-            console.error 'mouseover'
-            e.target.setStyle fillColor: "#000", opacity: 1, fillOpacity: 1
+          j = 0
 
-          layer.on 'mouseout', (e) ->
-            console.error 'mouseout'
-            e.target.setStyle layer.options.disabled
+          turfCoords = []
 
-          layer.off 'click', @_enableLayer, @
-          layer.on 'click', @_merge, @
+          for coord in turfLayer.geometry.coordinates[0]
+            closest = undefined
+            coord2 = undefined
+
+            if j == 1 || j == 2
+              closest = L.GeometryUtil.closest(@_map, @_activeLayer, L.latLng(coord[1], coord[0]))
+              console.error "closest:", closest
+
+            if closest
+              coord2 = [closest.lng, closest.lat]
+              console.error 'prev: ', coord, 'next:',coord2
+              console.error 'retest', L.GeometryUtil.closest(@_map, @_activeLayer, L.latLng(coord2[1], coord2[0]))
+
+            if coord2
+              point = turf.point(coord2)
+              pt = L.latLng(coord2[1], coord2[0])
+              turfCoords.push coord2
+
+            else
+              point = turf.point(coord)
+              pt = L.latLng(coord[1], coord[0])
+              turfCoords.push coord
+
+            console.error point
+            L.marker(pt).addTo @_map
+            console.error 'on the line:',booleanPointOnLine.default(point, outerRing)
+            j++
+
+          turfPoly = turf.polygon([turfCoords])
+          console.error turfPoly
+          union = turfUnion.default(activePoly, turfPoly)
+          poly3 = new L.Polygon [], color: 'red'
+          console.error union
+          poly3.fromTurfFeature(union)
+          poly3.addTo @_map
+
+          k = 1
 
         i++
 
-  _merge: (e) ->
-    layer = e.layer || e.target || e
-    console.error layer, @_activeLayer
-
-    L.marker(@_activeLayer.getCenter()).addTo @_map
-
-    outerRing = @_activeLayer.outerRingAsTurfLineString()
-    turfLayer = layer.toTurfFeature()
-
-    activePoly = @_activeLayer.toTurfFeature()
-
-
-    j = 0
-
-    turfCoords = []
-
-    for coord in turfLayer.geometry.coordinates[0]
-      closest = undefined
-      coord2 = undefined
-
-      if j == 1 || j == 2
-        closest = L.GeometryUtil.closest(@_map, @_activeLayer, L.latLng(coord[1], coord[0]))
-        console.error "closest:", closest
-
-      if closest
-        coord2 = [closest.lng, closest.lat]
-        console.error 'prev: ', coord, 'next:',coord2
-        console.error 'retest', L.GeometryUtil.closest(@_map, @_activeLayer, L.latLng(coord2[1], coord2[0]))
-
-      if coord2
-        point = turf.point(coord2)
-        pt = L.latLng(coord2[1], coord2[0])
-        turfCoords.push coord2
-
-      else
-        point = turf.point(coord)
-        pt = L.latLng(coord[1], coord[0])
-        turfCoords.push coord
-
-      console.error point
-      # L.marker(pt).addTo @_map
-      console.error 'on the line:',booleanPointOnLine.default(point, outerRing)
-      j++
-
-    turfPoly = turf.polygon([turfCoords])
-    console.error turfPoly
-    union = turfUnion.default(activePoly, turfPoly)
-    poly3 = new L.Polygon [], color: '#AB47BC'
-    # console.error union
-    poly3.fromTurfFeature(union)
-    poly3.addTo @_map
-
-    k = 1
+  _merge: (->)
 
   _hasAvailableLayers: ->
     @_availableLayers.getLayers().length != 0
