@@ -280,7 +280,6 @@
       layer = @select uuid, true
       if layer
         if options.cancel && layer._editToolbar
-          console.error "canceling"
           @getMap().removeLayer layer._editFeatureGroup
           layer._editToolbar.disable()
           delete layer._editToolbar

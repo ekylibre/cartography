@@ -210,7 +210,7 @@
           pathOptions.color = layer.options.color
           pathOptions.fillColor = layer.options.fillColor
 
-        layer.options.selected = pathOptions
+        layer.options.snapSelected = pathOptions
 
       layer.setStyle layer.options.disabled
 
@@ -219,9 +219,9 @@
     _activate: (e) ->
       layer = e.target || e.layer || e
 
-      if !layer.selected
-        layer.selected = true
-        layer.setStyle layer.options.selected
+      if !layer.snapSelected
+        layer.snapSelected = true
+        layer.setStyle layer.options.snapSelected
 
         if @_activeLayer
           @_unselectLayer @_activeLayer
@@ -230,7 +230,7 @@
 
         @_map.fire L.SnapEditing.Event.SELECT, layer: @_activeLayer
       else
-        layer.selected = false
+        layer.snapSelected = false
         layer.setStyle(layer.options.disabled)
 
         @_activeLayer = null
@@ -238,7 +238,7 @@
 
     _unselectLayer: (e) ->
       layer = e.layer or e.target or e
-      layer.selected = false
+      layer.snapSelected = false
       if @options.selectedPathOptions
         layer.setStyle layer.options.disabled
 
@@ -252,7 +252,7 @@
 
     _disableLayer: (e) ->
       layer = e.layer or e.target or e
-      layer.selected = false
+      layer.snapSelected = false
       # Reset layer styles to that of before select
       if @options.selectedPathOptions
         layer.setStyle layer.options.original
