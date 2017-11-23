@@ -278,8 +278,9 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
+"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#7f125621717a3ad57bd9117554508b2c80dc0993"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"

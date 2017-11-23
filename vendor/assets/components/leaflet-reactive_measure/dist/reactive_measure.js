@@ -344,7 +344,6 @@ L.Draw.Polyline.include({
     var center, clone, g, k, latLng, latLngArray, len1, measure, mouseLatLng, newPos, ref;
     if (!e.target.reactiveMeasureControl.options.tooltip && (this._tooltip != null)) {
       L.DomUtil.setOpacity(this._tooltip._container, 0);
-      console.error('dispose');
     }
     if (!(this._markers.length > 0)) {
       return;
