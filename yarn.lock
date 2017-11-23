@@ -278,9 +278,8 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
+leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
   version "0.1.2"
-  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#f1af9de1b6107bce5e18a9cb58e314e8e77904ae"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
@@ -296,7 +295,7 @@ leaflet-snap@../Leaflet.Snap:
 
 "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
   version "0.0.4"
-  resolved "https://github.com/ekylibre/Leaflet.Snap#a8a044cf0e220d35fbd936c68518644e30eafc4d"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#02ff5e14db98e7f736e8717d76661068f029867b"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

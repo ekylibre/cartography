@@ -768,6 +768,7 @@ L.Cut.Polyline = (function(superClass) {
   Polyline.TYPE = 'cut-polyline';
 
   function Polyline(map, options) {
+    this._constraintSnap = bind(this._constraintSnap, this);
     this._glue_on_click = bind(this._glue_on_click, this);
     this._glue_on_enabled = bind(this._glue_on_enabled, this);
     this.glueMarker = bind(this.glueMarker, this);
@@ -879,23 +880,6 @@ L.Cut.Polyline = (function(superClass) {
     }
   };
 
-  Polyline.prototype._intersect = function(layer1, layer2) {
-    var intersection, polygon1, polygon2;
-    polygon1 = layer1.toTurfFeature();
-    polygon2 = layer2.toTurfFeature();
-    intersection = turfIntersect(polygon1, polygon2);
-    return L.geoJSON(intersection, {
-      style: function() {
-        return {
-          fill: false,
-          color: 'green',
-          dashArray: '8, 8',
-          opacity: 1
-        };
-      }
-    });
-  };
-
   Polyline.prototype._difference = function(layer1, layer2) {
     var difference, polygon1, polygon2;
     polygon1 = layer1.toTurfFeature();
@@ -906,7 +890,7 @@ L.Cut.Polyline = (function(superClass) {
         return {
           fillColor: '#3f51b5',
           opacity: 1,
-          fillOpacity: 1,
+          fillOpacity: 0.7,
           color: 'black',
           weight: 2
         };
@@ -1077,15 +1061,19 @@ L.Cut.Polyline = (function(superClass) {
   Polyline.prototype._glue_on_enabled = function() {
     this._activeLayer.glue = true;
     this._activeLayer.cutting._snapper.unwatchMarker(this._activeLayer.cutting._mouseMarker);
+    this._activeLayer.cutting._mouseMarker.on('mousedown', this._glue_on_click, this);
     return this._map.on('click', this._glue_on_click, this);
   };
 
   Polyline.prototype._glue_on_click = function() {
     var latlngs, marker, markerCount, poly, snapPoint;
+    if (!this._activeLayer.cutting._mouseDownOrigin && !this._activeLayer.cutting._markers.length) {
+      this._activeLayer.cutting._mouseMarker;
+      this._activeLayer.cutting.addVertex(this._activeLayer.cutting._mouseMarker._latlng);
+    }
     if (this._activeLayer.cutting._markers) {
       markerCount = this._activeLayer.cutting._markers.length;
       marker = this._activeLayer.cutting._markers[markerCount - 1];
-      console.error('glueONCLick', marker, this._activeLayer.cutting._markers);
       if (markerCount === 1) {
         this._activeLayer.cutting._snapper.addOrigin(this._activeLayer.cutting._markers[0]);
         L.DomUtil.addClass(this._activeLayer.cutting._markers[0]._icon, 'marker-origin');
@@ -1105,18 +1093,21 @@ L.Cut.Polyline = (function(superClass) {
         this._map.off('mousemove', this._selectLayer, this);
         this._startPoint = marker;
         this._activeLayer.cutting._mouseMarker.off('move', this.glueMarker, this);
+        this._activeLayer.cutting._mouseMarker.off('mousedown', this._glue_on_click, this);
         this._map.off('click', this._glue_on_click, this);
         this._activeLayer.cutting._snapper.watchMarker(this._activeLayer.cutting._mouseMarker);
         this._activeLayer.cutting._mouseMarker.off('snap', this._glue_on_enabled, this);
         this._activeLayer.cutting._mouseMarker.on('snap', (function(_this) {
           return function(e) {
-            console.error('snap');
-            return _this._map.on('click', _this._finishDrawing, _this);
+            _this._map.on(L.Draw.Event.DRAWVERTEX, _this._finishDrawing, _this);
+            _this._map.on('click', _this._finishDrawing, _this);
+            return _this._activeLayer.cutting._mouseMarker.off('move', _this._constraintSnap, _this);
           };
         })(this));
         return this._activeLayer.cutting._mouseMarker.on('unsnap', (function(_this) {
           return function(e) {
-            console.error('unsnap');
+            _this._activeLayer.cutting._mouseMarker.on('move', _this._constraintSnap, _this);
+            _this._map.off(L.Draw.Event.DRAWVERTEX, _this._finishDrawing, _this);
             return _this._map.off('click', _this._finishDrawing, _this);
           };
         })(this));
@@ -1124,8 +1115,39 @@ L.Cut.Polyline = (function(superClass) {
     }
   };
 
+  Polyline.prototype._constraintSnap = function(e) {
+    var marker, markerPoint, polygon, snapPoint;
+    marker = this._activeLayer.cutting._mouseMarker;
+    markerPoint = marker._latlng.toTurfFeature();
+    polygon = this._activeLayer.toTurfFeature();
+    if (!turfinside["default"](markerPoint, polygon, {
+      ignoreBoundary: true
+    })) {
+      this.glueMarker({
+        target: this._activeLayer.cutting._mouseMarker,
+        latlng: this._activeLayer.cutting._mouseMarker._latlng
+      });
+      snapPoint = this._map.latLngToLayerPoint(marker._latlng);
+      this._activeLayer.cutting._updateGuide(snapPoint);
+      return this._map.on('click', this._finishDrawing, this);
+    }
+  };
+
   Polyline.prototype._finishDrawing = function(e) {
-    console.error('finish');
+    var lastMarker, latlng, latlngs, marker, markerCount, poly;
+    markerCount = this._activeLayer.cutting._markers.length;
+    marker = this._activeLayer.cutting._markers[markerCount - 1];
+    if (L.Browser.touch) {
+      lastMarker = this._activeLayer.cutting._markers.pop();
+      poly = this._activeLayer.cutting._poly;
+      latlngs = poly.getLatLngs();
+      latlng = latlngs.splice(-1, 1)[0];
+      this._activeLayer.cutting._poly.setLatLngs(latlngs);
+    }
+    if (!e.layers || L.Browser.touch) {
+      this._activeLayer.cutting._markers.push(this._activeLayer.cutting._createMarker(this._activeLayer.cutting._mouseMarker._latlng));
+      this._activeLayer.cutting._poly.addLatLng(this._activeLayer.cutting._mouseMarker._latlng);
+    }
     return this._stopCutDrawing();
   };
 
@@ -1151,7 +1173,7 @@ L.Cut.Polyline = (function(superClass) {
     slicedPolyline.merge(cuttingPolyline);
     slicedPolygon = L.polygon(slicedPolyline.getLatLngs(), {
       fillColor: '#009688',
-      fillOpacity: 1,
+      fillOpacity: 0.7,
       opacity: 1,
       weight: 2,
       color: 'black'

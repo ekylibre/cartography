@@ -637,7 +637,7 @@ L.Draw.Feature.SnapMixin = {
         if(L.Browser.touch){
           this._map.on('touchstart', this._snap_on_click, this);
         }else {
-          marker.on('click', this._snap_on_click, this);
+          marker.on('mousedown', this._snap_on_click, this);
         }
     },
 
@@ -647,7 +647,7 @@ L.Draw.Feature.SnapMixin = {
         }
 
         // for touch
-        if (this._markers) {
+        if (this._markers && !this._mouseDownOrigin) {
             var markerCount = this._markers.length;
             var marker = this._markers[markerCount - 1];
 
@@ -659,18 +659,14 @@ L.Draw.Feature.SnapMixin = {
             if (marker && this._mouseMarker.snap) {
                 L.DomUtil.addClass(marker._icon, 'marker-snapped');
 
-                if(L.Browser.touch)
-                {
+                marker.setLatLng(this._mouseMarker._latlng);
 
-                  marker.setLatLng(this._mouseMarker._latlng);
+          			var poly = this._poly;
+          			var latlngs = poly.getLatLngs();
+              	latlngs.splice(-1, 1);
+            		this._poly.setLatLngs(latlngs);
+            		this._poly.addLatLng(this._mouseMarker._latlng);
 
-            			var poly = this._poly;
-            			var latlngs = poly.getLatLngs();
-                	latlngs.splice(-1, 1);
-              		this._poly.setLatLngs(latlngs);
-              		this._poly.addLatLng(this._mouseMarker._latlng);
-
-                }
             }
         }
 
@@ -689,18 +685,20 @@ L.Draw.Feature.SnapMixin = {
             var mdOrigin = this._map.unproject(this._mouseDownOrigin, z);
             var closestMDO = this._manuallyCorrectClick(mdOrigin);
 
-            if (closestMDO.latlng) {
-                this._mouseMarker.setLatLng(closestMDO.latlng);
+            if (closestMDO && closestMDO.latlng) {
+                this._mouseMarker.setLatLng([closestMDO.latlng.lat, closestMDO.latlng.lng]);
                 this._mouseDownOrigin = this._map.project(closestMDO.latlng, z);
+
+                this.addVertex(this._mouseMarker._latlng);
             }
 
-            if (e.originalEvent) {
-                var oeOrigin = this._map.unproject([e.originalEvent.clientX, e.originalEvent.clientY], z);
-                var closestOE = this._manuallyCorrectClick(oeOrigin);
+            var markerCount = this._markers.length+1;
+            var marker = this._markers[markerCount - 1];
 
-                if (closestOE.latlng) {
-                    e.originalEvent = this._map.project(closestOE.latlng, z);
-                }
+            if(markerCount > 2)
+            {
+              this._snapper.addOrigin(this._markers[0]);
+              L.DomUtil.addClass(this._markers[0]._icon, 'marker-origin');
             }
         }
     },

@@ -228,7 +228,7 @@
         position: 'bottomright'
         metric: true
         feet: false
-        tooltip: true
+        tooltip: false
 
     constructor: (map, control, options = {}) ->
       super(map)
