@@ -141,7 +141,6 @@
       C.Util.setOptions @, options
       super map, options
 
-      console.error 'featureGroup', @options.featureGroup, @options
       @featureGroup = @options.featureGroup
 
       # @featureGroup.on 'layeradd', @_enableLayer, @
@@ -162,12 +161,9 @@
       return
 
     # edit: (layer) ->
-    #   console.error "layer",layer
     #   @featureGroup = [layer]
-    #   console.error 'edition'
 
     enable: ->
-      console.error 'enable'
       @featureGroup.on 'layeradd', @_enableLayer, @
       @featureGroup.on 'layerremove', @_disableLayer, @
 
@@ -221,7 +217,6 @@
       layer.on 'click', @_activate, @
 
     _activate: (e) ->
-      console.error 'activeta'
       layer = e.target || e.layer || e
 
       if !layer.selected
@@ -267,7 +262,6 @@
       delete layer.options.original
 
     _editMode: (e) ->
-      console.error 'editmode', e
       layer = e.layer
       if(layer.editing)
         if layer.editing._poly.editing._verticesHandlers
@@ -278,7 +272,6 @@
 
       layer.editing._poly.on 'editdrag', (e) ->
         layer = e.target
-        console.error 'edit vertex', layer
         layer._map.fire L.SnapEditing.Event.CHANGE, layer: layer
 
 
