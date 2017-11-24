@@ -253,6 +253,15 @@
 
       layer
 
+    centerLayer: (uuid, center = true) ->
+      featureGroup = @getFeatureGroup()
+      layer = @_findLayerByUUID(featureGroup, uuid)
+
+      if center && layer
+        @getMap().fitBounds layer.getBounds()
+
+      layer
+
     unselect: (uuid) ->
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
@@ -340,10 +349,8 @@
     getFeatureGroup: (options = {}) =>
       options.main ||= true
 
-      if options.name
-        @controls.get('overlays').getLayers()[options.name]
+      return @controls.get('overlays').getLayers()[options.name] if options.name
 
-      if options.main
-        @controls.get('overlays').getMainLayer()
+      @controls.get('overlays').getMainLayer()
 
 )(window.Cartography = window.Cartography || {}, jQuery)

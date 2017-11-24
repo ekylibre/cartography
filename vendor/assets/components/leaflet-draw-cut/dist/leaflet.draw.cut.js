@@ -882,20 +882,24 @@ L.Cut.Polyline = (function(superClass) {
 
   Polyline.prototype._difference = function(layer1, layer2) {
     var difference, polygon1, polygon2;
-    polygon1 = layer1.toTurfFeature();
-    polygon2 = layer2.toTurfFeature();
-    difference = turfDifference(polygon1, polygon2);
-    return L.geoJSON(difference, {
-      style: function() {
-        return {
-          fillColor: '#3f51b5',
-          opacity: 1,
-          fillOpacity: 0.7,
-          color: 'black',
-          weight: 2
-        };
-      }
-    });
+    try {
+      polygon1 = layer1.toTurfFeature();
+      polygon2 = layer2.toTurfFeature();
+      difference = turfDifference(polygon1, polygon2);
+      return L.geoJSON(difference, {
+        style: function() {
+          return {
+            fillColor: '#3f51b5',
+            opacity: 1,
+            fillOpacity: 0.7,
+            color: 'black',
+            weight: 2
+          };
+        }
+      });
+    } catch (error) {
+      return console.error("He's dead, Jim.");
+    }
   };
 
   Polyline.prototype.removeHooks = function() {
@@ -1183,7 +1187,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype._stopCutDrawing = function() {
-    var cuttingPolyline, drawnPolyline, j, len, marker, ref, ref1, remainingPolygon, slicedPolygon;
+    var cuttingPolyline, drawnPolyline, ref, remainingPolygon, slicedPolygon;
     drawnPolyline = this._activeLayer.cutting._poly;
     ref = this._cut(this._activeLayer, drawnPolyline), slicedPolygon = ref[0], remainingPolygon = ref[1], cuttingPolyline = ref[2];
     this._activeLayer.cutting.disable();
@@ -1202,15 +1206,22 @@ L.Cut.Polyline = (function(superClass) {
     };
     this._activeLayer.editing._poly.addTo(this._map);
     this._activeLayer.editing.enable();
-    ref1 = this._activeLayer.editing._verticesHandlers[0]._markers;
-    for (j = 0, len = ref1.length; j < len; j++) {
-      marker = ref1[j];
-      if (L.stamp(marker) === L.stamp(this._activeLayer.editing._verticesHandlers[0]._markers[0]) || L.stamp(marker) === L.stamp(this._activeLayer.editing._verticesHandlers[0]._markers.slice(0).pop())) {
-        marker.on('move', this.glueMarker, this);
-      } else {
-        marker.on('move', this._moveMarker, this);
-      }
-    }
+    this._activeLayer.editing._poly.on('editstart', (function(_this) {
+      return function(e) {
+        var j, len, marker, ref1, results;
+        ref1 = _this._activeLayer.editing._verticesHandlers[0]._markers;
+        results = [];
+        for (j = 0, len = ref1.length; j < len; j++) {
+          marker = ref1[j];
+          if (L.stamp(marker) === L.stamp(_this._activeLayer.editing._verticesHandlers[0]._markers[0]) || L.stamp(marker) === L.stamp(_this._activeLayer.editing._verticesHandlers[0]._markers.slice(0).pop())) {
+            results.push(marker.on('move', _this.glueMarker, _this));
+          } else {
+            results.push(marker.on('move', _this._moveMarker, _this));
+          }
+        }
+        return results;
+      };
+    })(this));
     this._activeLayer.editing._poly.on('editdrag', this._moveMarker, this);
     return this._map.off('click', this._finishDrawing, this);
   };
@@ -1238,7 +1249,9 @@ L.Cut.Polyline = (function(superClass) {
     ref = this._cut(this._activeLayer, drawnPolyline), slicedPolygon = ref[0], remainingPolygon = ref[1];
     this._map.removeLayer(this._activeLayer);
     slicedPolygon.addTo(this._map);
-    remainingPolygon.addTo(this._map);
+    if (remainingPolygon !== void 0) {
+      remainingPolygon.addTo(this._map);
+    }
     this._activeLayer._polys.addLayer(slicedPolygon);
     this._activeLayer._polys.addLayer(remainingPolygon);
     this._activeLayer.editing._poly.bringToFront();

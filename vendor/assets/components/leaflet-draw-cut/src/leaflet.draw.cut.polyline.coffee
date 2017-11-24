@@ -137,15 +137,17 @@ class L.Cut.Polyline extends L.Handler
   #layer1 - layer2
   _difference: (layer1, layer2) ->
 
-    polygon1 = layer1.toTurfFeature()
-    polygon2 = layer2.toTurfFeature()
+    try
+      polygon1 = layer1.toTurfFeature()
+      polygon2 = layer2.toTurfFeature()
 
-    difference = turfDifference(polygon1, polygon2)
+      difference = turfDifference(polygon1, polygon2)
 
-    L.geoJSON difference,
-      style: () ->
-        fillColor: '#3f51b5', opacity: 1, fillOpacity: 0.7, color: 'black', weight: 2
-
+      L.geoJSON difference,
+        style: () ->
+          fillColor: '#3f51b5', opacity: 1, fillOpacity: 0.7, color: 'black', weight: 2
+    catch
+      console.error "He's dead, Jim."
 
   removeHooks: ->
     @_featureGroup.eachLayer @_disableLayer, @
@@ -445,11 +447,12 @@ class L.Cut.Polyline extends L.Handler
     @_activeLayer.editing._poly.addTo(@_map)
     @_activeLayer.editing.enable()
 
-    for marker in @_activeLayer.editing._verticesHandlers[0]._markers
-      if L.stamp(marker) == L.stamp(@_activeLayer.editing._verticesHandlers[0]._markers[0]) || L.stamp(marker) == L.stamp(@_activeLayer.editing._verticesHandlers[0]._markers[..].pop())
-        marker.on 'move', @glueMarker, @
-      else
-        marker.on 'move', @_moveMarker, @
+    @_activeLayer.editing._poly.on 'editstart', (e) =>
+      for marker in @_activeLayer.editing._verticesHandlers[0]._markers
+        if L.stamp(marker) == L.stamp(@_activeLayer.editing._verticesHandlers[0]._markers[0]) || L.stamp(marker) == L.stamp(@_activeLayer.editing._verticesHandlers[0]._markers[..].pop())
+          marker.on 'move', @glueMarker, @
+        else
+          marker.on 'move', @_moveMarker, @
 
     @_activeLayer.editing._poly.on 'editdrag', @_moveMarker, @
 
@@ -482,7 +485,8 @@ class L.Cut.Polyline extends L.Handler
 
     @_map.removeLayer @_activeLayer
     slicedPolygon.addTo @_map
-    remainingPolygon.addTo @_map
+    unless remainingPolygon is undefined
+      remainingPolygon.addTo @_map
 
     @_activeLayer._polys.addLayer slicedPolygon
     @_activeLayer._polys.addLayer remainingPolygon
