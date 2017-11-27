@@ -891,7 +891,7 @@ L.Cut.Polyline = (function(superClass) {
           return {
             fillColor: '#3f51b5',
             opacity: 1,
-            fillOpacity: 0.7,
+            fillOpacity: 0.6,
             color: 'black',
             weight: 2
           };
@@ -1043,6 +1043,7 @@ L.Cut.Polyline = (function(superClass) {
           pathOptions.color = layer.options.color;
           pathOptions.fillColor = layer.options.fillColor;
         }
+        pathOptions.fillOpacity = 0.5;
         this._activeLayer.options.cutting = pathOptions;
       }
       this._activeLayer.cutting.enable();
@@ -1177,7 +1178,7 @@ L.Cut.Polyline = (function(superClass) {
     slicedPolyline.merge(cuttingPolyline);
     slicedPolygon = L.polygon(slicedPolyline.getLatLngs(), {
       fillColor: '#009688',
-      fillOpacity: 0.7,
+      fillOpacity: 0.6,
       opacity: 1,
       weight: 2,
       color: 'black'
@@ -1251,9 +1252,9 @@ L.Cut.Polyline = (function(superClass) {
     slicedPolygon.addTo(this._map);
     if (remainingPolygon !== void 0) {
       remainingPolygon.addTo(this._map);
+      this._activeLayer._polys.addLayer(remainingPolygon);
     }
     this._activeLayer._polys.addLayer(slicedPolygon);
-    this._activeLayer._polys.addLayer(remainingPolygon);
     this._activeLayer.editing._poly.bringToFront();
     return this._map.fire(L.Cutting.Polyline.Event.UPDATED, {
       layers: [slicedPolygon, remainingPolygon]
