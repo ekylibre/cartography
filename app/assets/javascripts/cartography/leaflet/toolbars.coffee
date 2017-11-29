@@ -187,21 +187,25 @@
       disabledPathOptions:
         dashArray: null
         fill: true
-        fillColor: '#fe57a1'
-        fillOpacity: 0.1
-        maintainColor: true
+        color: '#263238'
+        fillColor: '#263238'
+        opacity: 1
+        fillOpacity: 0.4
+        maintainColor: false
       selectedPathOptions:
         dashArray: null
         fill: true
         fillColor: '#fe57a1'
-        fillOpacity: 0.9
+        opacity: 1
+        fillOpacity: 1
         maintainColor: true
+        weight: 3
       cuttingPathOptions:
         dashArray: '10, 10'
         fill: true
-        color: '#3f51b5'
+        # color: '#3f51b5'
         # fillOpacity: 0.9
-        maintainColor: false
+        maintainColor: true
       snap:
         guideLayers: []
         snapDistance: 30
@@ -263,10 +267,10 @@
       super
 
     disable: ->
-      if !@.enabled()
+      if !@enabled()
         return
 
-      super
+      @_activeMode.handler.disable()
 
     _save: ->
       @_activeMode.handler.save()
