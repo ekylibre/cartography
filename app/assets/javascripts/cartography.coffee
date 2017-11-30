@@ -243,7 +243,7 @@
           return
       containerLayer
 
-    select: (uuid, center = true) ->
+    select: (uuid, center = false) ->
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
 
@@ -315,21 +315,37 @@
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
 
-      layerGroup.clearLayers()
+      newLayers = new L.geoJSON()
+
       for el in data
         if el.shape
           geojson = el.shape
-          geojson.properties ||= el
-          delete geojson.properties.shape
-          try
-            layerGroup.addData(geojson)
-            newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
+          feature = L.GeoJSON.asFeature(el.shape)
+          feature.properties = el
+          delete feature.properties.shape
+          newLayers.addData(feature)
 
-            if options.onEachFeature.constructor.name is 'Function' && newLayer
-              options.onEachFeature.call @, newLayer
+      if layerGroup.getLayers().length
+        removeList = layerGroup.getLayers().filter (layer) ->
+          !newLayers.hasUUIDLayer layer
 
-      # if layerGroup.getLayers().length && layerGroup == @getFeatureGroup()
-        # @getMap().fitBounds(layerGroup.getBounds(),{ maxZoom: 21 })
+        if removeList.length
+          for l in removeList
+            layerGroup.removeLayer l
+
+        addList = newLayers.getLayers().filter (layer) ->
+          !layerGroup.hasUUIDLayer layer
+
+      else
+        addList = newLayers.getLayers()
+
+      for layer in addList
+        geojson = layer.toGeoJSON()
+        layerGroup.addData(geojson)
+        newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
+
+        if options.onEachFeature && options.onEachFeature.constructor.name is 'Function' && newLayer
+          options.onEachFeature.call @, newLayer
 
     defaultCenter: =>
       @options.defaultCenter

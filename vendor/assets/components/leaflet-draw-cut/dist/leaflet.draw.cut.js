@@ -787,7 +787,13 @@ L.Cut.Polyline = (function(superClass) {
     if (this._enabled || !this._featureGroup.getLayers().length) {
       return;
     }
-    this._availableLayers = new L.FeatureGroup;
+    this._availableLayers = new L.GeoJSON([], {
+      style: function(feature) {
+        return {
+          color: feature.properties.color
+        };
+      }
+    });
     this._activeLayer = void 0;
     this.fire('enabled', {
       handler: this.type
@@ -799,11 +805,7 @@ L.Cut.Polyline = (function(superClass) {
     this._availableLayers.on('layeradd', this._enableLayer, this);
     this._availableLayers.on('layerremove', this._disableLayer, this);
     this._map.on(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
-    this._map.on('zoomend moveend', (function(_this) {
-      return function() {
-        return _this.refreshAvailableLayers();
-      };
-    })(this));
+    this._map.on('zoomend moveend', this.refreshAvailableLayers, this);
     this._map.on('mousemove', this._selectLayer, this);
     this._map.on('mousemove', this._cutMode, this);
     return Polyline.__super__.enable.apply(this, arguments);
@@ -855,6 +857,7 @@ L.Cut.Polyline = (function(superClass) {
     this._map.off('click', this._finishDrawing, this);
     this._map.off('mousemove', this._selectLayer, this);
     this._map.off('mousemove', this._cutMode, this);
+    this._map.off('zoomend moveend', this.refreshAvailableLayers, this);
     this.fire('disabled', {
       handler: this.type
     });
@@ -866,7 +869,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype.refreshAvailableLayers = function() {
-    var addList, j, k, l, len, len1, newLayers, removeList, results;
+    var addList, geojson, j, k, l, len, len1, newLayers, removeList, results;
     if (!this._featureGroup.getLayers().length) {
       return;
     }
@@ -886,12 +889,17 @@ L.Cut.Polyline = (function(superClass) {
           return !_this._availableLayers.hasUUIDLayer(layer);
         };
       })(this));
+      console.error('addList', addList);
       if (addList.length) {
         results = [];
         for (k = 0, len1 = addList.length; k < len1; k++) {
           l = addList[k];
           if (!this._availableLayers.hasUUIDLayer(l)) {
-            results.push(this._availableLayers.addLayer(l));
+            console.error(l, l.toGeoJSON());
+            geojson = l.toGeoJSON();
+            geojson.properties.color = l.options.color;
+            this._availableLayers.addData(geojson);
+            results.push(console.error('geo', geojson));
           } else {
             results.push(void 0);
           }
@@ -956,6 +964,7 @@ L.Cut.Polyline = (function(superClass) {
   Polyline.prototype._enableLayer = function(e) {
     var layer, pathOptions;
     layer = e.layer || e.target || e;
+    console.error('enableLayer', layer);
     layer.options.original = L.extend({}, layer.options);
     if (this.options.disabledPathOptions) {
       pathOptions = L.Util.extend({}, this.options.disabledPathOptions);

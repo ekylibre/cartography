@@ -20,3 +20,14 @@ class L.GhostIcon extends L.DivIcon
     iconSize: [20, 20]
     className: "plus-ghost-icon"
     html: ""
+
+L.LayerGroup.include
+  getLayerUUID: (layer) ->
+    layer.feature.properties.uuid
+
+  hasUUIDLayer: (layer) ->
+    if !!layer && layerUUID = @getLayerUUID(layer)
+      for id, l of @_layers
+        if @getLayerUUID(l) == layerUUID
+          return true
+    return false
