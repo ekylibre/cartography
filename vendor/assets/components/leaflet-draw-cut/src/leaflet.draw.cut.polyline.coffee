@@ -43,7 +43,6 @@ class L.Cut.Polyline extends L.Handler
     if @_enabled or !@_featureGroup.getLayers().length
       return
 
-    # @_availableLayers = new L.FeatureGroup
     @_availableLayers = new L.GeoJSON [], style: (feature) ->
       color: feature.properties.color
 
@@ -149,23 +148,12 @@ class L.Cut.Polyline extends L.Handler
       addList = newLayers.getLayers().filter (layer) =>
         !@_availableLayers.hasUUIDLayer layer
 
-      console.error 'addList', addList
       if addList.length
         for l in addList
           unless @_availableLayers.hasUUIDLayer l
-            # latlngs = L.LatLngUtil.cloneLatLngs(l.getLatLngs())
-            # layer = new L.Polygon(latlngs)
-            console.error l, l.toGeoJSON()
-            # @_availableLayers.addLayer(layer)
             geojson = l.toGeoJSON()
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
-            console.error 'geo', geojson
-            # layer = @_availableLayers.getLayers()[@_availableLayers.getLayers().length-1]
-            # layer.options = l.options
-            # console.error 'newL', layer
-
-
 
     else
       @_availableLayers = @_featureGroup
@@ -210,7 +198,6 @@ class L.Cut.Polyline extends L.Handler
   _enableLayer: (e) ->
     layer = e.layer or e.target or e
 
-    console.error 'enableLayer', layer
     layer.options.original = L.extend({}, layer.options)
 
     if @options.disabledPathOptions
@@ -455,7 +442,6 @@ class L.Cut.Polyline extends L.Handler
     # cuttingPolyline.addTo @_map
 
     slicedPolyline.merge cuttingPolyline
-
 
     slicedPolygon = L.polygon(slicedPolyline.getLatLngs(), fillColor: '#009688', fillOpacity: 0.6, opacity: 1, weight: 2, color: 'black')
 

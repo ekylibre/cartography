@@ -889,17 +889,14 @@ L.Cut.Polyline = (function(superClass) {
           return !_this._availableLayers.hasUUIDLayer(layer);
         };
       })(this));
-      console.error('addList', addList);
       if (addList.length) {
         results = [];
         for (k = 0, len1 = addList.length; k < len1; k++) {
           l = addList[k];
           if (!this._availableLayers.hasUUIDLayer(l)) {
-            console.error(l, l.toGeoJSON());
             geojson = l.toGeoJSON();
             geojson.properties.color = l.options.color;
-            this._availableLayers.addData(geojson);
-            results.push(console.error('geo', geojson));
+            results.push(this._availableLayers.addData(geojson));
           } else {
             results.push(void 0);
           }
@@ -964,7 +961,6 @@ L.Cut.Polyline = (function(superClass) {
   Polyline.prototype._enableLayer = function(e) {
     var layer, pathOptions;
     layer = e.layer || e.target || e;
-    console.error('enableLayer', layer);
     layer.options.original = L.extend({}, layer.options);
     if (this.options.disabledPathOptions) {
       pathOptions = L.Util.extend({}, this.options.disabledPathOptions);
@@ -17136,17 +17132,24 @@ L.LatLng.prototype.toTurfFeature = function() {
 
 L.Polyline.include({
   merge: function(polyline) {
-    var i, latLng, latLngs, len, results;
+    var firstPoint, i, j, lastPoint, latLng, latLngs, len, length;
     latLngs = polyline.getLatLngs();
     if (!latLngs.length) {
       return;
     }
-    results = [];
-    for (i = 0, len = latLngs.length; i < len; i++) {
+    firstPoint = this.getLatLngs()[0];
+    lastPoint = this.getLatLngs()[this.getLatLngs().length - 1];
+    length = latLngs.length;
+    for (i = j = 0, len = latLngs.length; j < len; i = ++j) {
       latLng = latLngs[i];
-      results.push(this.addLatLng(latLng));
+      if (i === 0) {
+        latLng = lastPoint;
+      }
+      if (i === (length - 1)) {
+        latLng = firstPoint;
+      }
+      this.addLatLng(latLng);
     }
-    return results;
   },
   toTurfFeature: function() {
     var coords;
