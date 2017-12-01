@@ -186,6 +186,23 @@
   		# 	.on('layeradd', this._enableLayerEdit, this)
       # 	.on('layerremove', this._disableLayerEdit, this)
 
+    disable: ->
+      @featureGroup.off 'layeradd', @_enableLayer, @
+      @featureGroup.off 'layerremove', @_disableLayer, @
+      @_map.off L.SnapEditing.Event.SELECT, @_editMode, @
+
+      if @_activeLayer && @_activeLayer.editing
+        @_activeLayer.editing.disable()
+        delete @_activeLayer.editing._poly
+        delete @_activeLayer.editing
+        @_disableLayer @_activeLayer
+
+        if @_activeLayer.options._backupLatLngs
+          @_activeLayer.setLatLngs @_activeLayer.options._backupLatLngs
+          delete @_activeLayer.options._backupLatLngs
+
+      super
+
 
     _enableLayer: (e) ->
       layer = e.layer or e.target or e
@@ -227,6 +244,7 @@
           @_unselectLayer @_activeLayer
 
         @_activeLayer = layer
+        @_backupLayer(@_activeLayer)
 
         @_map.fire L.SnapEditing.Event.SELECT, layer: @_activeLayer
       else
@@ -249,6 +267,10 @@
       # @_map.on 'mousemove', @_selectLayer, @
 
       @_activeLayer = null
+
+    _backupLayer: (layer) ->
+      latlngs = L.LatLngUtil.cloneLatLngs(layer.getLatLngs())
+      layer.options._backupLatLngs = latlngs
 
     _disableLayer: (e) ->
       layer = e.layer or e.target or e

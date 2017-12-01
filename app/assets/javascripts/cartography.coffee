@@ -265,7 +265,7 @@
     unselect: (uuid) ->
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
-      if layer.selected
+      if layer && layer.selected
         layer.fire 'click'
 
     highlight: (uuid) ->
@@ -311,6 +311,7 @@
           poly: options.poly
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
+        @unselect layer.options.uuid
 
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
