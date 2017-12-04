@@ -318,6 +318,15 @@
 
       newLayers = new L.geoJSON()
 
+      layerGroup.on 'add', (e) =>
+        e.target.eachLayer (layer) =>
+          if options.onEachFeature && options.onEachFeature.constructor.name is 'Function'
+            options.onEachFeature.call @, layer
+
+      layerGroup.on 'layeradd', (e) =>
+        if options.onEachFeature && options.onEachFeature.constructor.name is 'Function'
+          options.onEachFeature.call @, e.layer
+
       for el in data
         if el.shape
           geojson = el.shape
@@ -345,8 +354,6 @@
         layerGroup.addData(geojson)
         newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
 
-        if options.onEachFeature && options.onEachFeature.constructor.name is 'Function' && newLayer
-          options.onEachFeature.call @, newLayer
 
     defaultCenter: =>
       @options.defaultCenter
