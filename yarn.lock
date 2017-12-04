@@ -280,7 +280,7 @@ leaflet-providers@1.1.17:
 
 "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
-  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#7f125621717a3ad57bd9117554508b2c80dc0993"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#c2e0ff68a4904815a65153da7b60f7ad797b2849"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
