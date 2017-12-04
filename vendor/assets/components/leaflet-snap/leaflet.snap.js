@@ -635,7 +635,8 @@ L.Draw.Feature.SnapMixin = {
         }, this);
 
         if(L.Browser.touch){
-          this._map.on('touchstart', this._snap_on_click, this);
+          // this._map.on('touchstart', this._snap_on_click, this);
+          marker.on('mousedown', this._snap_on_click, this);
         }else {
           marker.on('mousedown', this._snap_on_click, this);
         }

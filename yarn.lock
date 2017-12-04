@@ -296,7 +296,7 @@ leaflet-snap@../Leaflet.Snap:
 
 "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
   version "0.0.4"
-  resolved "https://github.com/ekylibre/Leaflet.Snap#02ff5e14db98e7f736e8717d76661068f029867b"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#73055a834f816e03477448812cd91a97123910f5"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

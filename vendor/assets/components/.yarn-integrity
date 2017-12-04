@@ -7,7 +7,6 @@
   "topLevelPatterns": [
     "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
     "leaflet-draw-cut@../Leaflet.Draw.Cut",
-    "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-draw@0.4.12",
     "leaflet-layerindex@^0.0.1",
@@ -64,7 +63,7 @@
     "leaflet-providers@1.1.17": "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46",
     "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure#7f125621717a3ad57bd9117554508b2c80dc0993",
     "leaflet-snap@../Leaflet.Snap": "",
-    "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap": "https://github.com/ekylibre/Leaflet.Snap#02ff5e14db98e7f736e8717d76661068f029867b",
+    "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap": "https://github.com/ekylibre/Leaflet.Snap#73055a834f816e03477448812cd91a97123910f5",
     "leaflet@*": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
     "leaflet@1.2.0": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
     "leaflet@>=0.7.0": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
