@@ -12,7 +12,6 @@
     "leaflet-layerindex@^0.0.1",
     "leaflet-providers@1.1.17",
     "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure",
-    "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure",
     "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap",
     "leaflet@1.2.0",
     "pure-uuid@^1.4.10"
@@ -64,7 +63,7 @@
     "leaflet-providers@1.1.17": "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46",
     "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure#c2e0ff68a4904815a65153da7b60f7ad797b2849",
     "leaflet-snap@../Leaflet.Snap": "",
-    "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap": "https://github.com/ekylibre/Leaflet.Snap#73055a834f816e03477448812cd91a97123910f5",
+    "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap": "https://github.com/ekylibre/Leaflet.Snap#61b54a317c667283809810ef15b37333ab8c662c",
     "leaflet@*": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
     "leaflet@1.2.0": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
     "leaflet@>=0.7.0": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
