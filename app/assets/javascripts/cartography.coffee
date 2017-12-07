@@ -96,19 +96,19 @@
         # @controls.get('edit').addLayer(e.layer)
         # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
-          # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-          area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
+        # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
+        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
 
-          feature = e.layer.toGeoJSON()
-          @getFeatureGroup().addData(feature)
+        feature = e.layer.toGeoJSON()
+        @getFeatureGroup().addData(feature)
 
-          uuid = feature.properties.uuid
-          type = feature.properties.type = @getMode()
+        uuid = feature.properties.uuid
+        type = feature.properties.type = @getMode()
 
-          layer = @getFeatureGroup().getLayers()[..].pop()
-          centroid = layer.getCenter()
+        layer = @getFeatureGroup().getLayers()[..].pop()
+        centroid = layer.getCenter()
 
-          @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
+        @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
       @getMap().on L.Selectable.Event.SELECT, (e) =>
         @getMap().fire C.Events.select.select, data: { uuid: e.layer.feature.properties.uuid }
