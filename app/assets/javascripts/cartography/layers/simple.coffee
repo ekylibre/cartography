@@ -19,7 +19,9 @@
 
         onEachFeature: (feature, layer) =>
           feature.properties ||= {}
+
           feature.properties.uuid ||= new UUID(4).format()
+
           layer.feature.properties = feature.properties
 
           if @layer.onEachFeature

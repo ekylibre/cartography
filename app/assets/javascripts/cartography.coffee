@@ -91,9 +91,10 @@
         @getMap().on L.Draw.Event.DRAWSTOP, =>
           @getMap().fire C.Events.new.cancel
 
-        @getMap().on L.Draw.Event.CREATED, (e) =>
-          # @controls.get('edit').addLayer(e.layer)
-          # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
+      @getMap().on L.Draw.Event.CREATED, (e) =>
+        return unless e.layerType == "polygon"
+        # @controls.get('edit').addLayer(e.layer)
+        # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
           # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
           area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
@@ -355,7 +356,7 @@
       for layer in addList
         geojson = layer.toGeoJSON()
         layerGroup.addData(geojson)
-        newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
+        # newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
 
 
     defaultCenter: =>

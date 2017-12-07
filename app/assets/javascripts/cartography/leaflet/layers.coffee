@@ -31,3 +31,12 @@ L.LayerGroup.include
         if @getLayerUUID(l) == layerUUID
           return true
     return false
+
+  getLayerID: (layer) ->
+    layer.feature.properties.id
+
+  hasIDLayer: (layer) ->
+    if !!layer && layerID = @getLayerID(layer)
+      for id, l of @_layers
+        if @getLayerID(l) == layerID
+          return true

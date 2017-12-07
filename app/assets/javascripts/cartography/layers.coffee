@@ -102,4 +102,26 @@
       L.Util.extend(@layers, newLayers)
       newLayers
 
+    updateSerie: (layerGroup, serie) ->
+
+      newLayers = new L.GeoJSON(serie)
+
+      if layerGroup.getLayers().length
+        removeList = layerGroup.getLayers().filter (layer) ->
+          !newLayers.hasIDLayer layer
+
+        if removeList.length
+          for l in removeList
+            layerGroup.removeLayer l
+
+        updateList = newLayers.getLayers().filter (layer) ->
+          !layerGroup.hasIDLayer layer
+
+      else
+        updateList = newLayers.getLayers()
+
+      for layer in updateList
+        layerGroup.addData(layer.toGeoJSON())
+
+
 )(window.Cartography = window.Cartography || {}, jQuery)

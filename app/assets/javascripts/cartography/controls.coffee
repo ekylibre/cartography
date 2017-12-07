@@ -89,15 +89,26 @@
       @add(@options.overlays, 'tiles') unless !@options.overlays.length
       @add([@options.series, @options.layers], 'series') if @options.series?
 
+    #TODO: refactoring
     add: (layers, type) ->
-      add = @references.getLayers()[layers[1][0]['name']] is undefined
+      [series, propertiesCollection, ...] = layers
 
-      newLayers = @references.add(layers, type)
+      propertiesCollection ||= []
 
-      return unless add
+      if !propertiesCollection.length
+        newLayers = @references.add(layers, type)
 
-      for name, layer of newLayers
-        @getControl().addOverlay(layer, name)
+        for name, layer of newLayers
+          @getControl().addOverlay(layer, name)
+
+      for properties in propertiesCollection
+        if @references.getLayers()[properties.name] is undefined
+          newLayers = @references.add(layers, type)
+
+          for name, layer of newLayers
+            @getControl().addOverlay(layer, name)
+        else
+          @references.updateSerie(@references.getLayers()[properties.name], series[properties.name])
 
     remove: (name) ->
       layer = @getLayer name
@@ -106,7 +117,7 @@
         @getMap().removeLayer l
 
       @getMap().removeLayer layer
-      delete @references[name]
+      delete @references.layers[name]
 
 
   class C.Controls.Scale extends C.Controls
