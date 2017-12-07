@@ -81,8 +81,8 @@
 
     initHooks: ->
 
-      @controls.get('draw').toolbar.on 'disable', (e) =>
-        @getMap().off L.Draw.Event.CREATED
+      # @controls.get('draw').toolbar.on 'disable', (e) =>
+        # @getMap().off L.Draw.Event.CREATED
 
       @controls.get('draw').toolbar.on 'enable', (e) =>
         @getMap().on L.Draw.Event.DRAWSTART, =>
@@ -92,7 +92,7 @@
           @getMap().fire C.Events.new.cancel
 
       @getMap().on L.Draw.Event.CREATED, (e) =>
-        return unless e.layerType == "polygon"
+        return unless e.layerType == "polygon" or e.layerType is undefined
         # @controls.get('edit').addLayer(e.layer)
         # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
