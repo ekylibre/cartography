@@ -394,4 +394,29 @@
 
       button.setAttribute 'title', title
 
+  L.Toolbar.include
+    _createButton: (options) ->
+      container = L.DomUtil.create('div', 'leaflet-toolbar', options.container)
+      title = L.DomUtil.create('a', 'leaflet-toolbar-title', container)
+      title.href = '#'
+      title.innerHTML = options.title
+      link = L.DomUtil.create('a', options.className or '', container)
+      # Screen reader tag
+      sr = L.DomUtil.create('span', 'sr-only', options.container)
+      link.href = '#'
+      link.appendChild sr
+      if options.title
+        link.title = options.title
+        sr.innerHTML = options.title
+      if options.text
+        link.innerHTML = options.text
+        sr.innerHTML = options.text
+
+      ### iOS does not use click events ###
+
+      buttonEvent = if @_detectIOS() then 'touchstart' else 'click'
+      L.DomEvent.on(title, 'click', L.DomEvent.stopPropagation).on(title, 'mousedown', L.DomEvent.stopPropagation).on(title, 'dblclick', L.DomEvent.stopPropagation).on(title, 'touchstart', L.DomEvent.stopPropagation).on(title, 'click', L.DomEvent.preventDefault).on title, buttonEvent, options.callback, options.context
+      L.DomEvent.on(link, 'click', L.DomEvent.stopPropagation).on(link, 'mousedown', L.DomEvent.stopPropagation).on(link, 'dblclick', L.DomEvent.stopPropagation).on(link, 'touchstart', L.DomEvent.stopPropagation).on(link, 'click', L.DomEvent.preventDefault).on link, buttonEvent, options.callback, options.context
+      link
+
 )(window.Cartography = window.Cartography || {})

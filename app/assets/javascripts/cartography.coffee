@@ -209,6 +209,8 @@
       C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
 
+      @getMap().zoomControl.setPosition('bottomright')
+
       # C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
       # @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
@@ -303,7 +305,7 @@
         # layer._editFeatureGroup.addLayer layer
 
         snapOptions = {polygon:
-            guideLayers: @getFeatureGroup()}
+          guideLayers: @getFeatureGroup()}
 
         options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
 

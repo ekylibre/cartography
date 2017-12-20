@@ -84,3 +84,30 @@
 .surface-row {
   text-align: middle;
 }
+
+.leaflet-top .leaflet-control{
+  margin-top: 0;
+}
+.leaflet-left .leaflet-control{
+  margin-left: 0;
+}
+
+.leaflet-touch .leaflet-bar, .leaflet-bar {
+    border: none;
+}
+.leaflet-touch .leaflet-bar a:first-child, .leaflet-touch .leaflet-bar a:last-child {
+  border-radius: 0
+}
+.leaflet-bar a, .leaflet-bar a:hover {
+  border: none;
+}
+
+.leaflet-toolbar a{
+  display: inline-block;
+  float: left;
+}
+
+.leaflet-toolbar a.leaflet-toolbar-title {
+  width: 120px;
+  background: #fff;
+}
