@@ -5,7 +5,6 @@
 //= require leaflet-providers/leaflet-providers.js
 //= require rtree/dist/rtree.js
 
-//= require cartography/leaflet/i18n.coffee
 //= require leaflet-layerindex/leaflet.layerindex.js
 //= require leaflet-snap/leaflet.snap.js
 //= require leaflet-geometryutil/src/leaflet.geometryutil.js
