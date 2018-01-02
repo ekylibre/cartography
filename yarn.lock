@@ -221,8 +221,9 @@ jsts@1.3.0:
     leaflet-draw "^0.4.12"
     lodash "^4.17.4"
 
-leaflet-draw-cut@../Leaflet.Draw.Cut:
+"leaflet-draw-cut@https://github.com/ekylibre/Leaflet.Draw.Cut":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.Draw.Cut#399514728f2da2527255e4bd346ce4a49aa87a4e"
   dependencies:
     "@turf/difference" "^4.7.4"
     "@turf/flip" "^4.7.3"
@@ -296,7 +297,7 @@ leaflet-snap@../Leaflet.Snap:
 
 "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
   version "0.0.4"
-  resolved "https://github.com/ekylibre/Leaflet.Snap#61b54a317c667283809810ef15b37333ab8c662c"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#02e49336fcc826bafd6d6a67fdc529e40f02d791"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

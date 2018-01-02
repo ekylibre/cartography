@@ -976,6 +976,7 @@ L.Cut.Polyline = (function(superClass) {
         pathOptions.color = layer.options.color;
         pathOptions.fillColor = layer.options.fillColor || pathOptions.color;
       }
+      pathOptions.fillOpacity = layer.options.fillOpacity || pathOptions.fillOpacity;
       layer.options.selected = pathOptions;
     }
     return layer.setStyle(layer.options.disabled);
@@ -1104,9 +1105,12 @@ L.Cut.Polyline = (function(superClass) {
     return this._map.on('click', this._glue_on_click, this);
   };
 
+  Polyline.prototype._disable_on_mouseup = function(e) {
+    return L.DomEvent.stopPropagation(e);
+  };
+
   Polyline.prototype._glue_on_click = function(e) {
     var latlngs, marker, markerCount, poly, snapPoint;
-    console.error('glueonclick', e);
     if (!this._activeLayer.cutting._mouseDownOrigin && !this._activeLayer.cutting._markers.length) {
       this._activeLayer.cutting._mouseMarker;
       this._activeLayer.cutting.addVertex(this._activeLayer.cutting._mouseMarker._latlng);
@@ -1130,6 +1134,7 @@ L.Cut.Polyline = (function(superClass) {
         this._activeLayer.cutting._updateGuide(snapPoint);
         this._activeLayer.setStyle(this._activeLayer.options.cutting);
         this._activeLayer.glue = false;
+        marker.on('mouseup', this._disable_on_mouseup, this);
         this._map.off('mousemove', this._selectLayer, this);
         this._startPoint = marker;
         this._activeLayer.cutting._mouseMarker.off('move', this.glueMarker, this);
