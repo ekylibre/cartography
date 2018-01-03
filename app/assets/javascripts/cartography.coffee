@@ -100,7 +100,7 @@
         area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
 
         feature = e.layer.toGeoJSON()
-        @getFeatureGroup().addData(feature)
+        @getFeatureGroup(name: "edition").addData(feature)
 
         uuid = feature.properties.uuid
         type = feature.properties.type = @getMode()
@@ -212,6 +212,11 @@
       # C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
       # @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
 
+      style = (feature) ->
+        color: "#3F51B5", fillOpacity: 0.7, opacity: 1, fill: true
+
+      serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
+      @addOverlay(serie)
       @setView()
 
     ##### PUBLIC API ######
@@ -288,6 +293,8 @@
       layer = @select uuid, true
       if layer
         @getFeatureGroup().removeLayer layer
+        
+      @getFeatureGroup(name: "edition").clearLayers()
 
     edit: (uuid, options = {}) ->
       layer = @select uuid, true
@@ -319,6 +326,8 @@
 
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
+
+      @getFeatureGroup(name: "edition").clearLayers()
 
       newLayers = new L.geoJSON()
 
