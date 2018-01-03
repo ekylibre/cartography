@@ -105,7 +105,7 @@
         uuid = feature.properties.uuid
         type = feature.properties.type = @getMode()
 
-        layer = @getFeatureGroup().getLayers()[..].pop()
+        layer = @getFeatureGroup(name: "edition").getLayers()[..].pop()
         centroid = layer.getCenter()
 
         @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
@@ -293,7 +293,7 @@
       layer = @select uuid, true
       if layer
         @getFeatureGroup().removeLayer layer
-        
+
       @getFeatureGroup(name: "edition").clearLayers()
 
     edit: (uuid, options = {}) ->
