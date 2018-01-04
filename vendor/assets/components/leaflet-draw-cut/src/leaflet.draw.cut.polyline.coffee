@@ -51,6 +51,7 @@ class L.Cut.Polyline extends L.Handler
     @fire 'enabled', handler: @type
 
     @_map.fire L.Cutting.Polyline.Event.START, handler: @type
+    console.error 'enable', @_availableLayers.getLayers()
 
     @_availableLayers.addTo @_map
     @_availableLayers.on 'layeradd', @_enableLayer, @
@@ -101,6 +102,7 @@ class L.Cut.Polyline extends L.Handler
 
       delete @_activeLayer._polys
       delete @_activeLayer.editing
+      delete @_activeLayer.glue
     unless @_featureGroup._map
       @_map.addLayer @_featureGroup
 
@@ -109,7 +111,6 @@ class L.Cut.Polyline extends L.Handler
     @_availableLayers.length = 0
 
     @_startPoint = null
-    delete @_activeLayer.glue
     @_activeLayer = null
 
     @_map.off L.Draw.Event.DRAWVERTEX, @_finishDrawing, @
@@ -132,11 +133,16 @@ class L.Cut.Polyline extends L.Handler
     @_map.removeLayer @_featureGroup
 
   refreshAvailableLayers: ->
+    @_featureGroup.addTo @_map
+
+    console.error 'featureGroup', @_featureGroup.getLayers()
+    console.error '@_availableLayers', @_availableLayers.getLayers()
     return unless @_featureGroup.getLayers().length
 
     #RTree
     if typeof @_featureGroup.search == 'function'
       newLayers = new L.FeatureGroup(@_featureGroup.search(@_map.getBounds()))
+      console.error 'newLayers', @_featureGroup.getLayers().length, newLayers.getLayers().length
 
       removeList = @_availableLayers.getLayers().filter (layer) ->
         !newLayers.hasLayer layer
@@ -157,6 +163,7 @@ class L.Cut.Polyline extends L.Handler
 
     else
       @_availableLayers = @_featureGroup
+    @_map.removeLayer @_featureGroup
 
   #layer1 - layer2
   _difference: (layer1, layer2) ->
@@ -257,6 +264,7 @@ class L.Cut.Polyline extends L.Handler
     @_activeLayer = null
 
   _disableLayer: (e) ->
+    console.error 'disabling'
     layer = e.layer or e.target or e
     layer.selected = false
     # Reset layer styles to that of before select

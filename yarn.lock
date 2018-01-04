@@ -267,9 +267,9 @@ leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
   dependencies:
     leaflet ">=0.7.0"
 
-leaflet-layerindex@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/leaflet-layerindex/-/leaflet-layerindex-0.0.1.tgz#ceeada994134cfc597669e8a75dd167ef82cb258"
+"leaflet-layerindex@https://github.com/ekylibre/Leaflet.LayerIndex.git":
+  version "0.0.2"
+  resolved "https://github.com/ekylibre/Leaflet.LayerIndex.git#4eea0e8cf78cbc8e4ee25dd1bc0310b26373a1ab"
   dependencies:
     leaflet "*"
     rtree "*"
