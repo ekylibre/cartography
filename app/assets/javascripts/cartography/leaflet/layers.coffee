@@ -4,9 +4,14 @@ class L.IndexedGeoJSON extends L.GeoJSON
     @_onEachFeature = options.onEachFeature
 
     onEachFeature = (geojson, layer) ->
-      @indexLayer layer
+      layer.on 'add', =>
+        @indexLayer layer
+      layer.on 'remove', =>
+        @unindexLayer layer
+
       if @_onEachFeature
         @_onEachFeature geojson, layer
+
       return
 
     options.onEachFeature = L.Util.bind onEachFeature, @
