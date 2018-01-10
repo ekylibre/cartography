@@ -299,28 +299,21 @@
       layer = @select uuid, true
       if layer
         if options.cancel && layer._editToolbar
-          @getMap().removeLayer layer._editFeatureGroup
           layer._editToolbar.disable()
-          delete layer._editToolbar
-          delete layer._editFeatureGroup
           return
-        layer._editFeatureGroup = new L.featureGroup()
-        layer._editFeatureGroup.addTo @getMap()
-        # layer._editFeatureGroup.addLayer layer
 
         snapOptions = {polygon: guideLayers: @getFeatureGroup()}
 
-        options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
+        options = C.Util.extend @options, snap: snapOptions
 
         layer._editToolbar = new L.EditToolbar.SelectableSnapEdit @getMap(),
           snapOptions: options.snap
-          featureGroup: layer._editFeatureGroup
+          featureGroup: @getFeatureGroup()
           selectedPathOptions: options.edit.selectedPathOptions
           disabledPathOptions: options.edit.disabledPathOptions
           poly: options.poly
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
-        @unselect layer.options.uuid
 
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
