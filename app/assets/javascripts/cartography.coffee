@@ -93,13 +93,11 @@
 
       @getMap().on L.Draw.Event.CREATED, (e) =>
         return unless e.layerType == "polygon" or e.layerType is undefined
-        # @controls.get('edit').addLayer(e.layer)
-        # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
-        # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
+        feature = if e.layer instanceof L.Layer
+        then e.layer.toGeoJSON()
+        else e.layer
 
-        feature = e.layer.toGeoJSON()
         @getFeatureGroup(name: "edition").addData(feature)
 
         uuid = feature.properties.uuid
@@ -107,6 +105,7 @@
 
         layer = @getFeatureGroup(name: "edition").getLayers()[..].pop()
         centroid = layer.getCenter()
+        area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0])
 
         @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
@@ -294,7 +293,7 @@
       if layer
         @getFeatureGroup().removeLayer layer
 
-      @getFeatureGroup(name: "edition").clearLayers()
+      @clean()
 
     edit: (uuid, options = {}) ->
       layer = @select uuid, true
@@ -309,8 +308,7 @@
         layer._editFeatureGroup.addTo @getMap()
         # layer._editFeatureGroup.addLayer layer
 
-        snapOptions = {polygon:
-            guideLayers: @getFeatureGroup()}
+        snapOptions = {polygon: guideLayers: @getFeatureGroup()}
 
         options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
 
@@ -326,8 +324,6 @@
 
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
-
-      @getFeatureGroup(name: "edition").clearLayers()
 
       newLayers = new L.geoJSON()
 
@@ -389,5 +385,8 @@
       return @controls.get('overlays').getLayers()[options.name] if options.name
 
       @controls.get('overlays').getMainLayer()
+
+    clean: =>
+      @getFeatureGroup(name: "edition").clearLayers()
 
 )(window.Cartography = window.Cartography || {}, jQuery)
