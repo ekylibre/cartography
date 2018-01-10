@@ -801,7 +801,6 @@ L.Cut.Polyline = (function(superClass) {
     this._map.fire(L.Cutting.Polyline.Event.START, {
       handler: this.type
     });
-    console.error('enable', this._availableLayers.getLayers());
     this._availableLayers.addTo(this._map);
     this._availableLayers.on('layeradd', this._enableLayer, this);
     this._availableLayers.on('layerremove', this._disableLayer, this);
@@ -872,14 +871,11 @@ L.Cut.Polyline = (function(superClass) {
   Polyline.prototype.refreshAvailableLayers = function() {
     var addList, geojson, j, k, l, len, len1, newLayers, removeList;
     this._featureGroup.addTo(this._map);
-    console.error('featureGroup', this._featureGroup.getLayers());
-    console.error('@_availableLayers', this._availableLayers.getLayers());
     if (!this._featureGroup.getLayers().length) {
       return;
     }
     if (typeof this._featureGroup.search === 'function') {
       newLayers = new L.FeatureGroup(this._featureGroup.search(this._map.getBounds()));
-      console.error('newLayers', this._featureGroup.getLayers().length, newLayers.getLayers().length);
       removeList = this._availableLayers.getLayers().filter(function(layer) {
         return !newLayers.hasLayer(layer);
       });
@@ -1026,7 +1022,6 @@ L.Cut.Polyline = (function(superClass) {
 
   Polyline.prototype._disableLayer = function(e) {
     var layer;
-    console.error('disabling');
     layer = e.layer || e.target || e;
     layer.selected = false;
     if (this.options.selectedPathOptions) {
