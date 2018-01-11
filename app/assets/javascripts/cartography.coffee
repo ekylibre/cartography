@@ -267,6 +267,27 @@
 
       layer
 
+    selectMany: (uuids, center = false) ->
+      layers = []
+      for uuid in uuids
+        featureGroup = @getFeatureGroup()
+        layer = @_findLayerByUUID(featureGroup, uuid)
+        if layer
+          layers.push layer
+          unless layer.selected
+            layer.fire 'click'
+      group = L.featureGroup layers
+      if center && group
+        @getMap().fitBounds group.getBounds()
+      group
+
+    unselectMany: (uuids) ->
+      for uuid in uuids
+        featureGroup = @getFeatureGroup()
+        layer = @_findLayerByUUID(featureGroup, uuid)
+        if layer && layer.selected
+          layer.fire 'click'
+
     centerCollection: (uuids, center = true) ->
       layers = []
       for uuid in uuids
