@@ -262,6 +262,18 @@
 
       layer
 
+    centerCollection: (uuids, center = true) ->
+      layers = []
+      for uuid in uuids
+        featureGroup = @getFeatureGroup()
+        layer = @_findLayerByUUID(featureGroup, uuid)
+        if layer
+          layers.push layer
+      group = L.featureGroup layers
+      if center && group
+        @getMap().fitBounds group.getBounds()
+      group
+
     centerLayer: (uuid, center = true) ->
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
