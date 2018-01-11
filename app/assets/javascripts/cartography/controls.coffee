@@ -189,28 +189,21 @@
           color: "#3498db"
           fillOpacity: 0.8
           popup: false
-        snap:
-          polyline:
-            guideLayers: []
-            snapDistance: 5
-          polygon:
-            guideLayers: []
-            snapDistance: 5
-
+      snap:
+        polyline:
+          guideLayers: []
+          snapDistance: 5
+        polygon:
+          guideLayers: []
+          snapDistance: 5
     constructor: (map, options = {}) ->
       super(map)
 
       C.Util.setOptions @, options
 
-      # @editionLayer = L.geoJson()
       @editionLayer = L.geoJson(undefined,
         style: (feature) =>
           C.Util.extend @options.edit.shapeOptions, feature.properties)
-
-      # @options.featureGroup = @editionLayer
-
-
-      # map.addLayer @editionLayer
 
       @control = new L.Control.SnapEdit(@options)
 

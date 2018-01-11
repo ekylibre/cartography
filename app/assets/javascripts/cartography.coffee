@@ -47,6 +47,12 @@
           animatedHelper: 'http://placehold.it/200x150'
           ignoreActions: true
       edit:
+        selectedPathOptions:
+          dashArray: '10, 10'
+          fill: true
+          fillColor: '#fe57a1'
+          fillOpacity: 0.7
+          maintainColor: false
         panel:
           title: 'Edit plot'
           animatedHelper: 'http://placehold.it/200x150'
@@ -93,13 +99,11 @@
 
       @getMap().on L.Draw.Event.CREATED, (e) =>
         return unless e.layerType == "polygon" or e.layerType is undefined
-        # @controls.get('edit').addLayer(e.layer)
-        # @controls.get('edit').addTo(control) if control = @controls.get('overlays').getControl()
 
-        # manual assignation to bypass feature add and search (we don't really need some extra properties for now)
-        area = L.GeometryUtil.geodesicArea(e.layer.getLatLngs()[0])
+        feature = if e.layer instanceof L.Layer
+        then e.layer.toGeoJSON()
+        else e.layer
 
-        feature = e.layer.toGeoJSON()
         @getFeatureGroup(name: "edition").addData(feature)
 
         uuid = feature.properties.uuid
@@ -107,6 +111,7 @@
 
         layer = @getFeatureGroup(name: "edition").getLayers()[..].pop()
         centroid = layer.getCenter()
+        area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0])
 
         @getMap().fire C.Events.new.complete, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
@@ -306,40 +311,32 @@
       if layer
         @getFeatureGroup().removeLayer layer
 
-      @getFeatureGroup(name: "edition").clearLayers()
+      @clean()
 
     edit: (uuid, options = {}) ->
+      @unhighlight uuid
       layer = @select uuid, true
       if layer
         if options.cancel && layer._editToolbar
-          @getMap().removeLayer layer._editFeatureGroup
           layer._editToolbar.disable()
-          delete layer._editToolbar
-          delete layer._editFeatureGroup
+          @unselect layer.feature.properties.uuid
           return
-        layer._editFeatureGroup = new L.featureGroup()
-        layer._editFeatureGroup.addTo @getMap()
-        # layer._editFeatureGroup.addLayer layer
 
-        snapOptions = {polygon:
-            guideLayers: @getFeatureGroup()}
+        snapOptions = {polygon: guideLayers: @getFeatureGroup()}
 
-        options = C.Util.extend @options, edit: {featureGroup: layer._editFeatureGroup, snap: snapOptions}
+        options = C.Util.extend @options, snap: snapOptions
 
         layer._editToolbar = new L.EditToolbar.SelectableSnapEdit @getMap(),
           snapOptions: options.snap
-          featureGroup: layer._editFeatureGroup
+          featureGroup: @getFeatureGroup()
           selectedPathOptions: options.edit.selectedPathOptions
           disabledPathOptions: options.edit.disabledPathOptions
           poly: options.poly
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
-        @unselect layer.options.uuid
 
     sync: (data, layerName, options = {}) =>
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
-
-      @getFeatureGroup(name: "edition").clearLayers()
 
       newLayers = new L.geoJSON()
 
@@ -401,5 +398,8 @@
       return @controls.get('overlays').getLayers()[options.name] if options.name
 
       @controls.get('overlays').getMainLayer()
+
+    clean: =>
+      @getFeatureGroup(name: "edition").clearLayers()
 
 )(window.Cartography = window.Cartography || {}, jQuery)
