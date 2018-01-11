@@ -47,6 +47,12 @@
           animatedHelper: 'http://placehold.it/200x150'
           ignoreActions: true
       edit:
+        selectedPathOptions:
+          dashArray: '10, 10'
+          fill: true
+          fillColor: '#fe57a1'
+          fillOpacity: 0.7
+          maintainColor: false
         panel:
           title: 'Edit plot'
           animatedHelper: 'http://placehold.it/200x150'
@@ -296,10 +302,12 @@
       @clean()
 
     edit: (uuid, options = {}) ->
+      @unhighlight uuid
       layer = @select uuid, true
       if layer
         if options.cancel && layer._editToolbar
           layer._editToolbar.disable()
+          @unselect layer.feature.properties.uuid
           return
 
         snapOptions = {polygon: guideLayers: @getFeatureGroup()}

@@ -248,8 +248,7 @@
         layer.setStyle layer.options.original
 
       delete layer.options.disabled
-      delete layer.options.selected
-      delete layer.options.original
+      delete layer.options.snapSelected
 
     _editMode: (e) ->
       layer = e.layer
