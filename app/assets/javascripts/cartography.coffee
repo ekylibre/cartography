@@ -384,6 +384,7 @@
 
         if removeList.length
           for l in removeList
+            @getMap().fire L.Selectable.Event.UNSELECT, { layer: l }
             layerGroup.removeLayer l
 
         addList = newLayers.getLayers().filter (layer) ->
