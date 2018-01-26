@@ -1,16 +1,22 @@
 {
   "name": "@turf/destination",
-  "version": "4.7.3",
+  "version": "5.1.5",
   "description": "turf destination module",
-  "main": "index.js",
+  "main": "main.js",
+  "module": "main.es.js",
   "types": "index.d.ts",
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "main.js",
+    "main.es.js"
   ],
   "scripts": {
-    "test": "node test.js",
-    "bench": "node bench.js"
+    "pretest": "rollup -c ../../rollup.config.js",
+    "test": "node -r @std/esm test.js",
+    "posttest": "node -r @std/esm ../../scripts/validate-es5-dependencies.js",
+    "bench": "node -r @std/esm bench.js",
+    "docs": "node ../../scripts/generate-readmes"
   },
   "repository": {
     "type": "git",
@@ -31,14 +37,21 @@
   },
   "homepage": "https://github.com/Turfjs/turf",
   "devDependencies": {
-    "benchmark": "^2.1.4",
-    "glob": "7.1.2",
-    "load-json-file": "^2.0.0",
-    "tape": "4.8.0",
-    "write-json-file": "^2.0.0"
+    "@std/esm": "*",
+    "@turf/truncate": "^5.1.5",
+    "benchmark": "*",
+    "glob": "*",
+    "load-json-file": "*",
+    "rollup": "*",
+    "tape": "*",
+    "write-json-file": "*"
   },
   "dependencies": {
-    "@turf/helpers": "^4.7.3",
-    "@turf/invariant": "^4.7.3"
+    "@turf/helpers": "^5.1.5",
+    "@turf/invariant": "^5.1.5"
+  },
+  "@std/esm": {
+    "esm": "js",
+    "cjs": true
   }
 }

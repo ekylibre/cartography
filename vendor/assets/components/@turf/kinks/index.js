@@ -1,4 +1,4 @@
-var point = require('@turf/helpers').point;
+import { point } from '@turf/helpers';
 
 /**
  * Takes a {@link LineString|linestring}, {@link MultiLineString|multi-linestring}, {@link MultiPolygon|multi-polygon}, or {@link Polygon|polygon} and returns {@link Point|points} at all self-intersections.
@@ -20,7 +20,7 @@ var point = require('@turf/helpers').point;
  * //addToMap
  * var addToMap = [poly, kinks]
  */
-module.exports = function (featureIn) {
+function kinks(featureIn) {
     var coordinates;
     var feature;
     var results = {
@@ -77,7 +77,7 @@ module.exports = function (featureIn) {
         });
     });
     return results;
-};
+}
 
 
 // modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
@@ -124,3 +124,5 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
         return false;
     }
 }
+
+export default kinks;
