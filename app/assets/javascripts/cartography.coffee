@@ -5,7 +5,7 @@
 #= require cartography/layers
 #= require cartography/layers/simple
 
-((C, $) ->
+((C) ->
   "use strict"
 
   class C.Map extends C.BaseClass
@@ -16,7 +16,7 @@
         width: undefined
       map:
         scrollWheelZoom: true
-        zoomControl: true
+        zoomControl: false
         attributionControl: true
         setDefaultBackground: false
         setDefaultOverlay: false
@@ -30,6 +30,8 @@
         snap: true
         reactiveMeasure: true
       snap:
+        panel:
+          surfaceProperty: 'Surface'
         polygon:
           snapDistance: 15
           snapOriginDistance: 15
@@ -37,6 +39,7 @@
         panel:
           title: 'Splitter tool'
           animatedHelper: 'http://placehold.it/200x150'
+          surfacesProperty: 'Surfaces'
       merge:
         panel:
           title: 'Merger tool'
@@ -44,6 +47,7 @@
       draw:
         panel:
           title: 'Create plot'
+          coordinatesProperty: 'Coordinates'
           animatedHelper: 'http://placehold.it/200x150'
           ignoreActions: true
       edit:
@@ -59,9 +63,15 @@
       remove: false
       controlLayers:
         position: 'topleft'
+      zoom:
+        zoomInTitle: 'Zoom in'
+        zoomOutTitle: 'Zoom out'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options
+
+      # Merge drawLocal to forward translations through options.
+      _.merge @options, L.drawLocal
 
       @baseElement = L.DomUtil.get(id)
       @baseElement.setAttribute "data-map-id", @constructor.IDS
@@ -187,6 +197,8 @@
 
       @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
       @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
+
+      @controls.add 'zoom', new C.Controls.Zoom(@getMap(), @options.zoom)
 
       if @options.controls.snap?
         layers = @controls.get('overlays').getLayers()
@@ -424,4 +436,4 @@
     clean: =>
       @getFeatureGroup(name: "edition").clearLayers()
 
-)(window.Cartography = window.Cartography || {}, jQuery)
+)(window.Cartography = window.Cartography || {})
