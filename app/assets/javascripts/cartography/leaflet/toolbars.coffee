@@ -232,7 +232,7 @@
           enabled: true
           handler: new L.Cut.Polyline map, @options
 
-          title: L.drawLocal.edit.toolbar.buttons.edit
+          title: L.drawLocal.split.toolbar.buttons.cutPolyline
         }
       ]
 
@@ -240,14 +240,14 @@
     getActions: (handler) ->
       [
         {
-          title: L.drawLocal.edit.toolbar.actions.save.title
-          text: L.drawLocal.edit.toolbar.actions.save.text
+          title: L.drawLocal.split.toolbar.actions.save.title
+          text: L.drawLocal.split.toolbar.actions.save.text
           callback: @_save
           context: @
         },
         {
-          title: L.drawLocal.edit.toolbar.actions.cancel.title
-          text: L.drawLocal.edit.toolbar.actions.cancel.text
+          title: L.drawLocal.split.toolbar.actions.cancel.title
+          text: L.drawLocal.split.toolbar.actions.cancel.text
           callback: @disable
           context: @
         }
@@ -288,7 +288,7 @@
       else
         L.DomUtil.addClass button, 'leaflet-disabled'
 
-      title = if hasLayers then L.drawLocal.edit.toolbar.buttons.edit else L.drawLocal.edit.toolbar.buttons.editDisabled
+      title = if hasLayers then L.drawLocal.split.toolbar.buttons.cutPolyline else L.drawLocal.edit.toolbar.buttons.editDisabled
 
       button.setAttribute 'title', title
 
