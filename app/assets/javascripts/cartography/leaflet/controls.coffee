@@ -56,7 +56,7 @@
       container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
       containerTitle = L.DomUtil.create 'div', 'property-title', container
-      containerTitle.innerHTML = "Surface"
+      containerTitle.innerHTML = @options.surfaceProperty
 
       @_areaContainer = L.DomUtil.create 'div', 'property-content', container
 
@@ -148,7 +148,7 @@
       container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
       containerTitle = L.DomUtil.create 'div', 'property-title', container
-      containerTitle.innerHTML = "Surfaces"
+      containerTitle.innerHTML = @options.surfacesProperty
 
       @_areaContainer = L.DomUtil.create 'div', 'property-content', container
 

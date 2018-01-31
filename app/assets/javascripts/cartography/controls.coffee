@@ -134,6 +134,18 @@
     getControl: ->
       @control
 
+  class C.Controls.Zoom extends C.Controls
+    options:
+      position: "topleft"
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      C.Util.setOptions @, options
+      @control = new L.Control.Zoom(@options)
+
+    getControl: ->
+      @control
+
   class C.Controls.Draw extends C.Controls
     options:
       draw:

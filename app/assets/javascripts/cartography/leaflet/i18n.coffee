@@ -16,5 +16,9 @@ _.merge(L.drawLocal, {
         cutPolyline: 'Split layer'
       }
     }
+  },
+  zoom: {
+    zoomInTitle: 'Zoom in',
+    zoomOutTitle: 'Zoom out'
   }
 })
