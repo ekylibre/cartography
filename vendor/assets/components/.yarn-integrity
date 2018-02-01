@@ -6,6 +6,7 @@
   "linkedModules": [],
   "topLevelPatterns": [
     "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
+    "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
     "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-draw@0.4.12",
@@ -63,7 +64,7 @@
     "geojson-rbush@2.1.0": "https://registry.yarnpkg.com/geojson-rbush/-/geojson-rbush-2.1.0.tgz#3bd73be391fc10b0ae693d9b8acea2aae0b83a8d",
     "geojson-rbush@^1.0.1": "https://registry.yarnpkg.com/geojson-rbush/-/geojson-rbush-1.2.0.tgz#eca3b6a3afb899a453ef82d5e2373092e20d77e5",
     "jsts-es@*": "https://registry.yarnpkg.com/jsts-es/-/jsts-es-1.5.4.tgz#1089a8ffe2b404dbf8042b1bdca5f21f6061baf6",
-    "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel": "https://github.com/ekylibre/Leaflet.ControlPanel#dd92cccda988c99fcfc91ec8ab09284f3b5167e0",
+    "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel": "https://github.com/ekylibre/Leaflet.ControlPanel#e8e75a14f515b59f4af4b0cac6443265498870d1",
     "leaflet-draw-cut@../Leaflet.Draw.Cut": "",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge": "https://github.com/ekylibre/Leaflet.Draw.Merge#84f788b086672bb244c708e36d1f143a0bea6e9d",
     "leaflet-draw@0.4.12": "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.12.tgz#04c9f3506e3b3a8a488ad389381331dc5b2affd8",

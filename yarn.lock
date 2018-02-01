@@ -285,7 +285,7 @@ jsts-es@*:
 
 "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel":
   version "0.0.1"
-  resolved "https://github.com/ekylibre/Leaflet.ControlPanel#dd92cccda988c99fcfc91ec8ab09284f3b5167e0"
+  resolved "https://github.com/ekylibre/Leaflet.ControlPanel#e8e75a14f515b59f4af4b0cac6443265498870d1"
   dependencies:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"

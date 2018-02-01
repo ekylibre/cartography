@@ -132,7 +132,7 @@ class L.Control.ControlPanel extends L.Control
     container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
     containerTitle = L.DomUtil.create 'div', 'property-title', container
-    containerTitle.innerHTML = "Coordinates"
+    containerTitle.innerHTML = @options.coordinatesProperty
 
     @_pointerCoordinatesContainer = L.DomUtil.create 'div', 'property-content', container
 

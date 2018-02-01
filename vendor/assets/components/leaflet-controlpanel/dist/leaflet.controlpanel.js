@@ -225,7 +225,7 @@ L.Control.ControlPanel = (function(superClass) {
     var container, containerTitle;
     container = L.DomUtil.create('div', 'property', this._propertiesContainer);
     containerTitle = L.DomUtil.create('div', 'property-title', container);
-    containerTitle.innerHTML = "Coordinates";
+    containerTitle.innerHTML = this.options.coordinatesProperty;
     this._pointerCoordinatesContainer = L.DomUtil.create('div', 'property-content', container);
     return this._map.on('mousemove', this._onUpdateCoordinates, this);
   };
