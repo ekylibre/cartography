@@ -26450,8 +26450,6 @@ L.Draw.Feature.DrawMixin = {
 
 L.Draw.Feature.include(L.Draw.Feature.DrawMixin);
 
-L.Draw.Feature.addInitHook('_draw_initialize');
-
 
 /***/ })
 /******/ ]);

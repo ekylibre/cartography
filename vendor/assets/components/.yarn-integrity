@@ -6,7 +6,7 @@
   "linkedModules": [],
   "topLevelPatterns": [
     "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
-    "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
+    "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-draw@0.4.12",

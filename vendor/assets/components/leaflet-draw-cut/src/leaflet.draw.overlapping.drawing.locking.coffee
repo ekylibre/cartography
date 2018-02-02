@@ -38,4 +38,4 @@ L.Draw.Feature.DrawMixin =
     @_map.off 'layeradd', @_draw_on_enabled, this
 
 L.Draw.Feature.include L.Draw.Feature.DrawMixin
-L.Draw.Feature.addInitHook '_draw_initialize'
+# L.Draw.Feature.addInitHook '_draw_initialize'
