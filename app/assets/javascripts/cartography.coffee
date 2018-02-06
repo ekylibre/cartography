@@ -269,8 +269,9 @@
           return
       containerLayer
 
-    select: (uuid, center = false) ->
-      featureGroup = @getFeatureGroup()
+    select: (uuid, center = false, featureGroup = undefined) ->
+      name = featureGroup if featureGroup
+      featureGroup = @getFeatureGroup(name: name)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if center && layer && !layer.selected
@@ -327,24 +328,23 @@
       if layer && layer.selected
         layer.fire 'click'
 
-    highlight: (uuid) ->
-      layer = @select uuid, false
+    highlight: (uuid, featureGroup = undefined) ->
+      layer = @select uuid, false, featureGroup
       if layer
         layer.options.highlightOriginal = L.extend({}, layer.options)
         layer.setStyle color: "#D84315", fillOpacity: 0.5
 
-    unhighlight: (uuid) ->
-      layer = @select uuid, false
+    unhighlight: (uuid, featureGroup = undefined) ->
+      layer = @select uuid, false, featureGroup
       if layer
         layer.setStyle layer.options.highlightOriginal
         delete layer.options.highlightOriginal
 
-    destroy: (uuid) ->
-      layer = @select uuid, true
+    destroy: (uuid, featureGroup = undefined) ->
+      layer = @select uuid, false, featureGroup
+      name = featureGroup if featureGroup
       if layer
-        @getFeatureGroup().removeLayer layer
-
-      @clean()
+        @getFeatureGroup(name: name).removeLayer layer
 
     edit: (uuid, options = {}) ->
       @unhighlight uuid
