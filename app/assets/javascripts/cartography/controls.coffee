@@ -15,6 +15,12 @@
       @controls[id] = control
       @getMap().addControl control.getControl() unless !addToMap
 
+      if control.getToolbar()
+        control.getToolbar().on 'enable', (e) =>
+          for toolbar in @getToolbars()
+            continue if toolbar is e.target
+            toolbar.disable()
+
     remove: (id) ->
       if control = @get(id)
         @getMap().removeControl control.getControl()
@@ -22,6 +28,17 @@
 
     get: (id) ->
       @controls[id]
+
+    getToolbar: ->
+      undefined
+
+    getToolbars: ->
+      Object.values(@controls)
+      .filter Boolean
+      .map (c) ->
+        c.getToolbar()
+      .filter Boolean
+
 
   class C.Controls.Layers extends C.Controls
     options:
@@ -190,6 +207,9 @@
     getControl: ->
       @control
 
+    getToolbar: ->
+      @toolbar
+
   class C.Controls.Edit extends C.Controls
     options:
       edit:
@@ -298,6 +318,9 @@
 
     getControl: ->
       @control
+
+    getToolbar: ->
+      @control._toolbar
 
   class C.Controls.Merge extends C.Controls
     options:
