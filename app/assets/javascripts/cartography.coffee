@@ -29,6 +29,7 @@
         edit: true
         snap: true
         reactiveMeasure: true
+        selection: true
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -220,8 +221,9 @@
         @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
 
 
-      selection = new L.LayerSelection @getMap(), featureGroup: @getFeatureGroup()
-      selection.enable()
+      if @options.controls.selection
+        selection = new L.LayerSelection @getMap(), featureGroup: @getFeatureGroup()
+        selection.enable()
 
       C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
       @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
