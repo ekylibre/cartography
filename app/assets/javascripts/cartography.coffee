@@ -39,17 +39,17 @@
       cut:
         panel:
           title: 'Splitter tool'
-          animatedHelper: 'http://placehold.it/200x150'
+          animatedHelper: undefined
           surfacesProperty: 'Surfaces'
       merge:
         panel:
           title: 'Merger tool'
-          animatedHelper: 'http://placehold.it/200x150'
+          animatedHelper: undefined
       draw:
         panel:
           title: 'Create plot'
           coordinatesProperty: 'Coordinates'
-          animatedHelper: 'http://placehold.it/200x150'
+          animatedHelper: undefined
           ignoreActions: true
       edit:
         selectedPathOptions:
@@ -60,7 +60,7 @@
           maintainColor: false
         panel:
           title: 'Edit plot'
-          animatedHelper: 'http://placehold.it/200x150'
+          animatedHelper: undefined
       remove: false
       controlLayers:
         position: 'topleft'
