@@ -350,7 +350,7 @@
 
     edit: (uuid, options = {}) ->
       @unhighlight uuid
-      layer = @select uuid, true
+      layer = @select uuid, false
       if layer
         if options.cancel && layer._editToolbar
           layer._editToolbar.disable()
