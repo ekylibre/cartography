@@ -375,14 +375,21 @@
 
       newLayers = new L.geoJSON()
 
-      layerGroup.on 'add', (e) =>
+      onAdd = (e) =>
+        layerGroup.bindInit 'layeradd', onLayerAdd
         e.target.eachLayer (layer) =>
           if options.onEachFeature && options.onEachFeature.constructor.name is 'Function'
             options.onEachFeature.call @, layer
 
-      layerGroup.on 'layeradd', (e) =>
+      onLayerAdd = (e) =>
         if options.onEachFeature && options.onEachFeature.constructor.name is 'Function'
           options.onEachFeature.call @, e.layer
+
+      layerGroup.bindInit 'layeradd', onLayerAdd
+      layerGroup.bindInit 'add', onAdd
+
+      layerGroup.on 'remove', =>
+        layerGroup.unbind 'layeradd', onLayerAdd
 
       for el in data
         if el.shape

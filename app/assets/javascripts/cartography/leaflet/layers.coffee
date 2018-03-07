@@ -45,3 +45,15 @@ L.LayerGroup.include
       for id, l of @_layers
         if @getLayerID(l) == layerID
           return true
+
+  bindInit: (event, callback) ->
+    unless @initialized && @initialized[event]
+      @on event, callback, @
+      @initialized[event] = true
+
+  unbind: (event, callback) ->
+    @off event, callback, @
+    @initialized[event] = false
+
+L.LayerGroup.addInitHook ->
+  @initialized = {}
