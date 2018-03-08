@@ -78,26 +78,16 @@
       position: 'topleft'
       featureGroup: undefined
 
-    constructor: (options) ->
+    constructor: (map, options) ->
       C.Util.setOptions @, options
       super options
 
-      if L.LayerSelectionToolbar && !@_toolbar
-        @_toolbar = new L.LayerSelectionToolbar @options
+      @_handler = new L.LayerSelection map, featureGroup: @options.featureGroup
 
       return
-
-    onAdd: (map) ->
-      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-layer-selection')
-      topClassName = 'leaflet-draw-toolbar-top'
-      toolbarContainer = @_toolbar.addToolbar(map)
-      if toolbarContainer
-        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
-      container.appendChild toolbarContainer
-      container
-
-    onRemove: ->
-      @_toolbar.removeToolbar()
+    
+    enable: ->
+      @_handler.enable()
 
   class L.Control.Cut extends L.Control
     @_toolbar: {}

@@ -8,18 +8,32 @@
   class C.Controls extends C.Control
     constructor: (map) ->
       @controls = {}
+      @collection = {}
 
       super(map)
 
-    add: (id, control, addToMap = true) ->
+    add: (id) ->
+      return if @get(id)
+      item = @collection[id]
+      control = item.constructor.call()
       @controls[id] = control
-      @getMap().addControl control.getControl() unless !addToMap
+      @getMap().addControl control.getControl() unless !item.addToMap
 
-      if control.getToolbar()
+      if control.getToolbar() 
         control.getToolbar().on 'enable', (e) =>
           for toolbar in @getToolbars()
             continue if toolbar is e.target
             toolbar.disable()
+      
+      if item.callback and item.callback.constructor.name is 'Function'
+        item.callback.call @
+   
+    register: (id, addToMap = true, constructor, callback) -> 
+      @collection[id] = addToMap: addToMap, constructor: constructor, callback: callback    
+      
+    unregister: (id) ->
+      @collection[id] = undefined
+      @remove(id)
 
     remove: (id) ->
       if control = @get(id)
@@ -202,7 +216,13 @@
 
       @initHooks()
 
-    initHooks: (->)
+    initHooks: () ->
+      @toolbar.on 'enable', (e) =>
+        @getMap().on L.Draw.Event.DRAWSTART, =>
+          @getMap().fire C.Events.new.start
+
+        @getMap().on L.Draw.Event.DRAWSTOP, =>
+          @getMap().fire C.Events.new.cancel
 
     getControl: ->
       @control
@@ -289,7 +309,7 @@
 
       C.Util.setOptions @, options
 
-      @control = new L.Control.LayerSelection(@options.layerSelection)
+      @control = new L.Control.LayerSelection(map, @options.layerSelection)
 
       @initHooks()
 

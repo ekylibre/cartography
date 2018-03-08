@@ -26,10 +26,17 @@
         boxZoom: true
         tap: true
       controls:
+        draw: false
+        cut: false
+        layers: true
+        backgrounds: true
+        overlays: true
         edit: true
         snap: true
         reactiveMeasure: true
-        selection: true
+        selection: false
+        zoom: true
+        scale: true
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -97,16 +104,6 @@
         @mapElement.style.width = @options.box.width
 
     initHooks: ->
-
-      # @controls.get('draw').toolbar.on 'disable', (e) =>
-        # @getMap().off L.Draw.Event.CREATED
-
-      @controls.get('draw').toolbar.on 'enable', (e) =>
-        @getMap().on L.Draw.Event.DRAWSTART, =>
-          @getMap().fire C.Events.new.start
-
-        @getMap().on L.Draw.Event.DRAWSTOP, =>
-          @getMap().fire C.Events.new.cancel
 
       @getMap().on L.Draw.Event.CREATED, (e) =>
         return unless e.layerType == "polygon" or e.layerType is undefined
@@ -192,44 +189,75 @@
     controls: ->
       @controls = new C.Controls(@getMap(), @options)
 
-      layerSelector = new C.Controls.Layers(undefined, @getMap(), @options)
+      @controls.register 'layers', false, =>
+        new C.Controls.Layers(undefined, @getMap(), @options)
+      , =>
+        @controls.register 'backgrounds', false, =>
+          new C.Controls.BaseLayers(@controls.get('layers').getControl(), @getMap(), @options)
 
-      @controls.add 'layers', layerSelector, false
+        @controls.register 'overlays', false, =>
+          new C.Controls.OverlayLayers(@controls.get('layers').getControl(), @getMap(), @options)
+        , =>
+          return unless @options.controls.snap?
+          layers = @controls.get('overlays').getLayers()
+          @options.snap.polygon.guideLayers = Object.values(layers)
+     
+        if @options.controls.backgrounds
+          @controls.add 'backgrounds'
 
-      @controls.add 'backgrounds', new C.Controls.BaseLayers(layerSelector.getControl(), @getMap(), @options), false
-      @controls.add 'overlays', new C.Controls.OverlayLayers(layerSelector.getControl(), @getMap(), @options), false
+        if @options.controls.overlays
+          @controls.add 'overlays'  
 
-      @controls.add 'zoom', new C.Controls.Zoom(@getMap(), @options.zoom)
+      @controls.register 'zoom', true, =>
+        new C.Controls.Zoom(@getMap(), @options.zoom)
 
-      if @options.controls.snap?
-        layers = @controls.get('overlays').getLayers()
+      @controls.register 'draw', true, =>
+        new C.Controls.Draw(@getMap(), @options)
+      
+      @controls.register 'edit', true, =>
+        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
+        new C.Controls.Edit(@getMap(), @options)
+      , =>
+        return unless @options.controls.reactiveMeasure?
+        @controls.register 'measure', true, =>
+          new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
+        @controls.add 'measure' 
+        @removeControl 'edit'
 
-        @options.snap.polygon.guideLayers = Object.values(layers)
+      @controls.register 'scale', true, =>
+        new C.Controls.Scale(@getMap(), @options)
 
-      drawControl = new C.Controls.Draw(@getMap(), @options)
-      @controls.add 'draw', drawControl
-      # Display selector if shapes are editable
-      # if @options.controls.edit? and layerSelector?
-        # editControl.addTo layerSelector.getControl()
+      @controls.register 'selection', false, =>
+        new C.Controls.LayerSelection(@getMap(), {layerSelection: {featureGroup: @getFeatureGroup()}})
+      , =>
+        @controls.get('selection').getControl().enable()
 
-      C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
-      @controls.add 'edit', new C.Controls.Edit(@getMap(), @options)
 
-      @controls.add 'scale', new C.Controls.Scale(@getMap(), @options)
+      @controls.register 'cut', true, =>
+        C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
+        new C.Controls.Cut(@getMap(), @options)
+      
 
-      if @options.controls.reactiveMeasure?
-        @controls.add 'measure', new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
+      if @options.controls.layers
+        @controls.add 'layers' 
 
+      if @options.controls.zoom
+        @controls.add 'zoom'  
+
+      if @options.controls.edit
+        @controls.add 'edit'  
+
+      if @options.controls.scale
+        @controls.add 'scale'  
 
       if @options.controls.selection
-        selection = new L.LayerSelection @getMap(), featureGroup: @getFeatureGroup()
-        selection.enable()
+        @controls.add 'selection'  
 
-      C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
-      @controls.add 'cut', new C.Controls.Cut(@getMap(), @options)
+      if @options.controls.draw
+        @controls.add 'draw'  
 
-      # C.Util.setOptions @, merge: {featureGroup: @getFeatureGroup()}
-      # @controls.add 'merge', new C.Controls.Merge(@getMap(), @options)
+      if @options.controls.cut
+        @controls.add 'cut' 
 
       style = (feature) ->
         color: "#3F51B5", fillOpacity: 0.7, opacity: 1, fill: true
@@ -371,6 +399,7 @@
         layer._editToolbar._activate layer
 
     sync: (data, layerName, options = {}) =>
+
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
 
       newLayers = new L.geoJSON()
@@ -431,6 +460,9 @@
 
     getOverlay: (name) =>
       @controls.get('overlays').getLayer(name)
+
+    addControl: (name) =>
+      @controls.add(name)
 
     removeControl: (name) =>
       @controls.remove(name)
