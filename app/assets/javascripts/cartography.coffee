@@ -343,8 +343,8 @@
         @getMap().fitBounds group.getBounds()
       group
 
-    centerLayer: (uuid, center = true) ->
-      featureGroup = @getFeatureGroup()
+    centerLayer: (uuid, center = true, featureGroup = undefined) ->
+      featureGroup = @getFeatureGroup(name: featureGroup)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if center && layer
