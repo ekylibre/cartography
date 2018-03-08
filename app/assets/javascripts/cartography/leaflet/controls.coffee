@@ -130,8 +130,14 @@
       @_container
 
     addProperties: ->
+      @_addSubtitle() if @options.subtitleProperty
       super
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
+
+    _addSubtitle: ->
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = @options.subtitleProperty
 
     _addCreatedPolygons: (e) ->
 
