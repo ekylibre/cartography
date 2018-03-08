@@ -316,8 +316,7 @@
       group
 
     centerLayer: (uuid, center = true, featureGroup = undefined) ->
-      name = featureGroup if featureGroup
-      featureGroup = @getFeatureGroup(name: name)
+      featureGroup = @getFeatureGroup(name: featureGroup)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if center && layer
