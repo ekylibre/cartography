@@ -85,7 +85,7 @@
       @_handler = new L.LayerSelection map, featureGroup: @options.featureGroup
 
       return
-    
+
     enable: ->
       @_handler.enable()
 
@@ -285,5 +285,31 @@
 
         area.innerHTML = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(latlngs[0]), true)
 
+
+  class L.Control.ShapeDraw extends L.Control
+    options:
+      featureGroup: undefined
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.Draw.Polygon map, @options
+
+      @_map = map
+
+      return
+
+    _onDrawVertex: (e) ->
+      @_map.fire C.Events.shapeDraw.start
+      @_map.off "draw:drawvertex", @_onDrawVertex, @
+
+    enable: ->
+      @_map.on "draw:drawvertex", @_onDrawVertex, @
+      @_handler.enable()
+
+    disable: ->
+      @_map.off "draw:drawvertex", @_onDrawVertex, @
+      @_handler.disable()
 
 )(window.Cartography = window.Cartography || {})

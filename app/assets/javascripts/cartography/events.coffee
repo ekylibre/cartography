@@ -7,6 +7,8 @@
   C.Events.new.complete = "cartography:events:new:complete"
   C.Events.new.cancel = "cartography:events:new:cancel"
   C.Events.new.change = "cartography:events:new:change"
+  C.Events.shapeDraw = {}
+  C.Events.shapeDraw.start = "cartography:events:shapeDraw:start"
   C.Events.split = {}
   C.Events.split.start = "cartography:events:split:start"
   C.Events.split.complete = "cartography:events:split:complete"
