@@ -159,10 +159,13 @@
 
       @_map.on L.SnapEditing.Event.SELECT, @_editMode, @
 
+      @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
+
     disable: ->
       @featureGroup.off 'layeradd', @_enableLayer, @
       @featureGroup.off 'layerremove', @_disableLayer, @
       @_map.off L.SnapEditing.Event.SELECT, @_editMode, @
+      @_map.off L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
 
       if @_activeLayer && @_activeLayer.editing
         @_activeLayer.editing.disable()
@@ -177,6 +180,8 @@
       @clearGuideLayers()
       super
 
+    _onEditingPolygon: (e) ->
+      @_map.fire C.Events.shapeDraw.edit, data: { measure: e.measure }
 
     _enableLayer: (e) ->
       layer = e.layer or e.target or e

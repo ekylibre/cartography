@@ -52,7 +52,6 @@
       @_addEditPolygon()
 
     _addEditPolygon: ->
-
       container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
       containerTitle = L.DomUtil.create 'div', 'property-title', container
@@ -297,19 +296,23 @@
       @_handler = new L.Draw.Polygon map, @options
 
       @_map = map
-
       return
 
     _onDrawVertex: (e) ->
       @_map.fire C.Events.shapeDraw.start
       @_map.off "draw:drawvertex", @_onDrawVertex, @
 
+    _onDrawingPolygon: (e) ->
+      @_map.fire C.Events.shapeDraw.draw, data: { measure: e.measure }
+
     enable: ->
       @_map.on "draw:drawvertex", @_onDrawVertex, @
+      @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
       @_handler.enable()
 
     disable: ->
       @_map.off "draw:drawvertex", @_onDrawVertex, @
+      @_map.off L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
       @_handler.disable()
 
 )(window.Cartography = window.Cartography || {})
