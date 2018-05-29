@@ -201,21 +201,23 @@
         maintainColor: true
         weight: 3
       cuttingPathOptions:
-        dashArray: '10, 10'
-        fill: true
+        color: '#FF0000'
+        className: 'leaflet-polygon-splitter'
+        #dashArray: '10, 10'
+        #fill: true
         # color: '#3f51b5'
         # fillOpacity: 0.9
-        maintainColor: true
-      snap:
-        guideLayers: []
-        snapDistance: 30
-        allowIntersection: false
-        guidelineDistance: 8
-        shapeOptions:
-          dashArray: '8, 8'
-          fill: false
-          color: '#FF5722'
-          opacity: 1
+        #maintainColor: true
+      #snap:
+        #guideLayers: []
+        #snapDistance: 30
+        #allowIntersection: false
+        #guidelineDistance: 8
+        #shapeOptions:
+          #dashArray: '8, 8'
+          #fill: false
+          #color: '#FF5722'
+          #opacity: 1
 
     constructor: (options = {}) ->
       C.Util.setOptions @, options
