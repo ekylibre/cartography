@@ -359,6 +359,14 @@ class L.Cut.Polyline extends L.Handler
 
       polygon = new L.polygon [], className: "leaflet-polygon-slice c-#{index}"
 
+      polygon._polygonSliceIcon = new L.PolygonSliceIcon html: "#{index+1}"
+
+      polygon.feature ||= {}
+      polygon.feature.properties ||= {}
+
+      polygon.feature.properties.num = index+1
+      polygon.feature.properties.color = "c-#{index}"
+      
       polygon.fromTurfFeature turfPolygon
       featureGroup.addLayer polygon
       index++
@@ -430,10 +438,17 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
 
+      @_activeLayer._polys.eachLayer (layer) ->
+        return unless layer._polygonSliceIcon
+        if layer._polygonSliceMarker
+          layer._map.removeLayer layer._polygonSliceMarker
+
+        layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
+        layer._polygonSliceMarker.addTo layer._map
+
       @_activeLayer.cutting.disable()
-      #
-      ##@_map.fire L.Cutting.Polyline.Event.CREATED, layers: [polygon1, polygon2]
-      @_map.fire L.Cutting.Polyline.Event.CREATED, layers: layerGroup.getLayers()
+
+      @_map.fire L.Cutting.Polyline.Event.CREATED, layers: layerGroup.getLayers(), parent: @_activeLayer
 
       @_activeLayer.editing = new L.Edit.Poly splitter
       #@_activeLayer.editing._poly.options.editing = {color: '#fe57a1', dashArray: '10, 10'}
@@ -483,9 +498,17 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
 
+      @_activeLayer._polys.eachLayer (layer) ->
+        return unless layer._polygonSliceIcon
+        if layer._polygonSliceMarker
+          layer._map.removeLayer layer._polygonSliceMarker
+
+        layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
+        layer._polygonSliceMarker.addTo layer._map
+
       marker._oldLatLng = marker._latlng
       
-      @_map.fire L.Cutting.Polyline.Event.UPDATED, layers: layerGroup.getLayers()
+      @_map.fire L.Cutting.Polyline.Event.UPDATED, layers: layerGroup.getLayers(), parent: @_activeLayer
 
     catch e
       #@_rewind(marker)

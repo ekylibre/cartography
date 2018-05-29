@@ -53,3 +53,9 @@ L.LayerGroup.include
         if @getLayerUUID(l) == layerUUID
           return true
     return false
+
+class L.PolygonSliceIcon extends L.DivIcon
+  options:
+    iconSize: [20, 20]
+    className: "leaflet-polygon-slice-icon"
+    html: ""

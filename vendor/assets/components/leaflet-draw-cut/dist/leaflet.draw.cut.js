@@ -16792,7 +16792,7 @@ L.Cut.Polyline = (function(superClass) {
     }
     index = 0;
     turfMeta.featureEach(turfPolygonsCollection, function(turfPolygon) {
-      var diff;
+      var base, diff;
       if (turfPolygonsCollection.features.length > 2) {
         diff = turfDifference(turfPolygon, buffered);
         if (diff != null) {
@@ -16802,6 +16802,13 @@ L.Cut.Polyline = (function(superClass) {
       polygon = new L.polygon([], {
         className: "leaflet-polygon-slice c-" + index
       });
+      polygon._polygonSliceIcon = new L.PolygonSliceIcon({
+        html: "" + (index + 1)
+      });
+      polygon.feature || (polygon.feature = {});
+      (base = polygon.feature).properties || (base.properties = {});
+      polygon.feature.properties.num = index + 1;
+      polygon.feature.properties.color = "c-" + index;
       polygon.fromTurfFeature(turfPolygon);
       featureGroup.addLayer(polygon);
       return index++;
@@ -16869,9 +16876,22 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
+      this._activeLayer._polys.eachLayer(function(layer) {
+        if (!layer._polygonSliceIcon) {
+          return;
+        }
+        if (layer._polygonSliceMarker) {
+          layer._map.removeLayer(layer._polygonSliceMarker);
+        }
+        layer._polygonSliceMarker = L.marker(layer.getCenter(), {
+          icon: layer._polygonSliceIcon
+        });
+        return layer._polygonSliceMarker.addTo(layer._map);
+      });
       this._activeLayer.cutting.disable();
       this._map.fire(L.Cutting.Polyline.Event.CREATED, {
-        layers: layerGroup.getLayers()
+        layers: layerGroup.getLayers(),
+        parent: this._activeLayer
       });
       this._activeLayer.editing = new L.Edit.Poly(splitter);
       this._activeLayer.editing._poly.addTo(this._map);
@@ -16911,9 +16931,22 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
+      this._activeLayer._polys.eachLayer(function(layer) {
+        if (!layer._polygonSliceIcon) {
+          return;
+        }
+        if (layer._polygonSliceMarker) {
+          layer._map.removeLayer(layer._polygonSliceMarker);
+        }
+        layer._polygonSliceMarker = L.marker(layer.getCenter(), {
+          icon: layer._polygonSliceIcon
+        });
+        return layer._polygonSliceMarker.addTo(layer._map);
+      });
       marker._oldLatLng = marker._latlng;
       return this._map.fire(L.Cutting.Polyline.Event.UPDATED, {
-        layers: layerGroup.getLayers()
+        layers: layerGroup.getLayers(),
+        parent: this._activeLayer
       });
     } catch (error) {
       e = error;
@@ -50367,7 +50400,9 @@ return L.GeometryUtil;
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var turf, turfFlip;
+var turf, turfFlip,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 turf = __webpack_require__(1);
 
@@ -50435,6 +50470,23 @@ L.LayerGroup.include({
     return false;
   }
 });
+
+L.PolygonSliceIcon = (function(superClass) {
+  extend(PolygonSliceIcon, superClass);
+
+  function PolygonSliceIcon() {
+    return PolygonSliceIcon.__super__.constructor.apply(this, arguments);
+  }
+
+  PolygonSliceIcon.prototype.options = {
+    iconSize: [20, 20],
+    className: "leaflet-polygon-slice-icon",
+    html: ""
+  };
+
+  return PolygonSliceIcon;
+
+})(L.DivIcon);
 
 
 /***/ }),
