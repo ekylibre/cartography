@@ -20,6 +20,8 @@ module.exports = function(config) {
       'node_modules/leaflet-draw/dist/leaflet.draw-src.js',
       'node_modules/leaflet-snap/leaflet.snap.js',
       'dist/*.js',
+      'spec/fixtures.coffee',
+      'spec/expectations.coffee',
       'spec/*Spec.coffee'
     ],
 
@@ -40,6 +42,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'spec/expectations.coffee': ['webpack'],
+      'spec/fixtures.coffee': ['webpack'],
       'spec/*Spec.coffee': ['webpack']
     },
 
@@ -69,7 +73,8 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJSCustom', 'Chrome'],
+    //browsers: ['PhantomJSCustom', 'Chrome'],
+    browsers: ['Chrome'],
 
 
     customLaunchers: {

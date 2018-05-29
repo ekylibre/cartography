@@ -10,11 +10,14 @@ L.Polygon.include
 
     multi = !L.LineUtil.isFlat(@_latlngs[0])
 
-    ring0 = if multi then @_latlngs[0][0] else @_latlngs[0]
+    poly = if multi then @_latlngs[0] else @_latlngs
 
-    #Convert to array and close polygon
-    coords = L.GeoJSON.latLngsToCoords(ring0, 0, true, 17)
-    turf.polygon([coords])
+    coords = []
+
+    for ring in poly
+      coords.push L.GeoJSON.latLngsToCoords(ring, 0, true, 17)
+
+    turf.polygon(coords)
 
   outerRingAsTurfLineString: ->
 

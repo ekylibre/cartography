@@ -2,7 +2,7 @@ L = require 'leaflet'
 _ = require 'lodash'
 
 turf = require '@turf/helpers'
-turfinside = require '@turf/inside'
+turfinside = require('@turf/boolean-point-in-polygon')
 
 L.Draw.Feature.DrawMixin =
   _draw_initialize: ->

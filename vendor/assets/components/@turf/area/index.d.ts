@@ -1,11 +1,17 @@
-/// <reference types="geojson" />
-
-type Feature = GeoJSON.Feature<any>;
-type Features = GeoJSON.FeatureCollection<any>;
-
+import { Feature, FeatureCollection, Geometry } from "@turf/helpers";
 /**
- * http://turfjs.org/docs/#area
+ * Takes one or more features and returns their area in square meters.
+ *
+ * @name area
+ * @param {GeoJSON} geojson input GeoJSON feature(s)
+ * @returns {number} area in square meters
+ * @example
+ * var polygon = turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);
+ *
+ * var area = turf.area(polygon);
+ *
+ * //addToMap
+ * var addToMap = [polygon]
+ * polygon.properties.area = area
  */
-declare function area(features: Feature | Features): number;
-declare namespace area { }
-export = area;
+export default function area(geojson: Feature<any> | FeatureCollection<any> | Geometry): number;
