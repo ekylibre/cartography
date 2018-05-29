@@ -52,7 +52,6 @@
       @_addEditPolygon()
 
     _addEditPolygon: ->
-
       container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
       containerTitle = L.DomUtil.create 'div', 'property-title', container
@@ -85,7 +84,7 @@
       @_handler = new L.LayerSelection map, featureGroup: @options.featureGroup
 
       return
-    
+
     enable: ->
       @_handler.enable()
 
@@ -130,8 +129,14 @@
       @_container
 
     addProperties: ->
+      @_addSubtitle() if @options.subtitleProperty
       super
       @_map.on L.Cutting.Polyline.Event.CREATED, @_addCreatedPolygons, @
+
+    _addSubtitle: ->
+      container = L.DomUtil.create 'div', 'property', @_propertiesContainer
+      containerTitle = L.DomUtil.create 'div', 'property-title', container
+      containerTitle.innerHTML = @options.subtitleProperty
 
     _addCreatedPolygons: (e) ->
 
@@ -279,5 +284,35 @@
 
         area.innerHTML = L.GeometryUtil.readableArea(L.GeometryUtil.geodesicArea(latlngs[0]), true)
 
+
+  class L.Control.ShapeDraw extends L.Control
+    options:
+      featureGroup: undefined
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.Draw.Polygon map, @options
+
+      @_map = map
+      return
+
+    _onDrawVertex: (e) ->
+      @_map.fire C.Events.shapeDraw.start
+      @_map.off "draw:drawvertex", @_onDrawVertex, @
+
+    _onDrawingPolygon: (e) ->
+      @_map.fire C.Events.shapeDraw.draw, data: { measure: e.measure }
+
+    enable: ->
+      @_map.on "draw:drawvertex", @_onDrawVertex, @
+      @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
+      @_handler.enable()
+
+    disable: ->
+      @_map.off "draw:drawvertex", @_onDrawVertex, @
+      @_map.off L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
+      @_handler.disable()
 
 )(window.Cartography = window.Cartography || {})

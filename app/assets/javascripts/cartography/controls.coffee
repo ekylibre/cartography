@@ -19,18 +19,18 @@
       @controls[id] = control
       @getMap().addControl control.getControl() unless !item.addToMap
 
-      if control.getToolbar() 
+      if control.getToolbar()
         control.getToolbar().on 'enable', (e) =>
           for toolbar in @getToolbars()
             continue if toolbar is e.target
             toolbar.disable()
-      
+
       if item.callback and item.callback.constructor.name is 'Function'
         item.callback.call @
-   
-    register: (id, addToMap = true, constructor, callback) -> 
-      @collection[id] = addToMap: addToMap, constructor: constructor, callback: callback    
-      
+
+    register: (id, addToMap = true, constructor, callback) ->
+      @collection[id] = addToMap: addToMap, constructor: constructor, callback: callback
+
     unregister: (id) ->
       @collection[id] = undefined
       @remove(id)
@@ -357,6 +357,47 @@
       @initHooks()
 
     initHooks: (->)
+
+    getControl: ->
+      @control
+
+  class C.Controls.ShapeDraw extends C.Controls
+    options:
+      draw:
+        edit: false
+        draw:
+          marker: false
+          circlemarker: false
+          polyline: false
+          rectangle: false
+          circle: false
+          polygon:
+            allowIntersection: false
+            showArea: false
+      snap:
+        polygon:
+          guideLayers: []
+          snapDistance: 15
+          snapOriginDistance: 30
+          allowIntersection: false
+          guidelineDistance: 8
+          shapeOptions:
+            dashArray: '8, 8'
+            fill: false
+            color: '#FF5722'
+            opacity: 1
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.ShapeDraw(map, @options.draw)
+
+      @initHooks()
+
+    initHooks: ->
+
 
     getControl: ->
       @control

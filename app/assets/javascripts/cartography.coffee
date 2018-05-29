@@ -201,19 +201,19 @@
           return unless @options.controls.snap?
           layers = @controls.get('overlays').getLayers()
           @options.snap.polygon.guideLayers = Object.values(layers)
-     
+
         if @options.controls.backgrounds
           @controls.add 'backgrounds'
 
         if @options.controls.overlays
-          @controls.add 'overlays'  
+          @controls.add 'overlays'
 
       @controls.register 'zoom', true, =>
         new C.Controls.Zoom(@getMap(), @options.zoom)
 
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
-      
+
       @controls.register 'edit', true, =>
         C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
@@ -221,7 +221,7 @@
         return unless @options.controls.reactiveMeasure?
         @controls.register 'measure', true, =>
           new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
-        @controls.add 'measure' 
+        @controls.add 'measure'
         @removeControl 'edit'
 
       @controls.register 'scale', true, =>
@@ -232,32 +232,36 @@
       , =>
         @controls.get('selection').getControl().enable()
 
+      @controls.register 'shape_draw', false, =>
+        new C.Controls.ShapeDraw(@getMap(), @options)
+      , =>
+        @controls.get('shape_draw').getControl().enable()
 
       @controls.register 'cut', true, =>
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
         new C.Controls.Cut(@getMap(), @options)
-      
+
 
       if @options.controls.layers
-        @controls.add 'layers' 
+        @controls.add 'layers'
 
       if @options.controls.zoom
-        @controls.add 'zoom'  
+        @controls.add 'zoom'
 
       if @options.controls.edit
-        @controls.add 'edit'  
+        @controls.add 'edit'
 
       if @options.controls.scale
-        @controls.add 'scale'  
+        @controls.add 'scale'
 
       if @options.controls.selection
-        @controls.add 'selection'  
+        @controls.add 'selection'
 
       if @options.controls.draw
-        @controls.add 'draw'  
+        @controls.add 'draw'
 
       if @options.controls.cut
-        @controls.add 'cut' 
+        @controls.add 'cut'
 
       style = (feature) ->
         color: "#3F51B5", fillOpacity: 0.7, opacity: 1, fill: true
@@ -343,8 +347,8 @@
         @getMap().fitBounds group.getBounds()
       group
 
-    centerLayer: (uuid, center = true) ->
-      featureGroup = @getFeatureGroup()
+    centerLayer: (uuid, center = true, featureGroup = undefined) ->
+      featureGroup = @getFeatureGroup(name: featureGroup)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if center && layer
@@ -376,9 +380,9 @@
       if layer
         @getFeatureGroup(name: name).removeLayer layer
 
-    edit: (uuid, options = {}) ->
+    edit: (uuid, featureGroup = undefined, options = {}) ->
       @unhighlight uuid
-      layer = @select uuid, false
+      layer = @select uuid, false, featureGroup
       if layer
         if options.cancel && layer._editToolbar
           layer._editToolbar.disable()
@@ -391,7 +395,7 @@
 
         layer._editToolbar = new L.EditToolbar.SelectableSnapEdit @getMap(),
           snapOptions: options.snap
-          featureGroup: @getFeatureGroup()
+          featureGroup: @getFeatureGroup(name: featureGroup)
           selectedPathOptions: options.edit.selectedPathOptions
           disabledPathOptions: options.edit.disabledPathOptions
           poly: options.poly
