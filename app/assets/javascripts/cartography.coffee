@@ -149,25 +149,20 @@
         type = e.layer.feature.properties.type || @getMode()
         @getMap().fire C.Events.split.select, data: { uuid: uuid, type: type }
 
-      @getMap().on L.Cutting.Polyline.Event.UPDATED, (e) =>
+      onSplitChange = (e) =>
+        data = {}
+        data['old'] = {uuid: e.parent.feature.properties.uuid, name: e.parent.feature.properties.name}
+        data['new'] = e.layers.map (layer) ->
+          p = layer.feature.properties
+          measure = layer.getMeasure()
 
-      @getMap().on L.Cutting.Polyline.Event.SAVED, (e) =>
-        newLayers = []
+          { num: p.num, area: measure.area, perimeter: measure.perimeter, color: p.color, shape: layer.toGeoJSON() }
 
-        for l in e.layers
-          p = l.feature.properties
+        @getMap().fire C.Events.split.change, data: data
 
-          if l.getLatLngs().constructor.name is 'Array'
-            latlngs = l.getLatLngs()[0]
-          else
-            latlngs = l.getLatLngs()
+      @getMap().on L.Cutting.Polyline.Event.CREATED, onSplitChange, @
+      @getMap().on L.Cutting.Polyline.Event.UPDATED, onSplitChange, @
 
-          area = L.GeometryUtil.geodesicArea(latlngs)
-          centroid = l.getCenter()
-
-          newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
-
-        @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
 
       @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
         if e.layer.getLatLngs().constructor.name is 'Array'
