@@ -41,6 +41,7 @@ class L.Cut.Polyline extends L.Handler
 
     @_featureGroup = options.featureGroup
     @_uneditedLayerProps = []
+    @_polygonSliceMarkers = new L.LayerGroup 
 
     if !(@_featureGroup instanceof L.FeatureGroup)
       throw new Error('options.featureGroup must be a L.FeatureGroup')
@@ -66,12 +67,16 @@ class L.Cut.Polyline extends L.Handler
 
     @_map.on 'zoomend moveend', @refreshAvailableLayers, @
 
+    @_polygonSliceMarkers.addTo @_map
     super
 
   disable: ->
     if !@_enabled
       return
     @_map.fire L.Cutting.Polyline.Event.STOP, handler: @type
+
+    @_polygonSliceMarkers.clearLayers()
+    @_map.removeLayer @_polygonSliceMarkers
 
     if @_activeLayer and @_activeLayer.cutting
       @_activeLayer.cutting.disable()
@@ -438,13 +443,16 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
 
-      @_activeLayer._polys.eachLayer (layer) ->
-        return unless layer._polygonSliceIcon
-        if layer._polygonSliceMarker
-          layer._map.removeLayer layer._polygonSliceMarker
+      @_polygonSliceMarkers.clearLayers()
 
-        layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
-        layer._polygonSliceMarker.addTo layer._map
+      @_activeLayer._polys.eachLayer (layer) =>
+        return unless layer._polygonSliceIcon
+        #if layer._polygonSliceMarker
+          #layer._map.removeLayer layer._polygonSliceMarker
+
+        #layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
+        #layer._polygonSliceMarker.addTo layer._map
+        @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
 
       @_activeLayer.cutting.disable()
 
@@ -498,13 +506,17 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
 
-      @_activeLayer._polys.eachLayer (layer) ->
-        return unless layer._polygonSliceIcon
-        if layer._polygonSliceMarker
-          layer._map.removeLayer layer._polygonSliceMarker
+      @_polygonSliceMarkers.clearLayers()
 
-        layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
-        layer._polygonSliceMarker.addTo layer._map
+      @_activeLayer._polys.eachLayer (layer) =>
+        return unless layer._polygonSliceIcon
+        #if layer._polygonSliceMarker
+          #layer._map.removeLayer layer._polygonSliceMarker
+
+        #layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
+        #layer._polygonSliceMarker.addTo layer._map
+        @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
+
 
       marker._oldLatLng = marker._latlng
       

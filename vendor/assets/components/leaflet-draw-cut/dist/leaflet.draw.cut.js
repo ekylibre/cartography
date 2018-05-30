@@ -16499,6 +16499,7 @@ L.Cut.Polyline = (function(superClass) {
     this.options = _.merge(this.options, options);
     this._featureGroup = options.featureGroup;
     this._uneditedLayerProps = [];
+    this._polygonSliceMarkers = new L.LayerGroup;
     if (!(this._featureGroup instanceof L.FeatureGroup)) {
       throw new Error('options.featureGroup must be a L.FeatureGroup');
     }
@@ -16527,6 +16528,7 @@ L.Cut.Polyline = (function(superClass) {
     this._availableLayers.on('layerremove', this._disableLayer, this);
     this._map.on(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
     this._map.on('zoomend moveend', this.refreshAvailableLayers, this);
+    this._polygonSliceMarkers.addTo(this._map);
     return Polyline.__super__.enable.apply(this, arguments);
   };
 
@@ -16537,6 +16539,8 @@ L.Cut.Polyline = (function(superClass) {
     this._map.fire(L.Cutting.Polyline.Event.STOP, {
       handler: this.type
     });
+    this._polygonSliceMarkers.clearLayers();
+    this._map.removeLayer(this._polygonSliceMarkers);
     if (this._activeLayer && this._activeLayer.cutting) {
       this._activeLayer.cutting.disable();
       if (this._activeLayer.cutting._mouseMarker) {
@@ -16876,18 +16880,17 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
-      this._activeLayer._polys.eachLayer(function(layer) {
-        if (!layer._polygonSliceIcon) {
-          return;
-        }
-        if (layer._polygonSliceMarker) {
-          layer._map.removeLayer(layer._polygonSliceMarker);
-        }
-        layer._polygonSliceMarker = L.marker(layer.getCenter(), {
-          icon: layer._polygonSliceIcon
-        });
-        return layer._polygonSliceMarker.addTo(layer._map);
-      });
+      this._polygonSliceMarkers.clearLayers();
+      this._activeLayer._polys.eachLayer((function(_this) {
+        return function(layer) {
+          if (!layer._polygonSliceIcon) {
+            return;
+          }
+          return _this._polygonSliceMarkers.addLayer(L.marker(layer.getCenter(), {
+            icon: layer._polygonSliceIcon
+          }));
+        };
+      })(this));
       this._activeLayer.cutting.disable();
       this._map.fire(L.Cutting.Polyline.Event.CREATED, {
         layers: layerGroup.getLayers(),
@@ -16931,18 +16934,17 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
-      this._activeLayer._polys.eachLayer(function(layer) {
-        if (!layer._polygonSliceIcon) {
-          return;
-        }
-        if (layer._polygonSliceMarker) {
-          layer._map.removeLayer(layer._polygonSliceMarker);
-        }
-        layer._polygonSliceMarker = L.marker(layer.getCenter(), {
-          icon: layer._polygonSliceIcon
-        });
-        return layer._polygonSliceMarker.addTo(layer._map);
-      });
+      this._polygonSliceMarkers.clearLayers();
+      this._activeLayer._polys.eachLayer((function(_this) {
+        return function(layer) {
+          if (!layer._polygonSliceIcon) {
+            return;
+          }
+          return _this._polygonSliceMarkers.addLayer(L.marker(layer.getCenter(), {
+            icon: layer._polygonSliceIcon
+          }));
+        };
+      })(this));
       marker._oldLatLng = marker._latlng;
       return this._map.fire(L.Cutting.Polyline.Event.UPDATED, {
         layers: layerGroup.getLayers(),
@@ -50479,7 +50481,7 @@ L.PolygonSliceIcon = (function(superClass) {
   }
 
   PolygonSliceIcon.prototype.options = {
-    iconSize: [20, 20],
+    iconSize: [22, 22],
     className: "leaflet-polygon-slice-icon",
     html: ""
   };

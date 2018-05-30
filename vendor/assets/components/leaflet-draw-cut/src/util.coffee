@@ -56,6 +56,6 @@ L.LayerGroup.include
 
 class L.PolygonSliceIcon extends L.DivIcon
   options:
-    iconSize: [20, 20]
+    iconSize: [22, 22]
     className: "leaflet-polygon-slice-icon"
     html: ""
