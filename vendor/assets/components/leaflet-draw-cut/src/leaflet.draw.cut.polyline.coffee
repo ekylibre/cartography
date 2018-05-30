@@ -29,6 +29,7 @@ L.Cutting.Polyline.Event.UNSELECT = "cut:polyline:unselect"
 L.Cutting.Polyline.Event.CREATED = "cut:polyline:created"
 L.Cutting.Polyline.Event.UPDATED = "cut:polyline:updated"
 L.Cutting.Polyline.Event.SAVED = "cut:polyline:saved"
+L.Cutting.Polyline.Event.CUTTING = "cut:polyline:cutting"
 
 class L.Cut.Polyline extends L.Handler
   @TYPE: 'cut-polyline'
@@ -66,6 +67,9 @@ class L.Cut.Polyline extends L.Handler
     @_map.on L.Cutting.Polyline.Event.SELECT, @_cutMode, @
 
     @_map.on 'zoomend moveend', @refreshAvailableLayers, @
+
+    @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_on_move_measure, @
+    @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_on_move_measure, @
 
     @_polygonSliceMarkers.addTo @_map
     super
@@ -124,6 +128,9 @@ class L.Cut.Polyline extends L.Handler
     @_map.off 'zoomend moveend', @refreshAvailableLayers, @
 
     @_map.off L.Cutting.Polyline.Event.SELECT, @_cutMode, @
+
+    @_map.off L.ReactiveMeasure.Draw.Event.MOVE, @_on_move_measure, @
+    @_map.off L.ReactiveMeasure.Edit.Event.MOVE, @_on_move_measure, @
 
     @fire 'disabled', handler: @type
     super
@@ -315,6 +322,9 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer.cutting.enable()
 
       @_activeLayer.cutting._mouseMarker.on 'mouseup', @_on_click, @
+
+  _on_move_measure: (e) =>
+    @_map.fire L.Cutting.Polyline.Event.CUTTING, perimeter: e.measure.perimeter
 
   _on_click: (e) =>
     return unless @_activeLayer.cutting._markers.length

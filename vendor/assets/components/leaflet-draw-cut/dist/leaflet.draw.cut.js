@@ -16486,6 +16486,8 @@ L.Cutting.Polyline.Event.UPDATED = "cut:polyline:updated";
 
 L.Cutting.Polyline.Event.SAVED = "cut:polyline:saved";
 
+L.Cutting.Polyline.Event.CUTTING = "cut:polyline:cutting";
+
 L.Cut.Polyline = (function(superClass) {
   extend(Polyline, superClass);
 
@@ -16493,6 +16495,7 @@ L.Cut.Polyline = (function(superClass) {
 
   function Polyline(map, options) {
     this._on_click = bind(this._on_click, this);
+    this._on_move_measure = bind(this._on_move_measure, this);
     this.type = this.constructor.TYPE;
     this._map = map;
     Polyline.__super__.constructor.call(this, map);
@@ -16528,6 +16531,8 @@ L.Cut.Polyline = (function(superClass) {
     this._availableLayers.on('layerremove', this._disableLayer, this);
     this._map.on(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
     this._map.on('zoomend moveend', this.refreshAvailableLayers, this);
+    this._map.on(L.ReactiveMeasure.Draw.Event.MOVE, this._on_move_measure, this);
+    this._map.on(L.ReactiveMeasure.Edit.Event.MOVE, this._on_move_measure, this);
     this._polygonSliceMarkers.addTo(this._map);
     return Polyline.__super__.enable.apply(this, arguments);
   };
@@ -16577,6 +16582,8 @@ L.Cut.Polyline = (function(superClass) {
     this._availableLayers.off('layerremove', this._disableLayer, this);
     this._map.off('zoomend moveend', this.refreshAvailableLayers, this);
     this._map.off(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
+    this._map.off(L.ReactiveMeasure.Draw.Event.MOVE, this._on_move_measure, this);
+    this._map.off(L.ReactiveMeasure.Edit.Event.MOVE, this._on_move_measure, this);
     this.fire('disabled', {
       handler: this.type
     });
@@ -16751,6 +16758,12 @@ L.Cut.Polyline = (function(superClass) {
       this._activeLayer.cutting.enable();
       return this._activeLayer.cutting._mouseMarker.on('mouseup', this._on_click, this);
     }
+  };
+
+  Polyline.prototype._on_move_measure = function(e) {
+    return this._map.fire(L.Cutting.Polyline.Event.CUTTING, {
+      perimeter: e.measure.perimeter
+    });
   };
 
   Polyline.prototype._on_click = function(e) {
