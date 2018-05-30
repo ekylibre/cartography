@@ -17,6 +17,7 @@
   C.Events.split.cancel = "cartography:events:split:cancel"
   C.Events.split.change = "cartography:events:split:change"
   C.Events.split.select = "cartography:events:split:select"
+  C.Events.split.cutting = "cartography:events:split:cutting"
   C.Events.edit = {}
   C.Events.edit.start = "cartography:events:edit:start"
   C.Events.edit.complete = "cartography:events:edit:complete"

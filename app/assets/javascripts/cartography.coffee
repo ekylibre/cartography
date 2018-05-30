@@ -163,6 +163,8 @@
       @getMap().on L.Cutting.Polyline.Event.CREATED, onSplitChange, @
       @getMap().on L.Cutting.Polyline.Event.UPDATED, onSplitChange, @
 
+      @getMap().on L.Cutting.Polyline.Event.CUTTING, (e) =>
+        @getMap().fire C.Events.split.cutting, data: perimeter: e.perimeter
 
       @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
         if e.layer.getLatLngs().constructor.name is 'Array'
