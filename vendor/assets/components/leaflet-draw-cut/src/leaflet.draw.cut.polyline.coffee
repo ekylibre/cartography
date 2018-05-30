@@ -163,6 +163,8 @@ class L.Cut.Polyline extends L.Handler
 
     else
       @_availableLayers = @_featureGroup
+
+    @_availableLayers.bringToBack()
     @_map.removeLayer @_featureGroup
 
   removeHooks: ->
@@ -443,6 +445,9 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
 
+      @_activeLayer._polys.bringToFront()
+      drawnPolyline.bringToFront()
+
       @_polygonSliceMarkers.clearLayers()
 
       @_activeLayer._polys.eachLayer (layer) =>
@@ -457,7 +462,6 @@ class L.Cut.Polyline extends L.Handler
 
       @_activeLayer.editing._poly.addTo(@_map)
       @_activeLayer.editing.enable()
-      #@_activeLayer.editing._poly.bringToFront()
 
       L.DomUtil.addClass @_activeLayer.editing._verticesHandlers[0]._markers[0]._icon, 'marker-origin'
       L.DomUtil.addClass @_activeLayer.editing._verticesHandlers[0]._markers[@_activeLayer.editing._verticesHandlers[0]._markers.length - 1]._icon, 'marker-origin'
@@ -498,6 +502,9 @@ class L.Cut.Polyline extends L.Handler
 
       @_activeLayer._polys = layerGroup
       @_activeLayer._polys.addTo @_map
+
+      @_activeLayer._polys.bringToFront()
+      drawnPolyline.bringToFront()
 
       @_polygonSliceMarkers.clearLayers()
 

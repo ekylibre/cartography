@@ -16623,6 +16623,7 @@ L.Cut.Polyline = (function(superClass) {
     } else {
       this._availableLayers = this._featureGroup;
     }
+    this._availableLayers.bringToBack();
     return this._map.removeLayer(this._featureGroup);
   };
 
@@ -16880,6 +16881,8 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
+      this._activeLayer._polys.bringToFront();
+      drawnPolyline.bringToFront();
       this._polygonSliceMarkers.clearLayers();
       this._activeLayer._polys.eachLayer((function(_this) {
         return function(layer) {
@@ -16935,6 +16938,8 @@ L.Cut.Polyline = (function(superClass) {
       this._map.removeLayer(this._activeLayer);
       this._activeLayer._polys = layerGroup;
       this._activeLayer._polys.addTo(this._map);
+      this._activeLayer._polys.bringToFront();
+      drawnPolyline.bringToFront();
       this._polygonSliceMarkers.clearLayers();
       this._activeLayer._polys.eachLayer((function(_this) {
         return function(layer) {
