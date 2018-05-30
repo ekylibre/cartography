@@ -447,11 +447,6 @@ class L.Cut.Polyline extends L.Handler
 
       @_activeLayer._polys.eachLayer (layer) =>
         return unless layer._polygonSliceIcon
-        #if layer._polygonSliceMarker
-          #layer._map.removeLayer layer._polygonSliceMarker
-
-        #layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
-        #layer._polygonSliceMarker.addTo layer._map
         @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
 
       @_activeLayer.cutting.disable()
@@ -459,7 +454,6 @@ class L.Cut.Polyline extends L.Handler
       @_map.fire L.Cutting.Polyline.Event.CREATED, layers: layerGroup.getLayers(), parent: @_activeLayer
 
       @_activeLayer.editing = new L.Edit.Poly splitter
-      #@_activeLayer.editing._poly.options.editing = {color: '#fe57a1', dashArray: '10, 10'}
 
       @_activeLayer.editing._poly.addTo(@_map)
       @_activeLayer.editing.enable()
@@ -471,6 +465,7 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer.editing._poly.on 'editstart', (e) =>
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
+          marker.on 'click', @_moveMarker, @
 
     catch e
       @_activeLayer.cutting.disable()
@@ -497,8 +492,6 @@ class L.Cut.Polyline extends L.Handler
         #@_unselectLayer @_activeLayer
         return
 
-      #console.log 'layerGroup', JSON.stringify(layerGroup.toGeoJSON())
-
       @_activeLayer._polys.clearLayers()
 
       @_map.removeLayer @_activeLayer
@@ -510,11 +503,6 @@ class L.Cut.Polyline extends L.Handler
 
       @_activeLayer._polys.eachLayer (layer) =>
         return unless layer._polygonSliceIcon
-        #if layer._polygonSliceMarker
-          #layer._map.removeLayer layer._polygonSliceMarker
-
-        #layer._polygonSliceMarker = L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
-        #layer._polygonSliceMarker.addTo layer._map
         @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
 
 
