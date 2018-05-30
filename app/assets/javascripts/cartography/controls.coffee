@@ -37,7 +37,13 @@
 
     remove: (id) ->
       if control = @get(id)
-        @getMap().removeControl control.getControl()
+        item = @collection[id]
+        @getMap().removeControl control.getControl() unless !item.addToMap
+
+        c = control.getControl()
+        if c and c.disable and c.disable.constructor.name is 'Function'
+          c.disable()
+
       @controls[id] = undefined
 
     get: (id) ->
@@ -393,6 +399,26 @@
       C.Util.setOptions @, options
 
       @control = new L.Control.ShapeDraw(map, @options.draw)
+
+      @initHooks()
+
+    initHooks: ->
+
+
+    getControl: ->
+      @control
+
+  class C.Controls.ShapeCut extends C.Controls
+    options:
+      cut:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.ShapeCut(map, @options.cut)
 
       @initHooks()
 

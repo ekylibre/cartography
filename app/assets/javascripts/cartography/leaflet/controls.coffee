@@ -315,4 +315,42 @@
       @_map.off L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
       @_handler.disable()
 
+  class L.Control.ShapeCut extends L.Control
+    options:
+      featureGroup: undefined
+      disabledPathOptions:
+        dashArray: null
+        fill: true
+        color: '#263238'
+        fillColor: '#263238'
+        opacity: 1
+        fillOpacity: 0.4
+        maintainColor: false
+      selectedPathOptions:
+        dashArray: null
+        fill: true
+        fillColor: '#fe57a1'
+        opacity: 1
+        fillOpacity: 1
+        maintainColor: true
+        weight: 3
+      cuttingPathOptions:
+        color: '#FF0000'
+        className: 'leaflet-polygon-splitter'
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.Cut.Polyline map, @options
+
+      @_map = map
+      return
+
+    enable: ->
+      @_handler.enable()
+
+    disable: ->
+      @_handler.disable()
+
 )(window.Cartography = window.Cartography || {})

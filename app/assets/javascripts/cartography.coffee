@@ -238,6 +238,11 @@
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
         new C.Controls.Cut(@getMap(), @options)
 
+      @controls.register 'shape_cut', false, =>
+        C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
+        new C.Controls.ShapeCut(@getMap(), @options)
+      , =>
+        @controls.get('shape_cut').getControl().enable()
 
       if @options.controls.layers
         @controls.add 'layers'
