@@ -138,6 +138,7 @@ class L.Cut.Polyline extends L.Handler
 
   addHooks: ->
 
+    console.log 'aze'
     @refreshAvailableLayers()
 
     @_map.removeLayer @_featureGroup

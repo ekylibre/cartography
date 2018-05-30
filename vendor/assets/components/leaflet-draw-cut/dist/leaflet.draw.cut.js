@@ -16591,6 +16591,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype.addHooks = function() {
+    console.log('aze');
     this.refreshAvailableLayers();
     return this._map.removeLayer(this._featureGroup);
   };
