@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@mapbox/polylabel@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@mapbox/polylabel/-/polylabel-1.0.2.tgz#c5714619b65add082638ea06027e69b14500efa6"
+  dependencies:
+    tinyqueue "^1.1.0"
+
 "@turf/area@6.x":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.0.1.tgz#50ed63c70ef2bdb72952384f1594319d94f3b051"
@@ -387,6 +393,7 @@ jsts-es@*:
 leaflet-draw-cut@../Leaflet.Draw.Cut:
   version "0.0.1"
   dependencies:
+    "@mapbox/polylabel" "^1.0.2"
     "@turf/boolean-point-on-line" "^5.1.5"
     "@turf/difference" "^6.0.1"
     "@turf/flip" "^4.7.3"
@@ -405,6 +412,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     leaflet-geometryutil "^0.8.0"
+    leaflet-reactivemeasure "../Leaflet.ReactiveMeasure"
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
@@ -450,6 +458,13 @@ leaflet-providers@1.1.17:
 "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
   resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#0502657cf24f6244a78ee8099e0fa0ecf6e6ec06"
+  dependencies:
+    geographiclib "^1.49.0"
+    leaflet "^1.2.0"
+    leaflet-draw "^0.4.12"
+
+leaflet-reactivemeasure@../Leaflet.ReactiveMeasure:
+  version "0.1.2"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
@@ -510,6 +525,6 @@ rtree@*:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/rtree/-/rtree-1.4.2.tgz#8b8c588c58a1f87fea5da2d497ae3b2c5e4bb32e"
 
-tinyqueue@^1.2.0:
+tinyqueue@^1.1.0, tinyqueue@^1.2.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-1.2.3.tgz#b6a61de23060584da29f82362e45df1ec7353f3d"
