@@ -1,5 +1,6 @@
 turf = require '@turf/helpers'
 turfFlip = require '@turf/flip'
+polylabel = require '@mapbox/polylabel'
 
 
 L.Polygon.include
@@ -29,6 +30,11 @@ L.Polygon.include
     coords = L.GeoJSON.latLngsToCoords(ring0, 0, true, 17)
     turf.lineString(coords)
 
+  polylabel: (precision = 0.001) ->
+    coords = L.GeoJSON.latLngsToCoords(@_latlngs[0], 0, true)
+    coord = polylabel([coords], precision)
+    L.latLng(coord[1], coord[0])
+#
 #Returns a LatLng object as a Turf Feature<Point>
 L.LatLng::toTurfFeature = ->
   coords = L.GeoJSON.latLngToCoords @
