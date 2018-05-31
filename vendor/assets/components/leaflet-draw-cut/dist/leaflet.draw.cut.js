@@ -16591,7 +16591,6 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype.addHooks = function() {
-    console.log('aze');
     this.refreshAvailableLayers();
     return this._map.removeLayer(this._featureGroup);
   };
@@ -16686,6 +16685,19 @@ L.Cut.Polyline = (function(superClass) {
     }
     layer.setStyle(layer.options.disabled);
     return layer.on('click', this._selectLayer, this);
+  };
+
+  Polyline.prototype.activate = function(layerId) {
+    var activateLayer;
+    activateLayer = void 0;
+    this._availableLayers.eachLayer(function(layer) {
+      if (layer.feature && layer.feature.properties.uuid === layerId) {
+        activateLayer = layer;
+      }
+    });
+    if (activateLayer) {
+      return this._selectLayer(activateLayer);
+    }
   };
 
   Polyline.prototype._selectLayer = function(e) {

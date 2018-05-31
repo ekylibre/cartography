@@ -138,7 +138,6 @@ class L.Cut.Polyline extends L.Handler
 
   addHooks: ->
 
-    console.log 'aze'
     @refreshAvailableLayers()
 
     @_map.removeLayer @_featureGroup
@@ -227,6 +226,16 @@ class L.Cut.Polyline extends L.Handler
     layer.setStyle layer.options.disabled
 
     layer.on 'click', @_selectLayer, @
+
+  activate: (layerId) ->
+    activateLayer = undefined
+    @_availableLayers.eachLayer (layer) ->
+      if layer.feature and layer.feature.properties.uuid == layerId
+        activateLayer = layer
+        return
+
+    if activateLayer
+      @_selectLayer activateLayer
 
   _selectLayer: (e) ->
     layer = e.layer or e.target or e
