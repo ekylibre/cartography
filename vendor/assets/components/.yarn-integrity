@@ -7,12 +7,12 @@
   "topLevelPatterns": [
     "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
     "leaflet-draw-cut@../Leaflet.Draw.Cut",
+    "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-draw@0.4.12",
     "leaflet-layerindex@https://github.com/ekylibre/Leaflet.LayerIndex.git",
     "leaflet-providers@1.1.17",
     "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure",
-    "leaflet-snap@../Leaflet.Snap",
     "leaflet-snap@../Leaflet.Snap",
     "leaflet@1.2.0",
     "pure-uuid@^1.4.10"

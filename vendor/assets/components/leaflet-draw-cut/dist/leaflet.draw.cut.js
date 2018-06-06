@@ -54970,7 +54970,7 @@ cb(GeographicLib);
 /* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var L, _, turf, turfinside;
+var L, _, turf, turfBooleanPointInPolygon;
 
 L = __webpack_require__(12);
 
@@ -54978,7 +54978,7 @@ _ = __webpack_require__(33);
 
 turf = __webpack_require__(1);
 
-turfinside = __webpack_require__(35);
+turfBooleanPointInPolygon = __webpack_require__(35)["default"];
 
 L.Draw.Feature.DrawMixin = {
   _draw_initialize: function() {
@@ -54986,38 +54986,42 @@ L.Draw.Feature.DrawMixin = {
     return this.on('disabled', this._draw_on_disabled, this);
   },
   _draw_on_enabled: function() {
-    if (!this.options.guideLayers) {
+    if (!(this.options.overlapLayers && this.options.overlapLayers.length)) {
       return;
     }
-    if (!this._mouseMarker) {
-      this._map.on('layeradd', this._draw_on_enabled, this);
-    } else {
-      this._map.off('layeradd', this._draw_on_enabled, this);
-      return this._map.on(L.Draw.Event.DRAWVERTEX, this._draw_on_click, this);
-    }
+    return this._mouseMarker.on('mouseup', this._draw_on_click, this);
   },
   _draw_on_click: function(e) {
-    var guideLayer, i, layer, len, marker, markerPoint, polygon, ref, results;
-    marker = e.layers.getLayers().slice(0).pop();
+    var i, latlngs, layer, layerGroup, len, marker, markerPoint, polygon, pos, ref, results;
+    marker = this._markers.slice(0).pop();
+    if (!marker) {
+      return;
+    }
     markerPoint = marker.getLatLng().toTurfFeature();
-    ref = this.options.guideLayers;
+    ref = this.options.overlapLayers;
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
-      guideLayer = ref[i];
-      if (typeof guideLayer.getLayers !== 'function') {
+      layerGroup = ref[i];
+      if (layerGroup.getLayers.constructor.name !== 'Function') {
         continue;
       }
       results.push((function() {
         var j, len1, ref1, results1;
-        ref1 = guideLayer.getLayers();
+        ref1 = layerGroup.getLayers();
         results1 = [];
         for (j = 0, len1 = ref1.length; j < len1; j++) {
           layer = ref1[j];
           polygon = layer.toTurfFeature();
-          if (turfinside["default"](markerPoint, polygon, {
-            ignoreBoundary: false
+          if (turfBooleanPointInPolygon(markerPoint, polygon, {
+            ignoreBoundary: true
           })) {
-            results1.push(this.deleteLastVertex());
+            pos = marker.getLatLng();
+            latlngs = this._poly.getLatLngs();
+            latlngs.splice(-1, 1);
+            this._poly.setLatLngs(latlngs);
+            this._markers.splice(-1, 1);
+            this._markerGroup.removeLayer(marker);
+            results1.push(this._updateGuide(this._map.latLngToLayerPoint(pos)));
           } else {
             results1.push(void 0);
           }
@@ -55029,13 +55033,14 @@ L.Draw.Feature.DrawMixin = {
   },
   _draw_on_disabled: function() {
     if (this._mouseMarker) {
-      this._mouseMarker.off('mouseup', this._draw_on_click, this);
+      return this._mouseMarker.off('mouseup', this._draw_on_click, this);
     }
-    return this._map.off('layeradd', this._draw_on_enabled, this);
   }
 };
 
 L.Draw.Feature.include(L.Draw.Feature.DrawMixin);
+
+L.Draw.Feature.addInitHook('_draw_initialize');
 
 
 /***/ })
