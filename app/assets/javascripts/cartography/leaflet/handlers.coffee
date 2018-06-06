@@ -9,6 +9,10 @@
   L.Selectable.Event.UNSELECT = "layerSelection:unselect"
   L.Selectable.Event.SELECTED = "layerSelection:selected"
 
+  L.Selectable.Event.Layer = {}
+  L.Selectable.Event.Layer.SELECT = "layerSelection:select"
+  L.Selectable.Event.Layer.UNSELECT = "layerSelection:unselect"
+
 
   L.SnapEditing = {}
   L.SnapEditing = {}
@@ -89,12 +93,16 @@
 
       layer.on('click', @_onClick)
       layer.on('touchstart', @_onClick, this)
+      layer.on 'refresh', @_onRefresh, @
 
     _disableLayerSelection: (e) ->
       layer = e.layer or e.target or e
       layer.selected = false
       # Reset layer styles to that of before select
-      if @options.selectedPathOptions
+
+      if layer.options.selecting.className
+        L.DomUtil.removeClass(layer._path, layer.options.selecting.className)
+      else
         layer.setStyle layer.options.original
 
       layer.off('click', @_onClick)
@@ -103,12 +111,21 @@
       delete layer.options.selecting
       delete layer.options.original
 
+    _onRefresh: (e) =>
+      layer = e.target
+
+      if layer.selected && layer.options.selecting.className
+        L.DomUtil.addClass(layer._path, layer.options.selecting.className)
+      else
+        L.DomUtil.removeClass(layer._path, layer.options.selecting.className)
+
+
     _onClick: (e) =>
       layer = e.target
 
       if !layer.selected
         layer.selected = true
-        if @options.selectedPathOptions
+        if !layer.options.selecting && @options.selectedPathOptions
           pathOptions = L.Util.extend {}, @options.selectedPathOptions
           # Use the existing color of the layer
           if pathOptions.maintainColor
@@ -117,12 +134,22 @@
           layer.options.original = L.extend({}, layer.options)
           layer.options.selecting = pathOptions
 
-        layer.setStyle(layer.options.selecting)
+        if layer.options.selecting.className
+          L.DomUtil.addClass(layer._path, layer.options.selecting.className)
+        else
+          layer.setStyle(layer.options.selecting)
+
+        layer.fire L.Selectable.Event.Layer.SELECT
         @_map.fire L.Selectable.Event.SELECT, layer: layer
       else
         layer.selected = false
 
-        layer.setStyle(layer.options.original)
+        if layer.options.selecting.className
+          L.DomUtil.removeClass(layer._path, layer.options.selecting.className)
+        else
+          layer.setStyle(layer.options.original)
+
+        layer.fire L.Selectable.Event.Layer.UNSELECT
         @_map.fire L.Selectable.Event.UNSELECT, layer: layer
 
     _hasAvailableLayers: ->

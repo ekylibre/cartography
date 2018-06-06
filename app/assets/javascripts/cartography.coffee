@@ -230,6 +230,9 @@
         @controls.get('selection').getControl().enable()
 
       @controls.register 'shape_draw', false, =>
+        unless @options.draw.allowOverlap
+          layers = @controls.get('overlays').getLayers()
+          @options.draw.overlapLayers = Object.values(layers)
         new C.Controls.ShapeDraw(@getMap(), @options)
       , =>
         @controls.get('shape_draw').getControl().enable()
@@ -362,6 +365,7 @@
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
       if layer && layer.selected
+        @unhighlight(uuid)
         layer.fire 'click'
 
     highlight: (uuid, featureGroup = undefined) ->
@@ -381,6 +385,15 @@
       name = featureGroup if featureGroup
       if layer
         @getFeatureGroup(name: name).removeLayer layer
+
+    buildControls: (name = undefined) ->
+      featureGroup = @getFeatureGroup(name: featureGroup)
+      return unless featureGroup && featureGroup.getLayers()
+      featureGroup.eachLayer (layer) ->
+        layer.controls ||= {}
+        layer.controls.enabled = true
+        layer.fire 'refresh'
+        
 
     edit: (uuid, featureGroup = undefined, options = {}) ->
       @unhighlight uuid
