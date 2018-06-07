@@ -317,13 +317,14 @@
           return
       containerLayer
 
-    select: (uuid, center = false, featureGroup = undefined) ->
+    select: (uuid, center = false, featureGroup = undefined, trigger = true) ->
       name = featureGroup if featureGroup
       featureGroup = @getFeatureGroup(name: name)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
       if layer && !layer.selected
-        layer.fire 'click'
+        if trigger
+          layer.fire 'click'
         if center
           @getMap().fitBounds layer.getBounds()
 
@@ -379,19 +380,19 @@
         layer.fire 'click'
 
     highlight: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       if layer
         layer.options.highlightOriginal = L.extend({}, layer.options)
         layer.setStyle color: "#D84315", fillOpacity: 0.5
 
     unhighlight: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       if layer
         layer.setStyle layer.options.highlightOriginal
         delete layer.options.highlightOriginal
 
     destroy: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       name = featureGroup if featureGroup
       if layer
         @getFeatureGroup(name: name).removeLayer layer
@@ -404,7 +405,7 @@
 
     edit: (uuid, featureGroup = undefined, options = {}) ->
       @unhighlight uuid
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       if layer
         if options.cancel && layer._editToolbar
           layer._editToolbar.disable()
