@@ -322,9 +322,10 @@
       featureGroup = @getFeatureGroup(name: name)
       layer = @_findLayerByUUID(featureGroup, uuid)
 
-      if center && layer && !layer.selected
+      if layer && !layer.selected
         layer.fire 'click'
-        @getMap().fitBounds layer.getBounds()
+        if center
+          @getMap().fitBounds layer.getBounds()
 
       layer
 
