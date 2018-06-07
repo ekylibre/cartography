@@ -157,6 +157,102 @@
 
   L.LayerSelection.include(L.Mixin.Events)
 
+  class L.LayerLocking extends L.Handler
+    @TYPE: 'LayerLocking'
+
+    options:
+      tooltip:
+        className: 'leaflet-locking-label'
+        pane: 'markerPane'
+        direction: 'center'
+        permanent: true
+        interactive: false
+        opacity: 1
+
+    constructor: (map, options) ->
+      @type = @constructor.TYPE
+      @_map = map
+      super map
+      C.Util.setOptions @, options
+      @_featureGroup = options.featureGroup
+
+      if !(@_featureGroup instanceof L.FeatureGroup)
+        throw new Error('options.featureGroup must be a L.FeatureGroup')
+
+    enable: ->
+      if @_enabled
+        return
+
+      @fire 'enabled', handler: @type
+
+      #@_map.fire L.Selectable.Event.START, handler: @type
+
+      super
+
+      @_featureGroup.on 'layeradd', @_enableLayerLocking, @
+      @_featureGroup.on 'layerremove', @_disableLayerLocking, @
+      return
+
+    disable: ->
+      if !@_enabled
+        return
+      @_featureGroup.off 'layeradd', @_enableLayerLocking, @
+      @_featureGroup.off 'layerremove', @_disableLayerLocking, @
+
+      super
+
+      #@_map.fire L.Selectable.Event.STOP, handler: @type
+
+      @fire 'disabled', handler: @type
+      return
+
+    addHooks: ->
+      @_featureGroup.eachLayer @_enableLayerLocking, @
+
+    removeHooks: ->
+      @_featureGroup.eachLayer @_disableLayerLocking, @
+
+    _enableLayerLocking: (e) ->
+      layer = e.layer or e.target or e
+
+      layer.on 'lock', @_onLock, @
+      layer.on 'unlock', @_onUnlock, @
+
+    _disableLayerLocking: (e) ->
+      layer = e.layer or e.target or e
+      layer.locked = false
+
+      L.DomUtil.removeClass(layer._path, layer.options.locking.className)
+
+
+    _onLock: (e) =>
+      layer = e.target
+      layer.locked = true
+      L.DomUtil.addClass(layer._path, layer.options.locking.className)
+
+      return unless e.label
+      unless layer.getTooltip()
+        tooltip = new L.Tooltip @options.tooltip          
+        layer.bindTooltip(tooltip)
+
+      layer.openTooltip(layer.polylabel())
+      layer.setTooltipContent e.label
+
+      if e.wrapperClassName
+        L.DomUtil.addClass(layer.getTooltip()._container, e.wrapperClassName)
+
+    _onUnlock: (e) =>
+      layer = e.target
+      layer.locked = false
+      L.DomUtil.removeClass(layer._path, layer.options.locking.className)
+
+      layer.closeTooltip()
+      layer.unbindTooltip()
+
+    _hasAvailableLayers: ->
+      @_featureGroup.getLayers().length != 0
+
+  L.LayerLocking.include(L.Mixin.Events)
 
   class L.EditToolbar.SelectableSnapEdit extends L.EditToolbar.SnapEdit
     options:

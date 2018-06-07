@@ -88,6 +88,24 @@
     enable: ->
       @_handler.enable()
 
+  class L.Control.LayerLocking extends L.Control
+    @_toolbar: {}
+
+    options:
+      position: 'topleft'
+      featureGroup: undefined
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.LayerLocking map, featureGroup: @options.featureGroup
+
+      return
+
+    enable: ->
+      @_handler.enable()
+
   class L.Control.Cut extends L.Control
     @_toolbar: {}
 

@@ -325,6 +325,25 @@
     getControl: ->
       @control
 
+  class C.Controls.LayerLocking extends C.Controls
+    options:
+      layerLocking:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.LayerLocking(map, @options.layerLocking)
+
+      @initHooks()
+
+    initHooks: (->)
+
+    getControl: ->
+      @control
+
   class C.Controls.Cut extends C.Controls
     options:
       cut:

@@ -35,6 +35,7 @@
         snap: true
         reactiveMeasure: true
         selection: false
+        locking: false
         zoom: true
         scale: true
       snap:
@@ -229,6 +230,11 @@
       , =>
         @controls.get('selection').getControl().enable()
 
+      @controls.register 'locking', false, =>
+        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup()}})
+      , =>
+        @controls.get('locking').getControl().enable()
+
       @controls.register 'shape_draw', false, =>
         unless @options.draw.allowOverlap
           layers = @controls.get('overlays').getLayers()
@@ -261,6 +267,9 @@
 
       if @options.controls.selection
         @controls.add 'selection'
+
+      if @options.controls.locking
+        @controls.add 'locking'
 
       if @options.controls.draw
         @controls.add 'draw'
@@ -390,10 +399,7 @@
       featureGroup = @getFeatureGroup(name: featureGroup)
       return unless featureGroup && featureGroup.getLayers()
       featureGroup.eachLayer (layer) ->
-        layer.controls ||= {}
-        layer.controls.enabled = true
-        layer.fire 'refresh'
-        
+        layer.onBuild.call @ if layer.onBuild and layer.onBuild.constructor.name == 'Function'
 
     edit: (uuid, featureGroup = undefined, options = {}) ->
       @unhighlight uuid
