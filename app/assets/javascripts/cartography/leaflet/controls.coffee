@@ -306,6 +306,9 @@
   class L.Control.ShapeDraw extends L.Control
     options:
       featureGroup: undefined
+      shapeOptions:
+        color: '#FF0000'
+        className: 'leaflet-polygon-drawer'
 
     constructor: (map, options) ->
       C.Util.setOptions @, options
