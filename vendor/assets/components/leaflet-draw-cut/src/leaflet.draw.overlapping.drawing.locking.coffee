@@ -18,7 +18,8 @@ L.Draw.Feature.DrawMixin =
     marker = @_markers[..].pop()
 
     return unless marker
-    markerPoint = marker.getLatLng().toTurfFeature()
+    coords = L.GeoJSON.latLngToCoords marker.getLatLng(), 5
+    markerPoint = turf.point coords
 
     for layerGroup in @options.overlapLayers
       continue unless layerGroup.getLayers.constructor.name == 'Function'

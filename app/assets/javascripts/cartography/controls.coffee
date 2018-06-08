@@ -417,6 +417,7 @@
 
       C.Util.setOptions @, options
 
+      @options.draw.guideLayers = @options.snap.polygon.guideLayers
       @control = new L.Control.ShapeDraw(map, @options.draw)
 
       @initHooks()

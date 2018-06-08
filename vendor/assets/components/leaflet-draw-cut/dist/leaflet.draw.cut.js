@@ -54992,12 +54992,13 @@ L.Draw.Feature.DrawMixin = {
     return this._mouseMarker.on('mouseup', this._draw_on_click, this);
   },
   _draw_on_click: function(e) {
-    var i, latlngs, layer, layerGroup, len, marker, markerPoint, polygon, pos, ref, results;
+    var coords, i, latlngs, layer, layerGroup, len, marker, markerPoint, polygon, pos, ref, results;
     marker = this._markers.slice(0).pop();
     if (!marker) {
       return;
     }
-    markerPoint = marker.getLatLng().toTurfFeature();
+    coords = L.GeoJSON.latLngToCoords(marker.getLatLng(), 5);
+    markerPoint = turf.point(coords);
     ref = this.options.overlapLayers;
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
