@@ -325,6 +325,7 @@
       if layer && !layer.selected
         if trigger
           layer.fire 'click'
+          layer.fire 'select'
         if center
           @getMap().fitBounds layer.getBounds()
 
@@ -378,6 +379,7 @@
       if layer && layer.selected
         @unhighlight(uuid)
         layer.fire 'click'
+        layer.fire 'select'
 
     highlight: (uuid, featureGroup = undefined) ->
       layer = @select uuid, false, featureGroup, false

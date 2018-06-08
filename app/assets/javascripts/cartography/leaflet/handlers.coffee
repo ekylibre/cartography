@@ -91,8 +91,9 @@
     _enableLayerSelection: (e) ->
       layer = e.layer or e.target or e
 
-      layer.on('click', @_onClick)
-      layer.on('touchstart', @_onClick, this)
+      #layer.on('click', @_onClick)
+      layer.on('select', @_onClick)
+      #layer.on('touchstart', @_onClick, this)
       layer.on 'refresh', @_onRefresh, @
 
     _disableLayerSelection: (e) ->
