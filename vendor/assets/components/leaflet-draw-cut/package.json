@@ -54,7 +54,7 @@
     "leaflet": "^1.2.0",
     "leaflet-draw": "^0.4.12",
     "leaflet-geometryutil": "^0.8.0",
-    "leaflet-reactivemeasure": "../Leaflet.ReactiveMeasure",
+    "leaflet-reactive_measure": "../Leaflet.ReactiveMeasure",
     "leaflet-snap": "../Leaflet.Snap",
     "lodash": "^4.17.4"
   }

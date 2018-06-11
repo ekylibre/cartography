@@ -412,7 +412,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     leaflet-geometryutil "^0.8.0"
-    leaflet-reactivemeasure "../Leaflet.ReactiveMeasure"
+    leaflet-reactive_measure "../Leaflet.ReactiveMeasure"
     leaflet-snap "../Leaflet.Snap"
     lodash "^4.17.4"
 
@@ -455,15 +455,7 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
-  version "0.1.2"
-  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#0502657cf24f6244a78ee8099e0fa0ecf6e6ec06"
-  dependencies:
-    geographiclib "^1.49.0"
-    leaflet "^1.2.0"
-    leaflet-draw "^0.4.12"
-
-leaflet-reactivemeasure@../Leaflet.ReactiveMeasure:
+leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
   version "0.1.2"
   dependencies:
     geographiclib "^1.49.0"
