@@ -61,11 +61,10 @@
           ignoreActions: true
       edit:
         selectedPathOptions:
-          dashArray: '10, 10'
           fill: true
-          fillColor: '#fe57a1'
+          fillColor: '#D84315'
           fillOpacity: 0.7
-          maintainColor: false
+          maintainColor: true
         panel:
           title: 'Edit plot'
           animatedHelper: undefined

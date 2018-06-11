@@ -29,10 +29,10 @@
 
     options:
       selectedPathOptions:
-        dashArray: '10, 10'
         fill: true
-        fillColor: '#fe57a1'
-        fillOpacity: 0.7
+        #fillColor: '#D84315'
+        #fillOpacity: 0.7
+        color: "#D84315"
         maintainColor: false
 
     constructor: (map, options) ->
