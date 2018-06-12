@@ -1,8 +1,9 @@
-import { getCoords, getCoord } from '@turf/invariant';
-import { isObject } from '@turf/helpers';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var invariant_1 = require("@turf/invariant");
 /**
- * Returns true if a point is on a line. Accepts a optional parameter to ignore the start and end vertices of the linestring.
+ * Returns true if a point is on a line. Accepts a optional parameter to ignore the
+ * start and end vertices of the linestring.
  *
  * @name booleanPointOnLine
  * @param {Coord} pt GeoJSON Point
@@ -17,39 +18,38 @@ import { isObject } from '@turf/helpers';
  * //=true
  */
 function booleanPointOnLine(pt, line, options) {
-    // Optional parameters
-    options = options || {};
-    var ignoreEndVertices = options.ignoreEndVertices;
-    if (!isObject(options)) throw new Error('invalid options');
-
-    // Validate input
-    if (!pt) throw new Error('pt is required');
-    if (!line) throw new Error('line is required');
-
+    if (options === void 0) { options = {}; }
     // Normalize inputs
-    var ptCoords = getCoord(pt);
-    var lineCoords = getCoords(line);
-
+    var ptCoords = invariant_1.getCoord(pt);
+    var lineCoords = invariant_1.getCoords(line);
     // Main
     for (var i = 0; i < lineCoords.length - 1; i++) {
         var ignoreBoundary = false;
-        if (ignoreEndVertices) {
-            if (i === 0) ignoreBoundary = 'start';
-            if (i === lineCoords.length - 2) ignoreBoundary = 'end';
-            if (i === 0 && i + 1 === lineCoords.length - 1) ignoreBoundary = 'both';
+        if (options.ignoreEndVertices) {
+            if (i === 0) {
+                ignoreBoundary = "start";
+            }
+            if (i === lineCoords.length - 2) {
+                ignoreBoundary = "end";
+            }
+            if (i === 0 && i + 1 === lineCoords.length - 1) {
+                ignoreBoundary = "both";
+            }
         }
-        if (isPointOnLineSegment(lineCoords[i], lineCoords[i + 1], ptCoords, ignoreBoundary)) return true;
+        if (isPointOnLineSegment(lineCoords[i], lineCoords[i + 1], ptCoords, ignoreBoundary)) {
+            return true;
+        }
     }
     return false;
 }
-
 // See http://stackoverflow.com/a/4833823/1979085
 /**
  * @private
  * @param {Position} lineSegmentStart coord pair of start of line
  * @param {Position} lineSegmentEnd coord pair of end of line
  * @param {Position} pt coord pair of point to check
- * @param {boolean|string} excludeBoundary whether the point is allowed to fall on the line ends. If true which end to ignore.
+ * @param {boolean|string} excludeBoundary whether the point is allowed to fall on the line ends.
+ * If true which end to ignore.
  * @returns {boolean} true/false
  */
 function isPointOnLineSegment(lineSegmentStart, lineSegmentEnd, pt, excludeBoundary) {
@@ -72,22 +72,25 @@ function isPointOnLineSegment(lineSegmentStart, lineSegmentEnd, pt, excludeBound
             return dxl > 0 ? x1 <= x && x <= x2 : x2 <= x && x <= x1;
         }
         return dyl > 0 ? y1 <= y && y <= y2 : y2 <= y && y <= y1;
-    } else if (excludeBoundary === 'start') {
+    }
+    else if (excludeBoundary === "start") {
         if (Math.abs(dxl) >= Math.abs(dyl)) {
             return dxl > 0 ? x1 < x && x <= x2 : x2 <= x && x < x1;
         }
         return dyl > 0 ? y1 < y && y <= y2 : y2 <= y && y < y1;
-    } else if (excludeBoundary === 'end') {
+    }
+    else if (excludeBoundary === "end") {
         if (Math.abs(dxl) >= Math.abs(dyl)) {
             return dxl > 0 ? x1 <= x && x < x2 : x2 < x && x <= x1;
         }
         return dyl > 0 ? y1 <= y && y < y2 : y2 < y && y <= y1;
-    } else if (excludeBoundary === 'both') {
+    }
+    else if (excludeBoundary === "both") {
         if (Math.abs(dxl) >= Math.abs(dyl)) {
             return dxl > 0 ? x1 < x && x < x2 : x2 < x && x < x1;
         }
         return dyl > 0 ? y1 < y && y < y2 : y2 < y && y < y1;
     }
+    return false;
 }
-
-export default booleanPointOnLine;
+exports.default = booleanPointOnLine;

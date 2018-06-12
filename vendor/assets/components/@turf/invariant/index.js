@@ -1,8 +1,14 @@
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var helpers = require('@turf/helpers');
+
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
  * @name getCoord
- * @param {Array<number>|Geometry<Point>|Feature<Point>} obj Object
+ * @param {Array<number>|Geometry<Point>|Feature<Point>} coord GeoJSON Point or an Array of numbers
  * @returns {Array<number>} coordinates
  * @example
  * var pt = turf.point([10, 10]);
@@ -10,55 +16,40 @@
  * var coord = turf.getCoord(pt);
  * //= [10, 10]
  */
-function getCoord(obj) {
-    if (!obj) throw new Error('obj is required');
+function getCoord(coord) {
+    if (!coord) throw new Error('coord is required');
+    if (coord.type === 'Feature' && coord.geometry !== null && coord.geometry.type === 'Point') return coord.geometry.coordinates;
+    if (coord.type === 'Point') return coord.coordinates;
+    if (Array.isArray(coord) && coord.length >= 2 && coord[0].length === undefined && coord[1].length === undefined) return coord;
 
-    var coordinates = getCoords(obj);
-
-    // getCoord() must contain at least two numbers (Point)
-    if (coordinates.length > 1 &&
-        typeof coordinates[0] === 'number' &&
-        typeof coordinates[1] === 'number') {
-        return coordinates;
-    } else {
-        throw new Error('Coordinate is not a valid Point');
-    }
+    throw new Error('coord must be GeoJSON Point or an Array of numbers');
 }
 
 /**
- * Unwrap coordinates from a Feature, Geometry Object or an Array of numbers
+ * Unwrap coordinates from a Feature, Geometry Object or an Array
  *
  * @name getCoords
- * @param {Array<number>|Geometry|Feature} obj Object
- * @returns {Array<number>} coordinates
+ * @param {Array<any>|Geometry|Feature} coords Feature, Geometry Object or an Array
+ * @returns {Array<any>} coordinates
  * @example
  * var poly = turf.polygon([[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]);
  *
- * var coord = turf.getCoords(poly);
+ * var coords = turf.getCoords(poly);
  * //= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]
  */
-function getCoords(obj) {
-    if (!obj) throw new Error('obj is required');
-    var coordinates;
-
-    // Array of numbers
-    if (obj.length) {
-        coordinates = obj;
-
-    // Geometry Object
-    } else if (obj.coordinates) {
-        coordinates = obj.coordinates;
+function getCoords(coords) {
+    if (!coords) throw new Error('coords is required');
 
     // Feature
-    } else if (obj.geometry && obj.geometry.coordinates) {
-        coordinates = obj.geometry.coordinates;
-    }
-    // Checks if coordinates contains a number
-    if (coordinates) {
-        containsNumber(coordinates);
-        return coordinates;
-    }
-    throw new Error('No valid coordinates');
+    if (coords.type === 'Feature' && coords.geometry !== null) return coords.geometry.coordinates;
+
+    // Geometry
+    if (coords.coordinates) return coords.coordinates;
+
+    // Array of numbers
+    if (Array.isArray(coords)) return coords;
+
+    throw new Error('coords must be GeoJSON Feature, Geometry Object or an Array');
 }
 
 /**
@@ -69,9 +60,7 @@ function getCoords(obj) {
  * @returns {boolean} true if Array contains a number
  */
 function containsNumber(coordinates) {
-    if (coordinates.length > 1 &&
-        typeof coordinates[0] === 'number' &&
-        typeof coordinates[1] === 'number') {
+    if (coordinates.length > 1 && helpers.isNumber(coordinates[0]) && helpers.isNumber(coordinates[1])) {
         return true;
     }
 
@@ -174,9 +163,18 @@ function getGeom(geojson) {
 /**
  * Get Geometry Type from Feature or Geometry Object
  *
- * @param {Feature|Geometry} geojson GeoJSON Feature or Geometry Object
- * @returns {string} GeoJSON Geometry Type
- * @throws {Error} if geojson is not a Feature or Geometry Object
+ * @throws {Error} **DEPRECATED** in v5.0.0 in favor of getType
+ */
+function getGeomType() {
+    throw new Error('invariant.getGeomType has been deprecated in v5.0 in favor of invariant.getType');
+}
+
+/**
+ * Get GeoJSON object's type, Geometry type is prioritize.
+ *
+ * @param {GeoJSON} geojson GeoJSON object
+ * @param {string} [name="geojson"] name of the variable to display in error message
+ * @returns {string} GeoJSON type
  * @example
  * var point = {
  *   "type": "Feature",
@@ -186,22 +184,24 @@ function getGeom(geojson) {
  *     "coordinates": [110, 40]
  *   }
  * }
- * var geom = turf.getGeomType(point)
+ * var geom = turf.getType(point)
  * //="Point"
  */
-function getGeomType(geojson) {
-    if (!geojson) throw new Error('geojson is required');
-    var geom = getGeom(geojson);
-    if (geom) return geom.type;
+function getType(geojson, name) {
+    if (!geojson) throw new Error((name || 'geojson') + ' is required');
+    // GeoJSON Feature & GeometryCollection
+    if (geojson.geometry && geojson.geometry.type) return geojson.geometry.type;
+    // GeoJSON Geometry & FeatureCollection
+    if (geojson.type) return geojson.type;
+    throw new Error((name || 'geojson') + ' is invalid');
 }
 
-module.exports = {
-    geojsonType: geojsonType,
-    collectionOf: collectionOf,
-    featureOf: featureOf,
-    getCoord: getCoord,
-    getCoords: getCoords,
-    containsNumber: containsNumber,
-    getGeom: getGeom,
-    getGeomType: getGeomType
-};
+exports.getCoord = getCoord;
+exports.getCoords = getCoords;
+exports.containsNumber = containsNumber;
+exports.geojsonType = geojsonType;
+exports.featureOf = featureOf;
+exports.collectionOf = collectionOf;
+exports.getGeom = getGeom;
+exports.getGeomType = getGeomType;
+exports.getType = getType;

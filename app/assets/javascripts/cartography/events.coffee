@@ -11,6 +11,7 @@
   C.Events.shapeDraw.start = "cartography:events:shapeDraw:start"
   C.Events.shapeDraw.draw = "cartography:events:shapeDraw:draw"
   C.Events.shapeDraw.edit = "cartography:events:shapeDraw:edit"
+  C.Events.shapeDraw.warn = "cartography:events:shapeDraw:warn"
   C.Events.split = {}
   C.Events.split.start = "cartography:events:split:start"
   C.Events.split.complete = "cartography:events:split:complete"
@@ -30,5 +31,6 @@
   C.Events.select.start = "cartography:events:select:start"
   C.Events.select.stop = "cartography:events:select:stop"
 
+  L.Draw.Event.INVALIDATED = 'draw:invalidated'
 
 )(window.Cartography = window.Cartography || {})

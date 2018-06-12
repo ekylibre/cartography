@@ -307,7 +307,7 @@
     options:
       featureGroup: undefined
       shapeOptions:
-        color: '#FF0000'
+        color: '#FF6226'
         className: 'leaflet-polygon-drawer'
 
     constructor: (map, options) ->
@@ -326,14 +326,19 @@
     _onDrawingPolygon: (e) ->
       @_map.fire C.Events.shapeDraw.draw, data: { measure: e.measure }
 
+    _onInvalidDrawingPolygon: (e) ->
+      @_map.fire C.Events.shapeDraw.warn, data: { message: e.error }
+
     enable: ->
       @_map.on "draw:drawvertex", @_onDrawVertex, @
       @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
+      @_map.on L.Draw.Event.INVALIDATED, @_onInvalidDrawingPolygon, @
       @_handler.enable()
 
     disable: ->
       @_map.off "draw:drawvertex", @_onDrawVertex, @
       @_map.off L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
+      @_map.off L.Draw.Event.INVALIDATED, @_onInvalidDrawingPolygon, @
       @_handler.disable()
 
   class L.Control.ShapeCut extends L.Control
@@ -356,7 +361,7 @@
         maintainColor: true
         weight: 3
       cuttingPathOptions:
-        color: '#FF0000'
+        color: '#FF6226'
         className: 'leaflet-polygon-splitter'
 
     constructor: (map, options) ->

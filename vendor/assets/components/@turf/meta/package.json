@@ -1,20 +1,18 @@
 {
   "name": "@turf/meta",
-  "version": "4.7.4",
+  "version": "6.0.2",
   "description": "turf meta module",
-  "main": "index.es5.js",
-  "module": "index.js",
-  "jsnext:main": "index.js",
+  "main": "index",
   "types": "index.d.ts",
   "files": [
     "index.js",
-    "index.d.ts",
-    "index.es5.js"
+    "index.d.ts"
   ],
   "scripts": {
-    "pretest": "rollup -c ../../rollup.config.js",
-    "test": "node test.es5.js",
-    "bench": "node bench.js"
+    "pretest": "rollup -f cjs -o index.js index.mjs",
+    "test": "node test.js",
+    "bench": "node bench.js",
+    "docs": "node ../../scripts/generate-readmes"
   },
   "repository": {
     "type": "git",
@@ -38,7 +36,9 @@
     "featureReduce",
     "coordAll",
     "geomEach",
-    "geomReduce"
+    "geomReduce",
+    "lineEeach",
+    "lineReduce"
   ],
   "author": "Turf Authors",
   "contributors": [
@@ -52,11 +52,12 @@
   },
   "homepage": "https://github.com/Turfjs/turf",
   "devDependencies": {
-    "@turf/helpers": "*",
     "@turf/random": "*",
     "benchmark": "*",
     "rollup": "*",
     "tape": "*"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@turf/helpers": "6.x"
+  }
 }

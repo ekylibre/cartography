@@ -201,7 +201,7 @@
         maintainColor: true
         weight: 3
       cuttingPathOptions:
-        color: '#FF0000'
+        color: '#FF6226'
         className: 'leaflet-polygon-splitter'
         #dashArray: '10, 10'
         #fill: true
