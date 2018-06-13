@@ -22,26 +22,6 @@ L.Draw.Feature.DrawMixinn =
     return unless @options.overlapLayers and @options.overlapLayers.length
 
     @_mouseMarker.on 'mouseup', @_drawOnClick, @
-    #@_mousearker.on 'mousedown', @_OnMouseDown, @
-    #@_mouseMarker.on 'move', @_onMove, @;
-    #@_mouseMarker.on 'snap', @_onSnap, @;
-    #@_mouseMarker.on 'unsnap', @_onUnsnap, @;
-
-  _OnMouseDown: () ->
-    console.log "uio"
-    console.log @_mouseMarker.snap
-    debugger
-
-  _onMove: (e) ->
-    console.log e.target
-
-  _onSnap: (e) ->
-    e.target.snapped = true
-    console.log "snap", e
-
-  _onUnsnap: (e) ->
-    e.target.snapped = false
-    console.log "unsnap", e
 
   _drawOnClick: (e) ->
     marker = @_markers[..].pop()

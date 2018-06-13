@@ -64218,22 +64218,6 @@ L.Draw.Feature.DrawMixinn = {
     }
     return this._mouseMarker.on('mouseup', this._drawOnClick, this);
   },
-  _OnMouseDown: function() {
-    console.log("uio");
-    console.log(this._mouseMarker.snap);
-    debugger;
-  },
-  _onMove: function(e) {
-    return console.log(e.target);
-  },
-  _onSnap: function(e) {
-    e.target.snapped = true;
-    return console.log("snap", e);
-  },
-  _onUnsnap: function(e) {
-    e.target.snapped = false;
-    return console.log("unsnap", e);
-  },
   _drawOnClick: function(e) {
     var closest, coords, ex, i, j, latlngs, layer, layerGroup, len, len1, marker, markerPoint, polygon, pos, ref, ref1;
     marker = this._markers.slice(0).pop();
