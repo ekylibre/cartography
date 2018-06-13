@@ -277,7 +277,7 @@
         @controls.add 'cut'
 
       style = (feature) ->
-        color: "#3F51B5", fillOpacity: 0.7, opacity: 1, fill: true
+        color: "#44B51B", fillOpacity: 0.35, opacity: 1, fill: true
 
       serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
       @addOverlay(serie)
@@ -320,7 +320,6 @@
       name = featureGroup if featureGroup
       featureGroup = @getFeatureGroup(name: name)
       layer = @_findLayerByUUID(featureGroup, uuid)
-
       if layer && !layer.selected
         if trigger
           layer.fire 'click'
