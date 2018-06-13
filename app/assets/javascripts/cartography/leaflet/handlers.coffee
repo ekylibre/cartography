@@ -101,7 +101,7 @@
       layer.selected = false
       # Reset layer styles to that of before select
 
-      if layer.options.selecting.className
+      if layer.options && layer.options.selecting && layer.options.selecting.className
         L.DomUtil.removeClass(layer._path, layer.options.selecting.className)
       else
         layer.setStyle layer.options.original
