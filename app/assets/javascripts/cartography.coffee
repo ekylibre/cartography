@@ -277,7 +277,9 @@
         @controls.add 'cut'
 
       style = (feature) ->
-        color: "#44B51B", fillOpacity: 0.35, opacity: 1, fill: true
+        console.log feature.properties
+        feature.properties.style ||= {}
+        color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
 
       serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
       @addOverlay(serie)
