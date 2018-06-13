@@ -13,21 +13,26 @@ turfGetCoords = require('@turf/invariant').getCoords
 
 L.Draw.Event.INVALIDATED = 'draw:invalidated'
 
-L.Draw.Feature.DrawMixin =
-  _draw_initialize: ->
-    @on 'enabled', @_draw_on_enabled, @
-    @on 'disabled', @_draw_on_disabled, @
+L.Draw.Feature.DrawMixinn =
+  _drawInitialize: ->
+    @on 'enabled', @_drawOnEnabled, @
+    @on 'disabled', @_drawOnDisabled, @
 
-  _draw_on_enabled: ->
+  _drawOnEnabled: ->
     return unless @options.overlapLayers and @options.overlapLayers.length
 
-    @_mouseMarker.on 'mouseup', @_draw_on_click, @
+    @_mouseMarker.on 'mouseup', @_drawOnClick, @
 
-  _draw_on_click: (e) ->
+  _drawOnClick: (e) ->
     marker = @_markers[..].pop()
 
     return unless marker
-    coords = L.GeoJSON.latLngToCoords marker.getLatLng(), 5
+
+    ex = {
+      'target':marker
+    }
+    
+    coords = L.GeoJSON.latLngToCoords marker.getLatLng(), 6
     markerPoint = turf.point coords
 
     for layerGroup in @options.overlapLayers
@@ -36,6 +41,11 @@ L.Draw.Feature.DrawMixin =
         polygon = layer.toTurfFeature()
 
         if turfBooleanPointInPolygon(markerPoint, polygon, ignoreBoundary: true)
+
+          if L.Snap && L.Snap.snapMarker.constructor.name == 'Function'
+            closest = L.Snap.snapMarker(ex, @options.overlapLayers, @_map, @options, 0)
+            return true if closest.layer && closest.latlng
+
           pos = marker.getLatLng()
           
           latlngs = @_poly.getLatLngs()
@@ -46,13 +56,14 @@ L.Draw.Feature.DrawMixin =
           @_markerGroup.removeLayer marker
           @_updateGuide(@_map.latLngToLayerPoint(pos))
 
-  _draw_on_disabled: ->
+
+  _drawOnDisabled: ->
     if @_mouseMarker
-      @_mouseMarker.off 'mouseup', @_draw_on_click, @
+      @_mouseMarker.off 'mouseup', @_drawOnClick, @
 
 
-L.Draw.Feature.include L.Draw.Feature.DrawMixin
-L.Draw.Feature.addInitHook '_draw_initialize'
+L.Draw.Feature.include L.Draw.Feature.DrawMixinn
+L.Draw.Feature.addInitHook '_drawInitialize'
 
 L.Draw.Polygon.include
   __shapeIsValid: L.Draw.Polygon::_shapeIsValid

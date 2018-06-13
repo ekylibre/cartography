@@ -306,6 +306,7 @@
   class L.Control.ShapeDraw extends L.Control
     options:
       featureGroup: undefined
+      snapDistance: 15
       shapeOptions:
         color: '#FF6226'
         className: 'leaflet-polygon-drawer'
