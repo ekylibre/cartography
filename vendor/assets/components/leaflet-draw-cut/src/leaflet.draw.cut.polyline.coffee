@@ -453,10 +453,7 @@ class L.Cut.Polyline extends L.Handler
 
       layerGroup = @_slice @_activeLayer, drawnPolyline
 
-      unless layerGroup && layerGroup.getLayers().length >= 2
-        @_activeLayer.cutting.disable()
-        @_unselectLayer @_activeLayer
-        return
+      return unless layerGroup && layerGroup.getLayers().length >= 2
 
       @_activeLayer.cutting._mouseMarker.off 'mouseup', @_on_click, @
 
@@ -489,16 +486,7 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer.editing._poly.on 'editstart', (e) =>
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
-          marker.on 'click', @_moveMarker, @
-
-    catch e
-      @_activeLayer.cutting.disable()
-      @_unselectLayer @_activeLayer
-
-  #_rewind: (marker) ->
-    #return unless marker && marker._oldLatLng
-    #marker._latlng = marker._oldLatLng
-    #marker.update()
+          #marker.on 'click', @_moveMarker, @
 
   _moveMarker: (e) ->
     marker = e.marker || e.target || e
@@ -508,13 +496,7 @@ class L.Cut.Polyline extends L.Handler
 
       layerGroup = @_slice @_activeLayer, drawnPolyline
 
-      unless layerGroup && layerGroup.getLayers().length >= 2
-        #@_rewind(marker)
-        @disable()
-        #@_activeLayer.editing.disable()
-        #@_map.removeLayer @_activeLayer.editing._poly
-        #@_unselectLayer @_activeLayer
-        return
+      return unless layerGroup && layerGroup.getLayers().length >= 2
 
       @_activeLayer._polys.clearLayers()
 
@@ -532,16 +514,9 @@ class L.Cut.Polyline extends L.Handler
         return unless layer._polygonSliceIcon
         @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
 
-
-      marker._oldLatLng = marker._latlng
-      
       @_map.fire L.Cutting.Polyline.Event.UPDATED, layers: layerGroup.getLayers(), parent: @_activeLayer
 
-    catch e
-      #@_rewind(marker)
-      @disable()
-      #@_activeLayer.editing.disable()
-      #@_unselectLayer @_activeLayer
+    #catch e
 
 
   _hasAvailableLayers: ->

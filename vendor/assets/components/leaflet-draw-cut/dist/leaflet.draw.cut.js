@@ -27004,14 +27004,12 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype._stopCutDrawing = function() {
-    var drawnPolyline, e, layerGroup, splitter;
+    var drawnPolyline, layerGroup, splitter;
     try {
       drawnPolyline = this._activeLayer.cutting._poly;
       splitter = L.polyline(drawnPolyline.getLatLngs(), this.options.cuttingPathOptions);
       layerGroup = this._slice(this._activeLayer, drawnPolyline);
       if (!(layerGroup && layerGroup.getLayers().length >= 2)) {
-        this._activeLayer.cutting.disable();
-        this._unselectLayer(this._activeLayer);
         return;
       }
       this._activeLayer.cutting._mouseMarker.off('mouseup', this._on_click, this);
@@ -27048,17 +27046,12 @@ L.Cut.Polyline = (function(superClass) {
           results1 = [];
           for (i = 0, len = ref.length; i < len; i++) {
             marker = ref[i];
-            marker.on('move', _this._moveMarker, _this);
-            results1.push(marker.on('click', _this._moveMarker, _this));
+            results1.push(marker.on('move', _this._moveMarker, _this));
           }
           return results1;
         };
       })(this));
-    } catch (error) {
-      e = error;
-      this._activeLayer.cutting.disable();
-      return this._unselectLayer(this._activeLayer);
-    }
+    } catch (error) {}
   };
 
   Polyline.prototype._moveMarker = function(e) {
@@ -27068,7 +27061,6 @@ L.Cut.Polyline = (function(superClass) {
       drawnPolyline = this._activeLayer.editing._poly;
       layerGroup = this._slice(this._activeLayer, drawnPolyline);
       if (!(layerGroup && layerGroup.getLayers().length >= 2)) {
-        this.disable();
         return;
       }
       this._activeLayer._polys.clearLayers();
@@ -27088,15 +27080,11 @@ L.Cut.Polyline = (function(superClass) {
           }));
         };
       })(this));
-      marker._oldLatLng = marker._latlng;
       return this._map.fire(L.Cutting.Polyline.Event.UPDATED, {
         layers: layerGroup.getLayers(),
         parent: this._activeLayer
       });
-    } catch (error) {
-      e = error;
-      return this.disable();
-    }
+    } catch (error) {}
   };
 
   Polyline.prototype._hasAvailableLayers = function() {
