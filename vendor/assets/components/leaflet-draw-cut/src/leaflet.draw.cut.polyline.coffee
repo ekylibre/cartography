@@ -66,7 +66,7 @@ class L.Cut.Polyline extends L.Handler
 
     @_map.on L.Cutting.Polyline.Event.SELECT, @_cutMode, @
 
-    @_map.on 'zoomend moveend', @refreshAvailableLayers, @
+    @_map.on 'moveend', @refreshAvailableLayers, @
 
     @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_on_move_measure, @
     @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_on_move_measure, @
@@ -125,7 +125,7 @@ class L.Cut.Polyline extends L.Handler
 
     @_availableLayers.off 'layeradd', @_enableLayer, @
     @_availableLayers.off 'layerremove', @_disableLayer, @
-    @_map.off 'zoomend moveend', @refreshAvailableLayers, @
+    @_map.off 'moveend', @refreshAvailableLayers, @
 
     @_map.off L.Cutting.Polyline.Event.SELECT, @_cutMode, @
 
@@ -152,7 +152,7 @@ class L.Cut.Polyline extends L.Handler
       newLayers = new L.FeatureGroup(@_featureGroup.search(@_map.getBounds()))
 
       removeList = @_availableLayers.getLayers().filter (layer) ->
-        !newLayers.hasLayer layer
+        !newLayers.hasUUIDLayer layer
 
       if removeList.length
         for l in removeList
@@ -171,7 +171,7 @@ class L.Cut.Polyline extends L.Handler
     else
       @_availableLayers = @_featureGroup
 
-    @_availableLayers.bringToBack()
+    #@_availableLayers.bringToBack()
     @_map.removeLayer @_featureGroup
 
   removeHooks: ->
