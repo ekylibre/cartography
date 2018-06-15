@@ -26641,7 +26641,7 @@ L.Cut.Polyline = (function(superClass) {
     this._availableLayers.on('layeradd', this._enableLayer, this);
     this._availableLayers.on('layerremove', this._disableLayer, this);
     this._map.on(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
-    this._map.on('zoomend moveend', this.refreshAvailableLayers, this);
+    this._map.on('moveend', this.refreshAvailableLayers, this);
     this._map.on(L.ReactiveMeasure.Draw.Event.MOVE, this._on_move_measure, this);
     this._map.on(L.ReactiveMeasure.Edit.Event.MOVE, this._on_move_measure, this);
     this._polygonSliceMarkers.addTo(this._map);
@@ -26691,7 +26691,7 @@ L.Cut.Polyline = (function(superClass) {
     this._activeLayer = null;
     this._availableLayers.off('layeradd', this._enableLayer, this);
     this._availableLayers.off('layerremove', this._disableLayer, this);
-    this._map.off('zoomend moveend', this.refreshAvailableLayers, this);
+    this._map.off('moveend', this.refreshAvailableLayers, this);
     this._map.off(L.Cutting.Polyline.Event.SELECT, this._cutMode, this);
     this._map.off(L.ReactiveMeasure.Draw.Event.MOVE, this._on_move_measure, this);
     this._map.off(L.ReactiveMeasure.Edit.Event.MOVE, this._on_move_measure, this);
@@ -26715,7 +26715,7 @@ L.Cut.Polyline = (function(superClass) {
     if (typeof this._featureGroup.search === 'function') {
       newLayers = new L.FeatureGroup(this._featureGroup.search(this._map.getBounds()));
       removeList = this._availableLayers.getLayers().filter(function(layer) {
-        return !newLayers.hasLayer(layer);
+        return !newLayers.hasUUIDLayer(layer);
       });
       if (removeList.length) {
         for (i = 0, len = removeList.length; i < len; i++) {
@@ -26741,7 +26741,6 @@ L.Cut.Polyline = (function(superClass) {
     } else {
       this._availableLayers = this._featureGroup;
     }
-    this._availableLayers.bringToBack();
     return this._map.removeLayer(this._featureGroup);
   };
 
