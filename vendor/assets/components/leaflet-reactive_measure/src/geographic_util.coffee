@@ -12,12 +12,7 @@ L.GeographicUtil = L.extend L.GeographicUtil || {},
 
   Polygon: (points) -> # (Array of [lat,lng] pair)
     @geod = GeographicLib.Geodesic.WGS84
-    polyline = false
-    
-    if points.length == 2
-      polyline = true
-
-    @poly = @geod.Polygon(polyline)
+    @poly = @geod.Polygon(false)
     for point in points
       @poly.AddPoint point[0], point[1]
 

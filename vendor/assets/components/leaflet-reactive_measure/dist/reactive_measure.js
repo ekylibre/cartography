@@ -568,13 +568,9 @@ L.GeographicUtil = L.extend(L.GeographicUtil || {}, {
     return r.s12.toFixed(3);
   },
   Polygon: function(points) {
-    var i, len, point, polyline;
+    var i, len, point;
     this.geod = GeographicLib.Geodesic.WGS84;
-    polyline = false;
-    if (points.length === 2) {
-      polyline = true;
-    }
-    this.poly = this.geod.Polygon(polyline);
+    this.poly = this.geod.Polygon(false);
     for (i = 0, len = points.length; i < len; i++) {
       point = points[i];
       this.poly.AddPoint(point[0], point[1]);
