@@ -427,6 +427,11 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
+    union: (polygons) ->
+      
+
+
+
     sync: (data, layerName, options = {}) =>
 
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
