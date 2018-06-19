@@ -431,7 +431,8 @@
       L.Calculation.union(polygons).geometry
 
     difference: (polygon1, polygon2) ->
-      L.Calculation.difference(polygon1, polygon2).geometry
+      remainingShape = L.Calculation.difference(polygon1, polygon2)
+      if remainingShape then remainingShape.geometry else null
 
     sync: (data, layerName, options = {}) =>
 
