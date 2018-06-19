@@ -582,6 +582,13 @@ leaflet-draw@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.3.2.tgz#717ee8fed4c2a9679c12162e1f922d2da503d109"
 
+"leaflet-geographicutil@git+https://github.com/ekylibre/Leaflet.GeographicUtil.git":
+  version "0.0.1"
+  resolved "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git#c2a7777155c8b16d1d350ff849fe8e687863f319"
+  dependencies:
+    geographiclib "^1.49.0"
+    leaflet "^1.2.0"
+
 leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.0.tgz#c09c0fc37628f402846ad5723c80ef95b3d2057c"
@@ -605,6 +612,7 @@ leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
+    leaflet-geographicutil "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git"
 
 leaflet-snap@../Leaflet.Snap:
   version "0.0.4"
