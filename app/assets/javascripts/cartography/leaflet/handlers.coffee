@@ -114,8 +114,8 @@
 
     _onRefresh: (e) =>
       layer = e.target
-
-      if layer.selected && layer.options.selecting.className
+      return unless layer.options.selecting && layer.options.selecting.className
+      if layer.selected
         L.DomUtil.addClass(layer._path, layer.options.selecting.className)
       else
         L.DomUtil.removeClass(layer._path, layer.options.selecting.className)
@@ -233,7 +233,7 @@
 
       return unless e.label
       unless layer.getTooltip()
-        tooltip = new L.Tooltip @options.tooltip          
+        tooltip = new L.Tooltip @options.tooltip
         layer.bindTooltip(tooltip)
 
       layer.openTooltip(layer.polylabel())
