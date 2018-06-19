@@ -428,9 +428,10 @@
         layer._editToolbar._activate layer
 
     union: (polygons) ->
-      
+      L.Calculation.union(polygons).geometry
 
-
+    difference: (polygon1, polygon2) ->
+      L.Calculation.difference(polygon1, polygon2).geometry
 
     sync: (data, layerName, options = {}) =>
 
