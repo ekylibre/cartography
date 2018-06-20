@@ -325,7 +325,11 @@
       @_map.off "draw:drawvertex", @_onDrawVertex, @
 
     _onDrawingPolygon: (e) ->
-      @_map.fire C.Events.shapeDraw.draw, data: { measure: e.measure }
+      measure = {
+        area: e.measure.extrapolatedArea,
+        perimeter: if @_handler._poly.getLatLngs().length == 1 then e.measure.perimeter else e.measure.extrapolatedPerimeter
+      }
+      @_map.fire C.Events.shapeDraw.draw, data: { measure: measure }
 
     _onInvalidDrawingPolygon: (e) ->
       @_map.fire C.Events.shapeDraw.warn, data: { message: e.error }

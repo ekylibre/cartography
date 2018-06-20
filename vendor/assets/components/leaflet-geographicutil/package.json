@@ -1,0 +1,36 @@
+{
+  "name": "leaflet-geographicutil",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/leaflet.geographicutil.js",
+  "scripts": {
+    "build": "webpack -p",
+    "watch": "webpack --watch",
+    "watch-test": "karma start",
+    "test": "karma start --single-run --browsers PhantomJS"
+  },
+  "keywords": [],
+  "author": "Nicolas PROCUREUR",
+  "homepage": "https://github.com/ekylibre/Leaflet.GeographicUtil",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ekylibre/Leaflet.GeographicUtil.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "coffee-loader": "^0.8.0",
+    "coffeescript": "^1.12.7",
+    "jasmine": "^2.9.0",
+    "jasmine-core": "^2.9.1",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-webpack": "^2.0.9",
+    "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "geographiclib": "^1.49.0",
+    "leaflet": "^1.2.0"
+  }
+}
