@@ -589,8 +589,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     leaflet-geometryutil "^0.8.0"
-    leaflet-reactive_measure "../Leaflet.ReactiveMeasure"
-    leaflet-snap "../Leaflet.Snap"
+    leaflet-snap "git+https://github.com/ekylibre/Leaflet.Snap.git"
     lodash "^4.17.4"
 
 "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
@@ -619,13 +618,7 @@ leaflet-draw@^0.4.12:
   version "0.4.14"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
 
-leaflet-geometryutil@*:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.0.tgz#c09c0fc37628f402846ad5723c80ef95b3d2057c"
-  dependencies:
-    leaflet ">=0.7.0"
-
-leaflet-geometryutil@^0.8.0:
+leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.1.tgz#d12c70c9db466497c13bab4e8067b6d5fb4423fe"
   dependencies:
@@ -642,15 +635,9 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
-  version "0.1.2"
-  dependencies:
-    geographiclib "^1.49.0"
-    leaflet "^1.2.0"
-    leaflet-draw "^0.4.12"
-
-leaflet-snap@../Leaflet.Snap:
+"leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
   version "0.0.4"
+  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

@@ -60,8 +60,7 @@
     "leaflet": "^1.2.0",
     "leaflet-draw": "^0.4.12",
     "leaflet-geometryutil": "^0.8.0",
-    "leaflet-reactive_measure": "../Leaflet.ReactiveMeasure",
-    "leaflet-snap": "../Leaflet.Snap",
+    "leaflet-snap": "git+https://github.com/ekylibre/Leaflet.Snap.git",
     "lodash": "^4.17.4"
   }
 }
