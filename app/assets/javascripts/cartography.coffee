@@ -431,6 +431,13 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
+    union: (polygons) ->
+      L.Calculation.union(polygons).geometry
+
+    difference: (polygon1, polygon2) ->
+      remainingShape = L.Calculation.difference(polygon1, polygon2)
+      if remainingShape then remainingShape.geometry else null
+
     sync: (data, layerName, options = {}) =>
 
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
