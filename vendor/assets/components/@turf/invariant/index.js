@@ -1,9 +1,6 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var helpers = require('@turf/helpers');
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = require("@turf/helpers");
 /**
  * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
  *
@@ -17,14 +14,23 @@ var helpers = require('@turf/helpers');
  * //= [10, 10]
  */
 function getCoord(coord) {
-    if (!coord) throw new Error('coord is required');
-    if (coord.type === 'Feature' && coord.geometry !== null && coord.geometry.type === 'Point') return coord.geometry.coordinates;
-    if (coord.type === 'Point') return coord.coordinates;
-    if (Array.isArray(coord) && coord.length >= 2 && coord[0].length === undefined && coord[1].length === undefined) return coord;
-
-    throw new Error('coord must be GeoJSON Point or an Array of numbers');
+    if (!coord) {
+        throw new Error("coord is required");
+    }
+    if (!Array.isArray(coord)) {
+        if (coord.type === "Feature" && coord.geometry !== null && coord.geometry.type === "Point") {
+            return coord.geometry.coordinates;
+        }
+        if (coord.type === "Point") {
+            return coord.coordinates;
+        }
+    }
+    if (Array.isArray(coord) && coord.length >= 2 && !Array.isArray(coord[0]) && !Array.isArray(coord[1])) {
+        return coord;
+    }
+    throw new Error("coord must be GeoJSON Point or an Array of numbers");
 }
-
+exports.getCoord = getCoord;
 /**
  * Unwrap coordinates from a Feature, Geometry Object or an Array
  *
@@ -38,20 +44,24 @@ function getCoord(coord) {
  * //= [[[119.32, -8.7], [119.55, -8.69], [119.51, -8.54], [119.32, -8.7]]]
  */
 function getCoords(coords) {
-    if (!coords) throw new Error('coords is required');
-
+    if (Array.isArray(coords)) {
+        return coords;
+    }
     // Feature
-    if (coords.type === 'Feature' && coords.geometry !== null) return coords.geometry.coordinates;
-
-    // Geometry
-    if (coords.coordinates) return coords.coordinates;
-
-    // Array of numbers
-    if (Array.isArray(coords)) return coords;
-
-    throw new Error('coords must be GeoJSON Feature, Geometry Object or an Array');
+    if (coords.type === "Feature") {
+        if (coords.geometry !== null) {
+            return coords.geometry.coordinates;
+        }
+    }
+    else {
+        // Geometry
+        if (coords.coordinates) {
+            return coords.coordinates;
+        }
+    }
+    throw new Error("coords must be GeoJSON Feature, Geometry Object or an Array");
 }
-
+exports.getCoords = getCoords;
 /**
  * Checks if coordinates contains a number
  *
@@ -60,16 +70,15 @@ function getCoords(coords) {
  * @returns {boolean} true if Array contains a number
  */
 function containsNumber(coordinates) {
-    if (coordinates.length > 1 && helpers.isNumber(coordinates[0]) && helpers.isNumber(coordinates[1])) {
+    if (coordinates.length > 1 && helpers_1.isNumber(coordinates[0]) && helpers_1.isNumber(coordinates[1])) {
         return true;
     }
-
     if (Array.isArray(coordinates[0]) && coordinates[0].length) {
         return containsNumber(coordinates[0]);
     }
-    throw new Error('coordinates must only contain numbers');
+    throw new Error("coordinates must only contain numbers");
 }
-
+exports.containsNumber = containsNumber;
 /**
  * Enforce expectations about types of GeoJSON objects for Turf.
  *
@@ -80,13 +89,14 @@ function containsNumber(coordinates) {
  * @throws {Error} if value is not the expected type.
  */
 function geojsonType(value, type, name) {
-    if (!type || !name) throw new Error('type and name required');
-
+    if (!type || !name) {
+        throw new Error("type and name required");
+    }
     if (!value || value.type !== type) {
-        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + value.type);
+        throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + value.type);
     }
 }
-
+exports.geojsonType = geojsonType;
 /**
  * Enforce expectations about types of {@link Feature} inputs for Turf.
  * Internally this uses {@link geojsonType} to judge geometry types.
@@ -98,16 +108,20 @@ function geojsonType(value, type, name) {
  * @throws {Error} error if value is not the expected type.
  */
 function featureOf(feature, type, name) {
-    if (!feature) throw new Error('No feature passed');
-    if (!name) throw new Error('.featureOf() requires a name');
-    if (!feature || feature.type !== 'Feature' || !feature.geometry) {
-        throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+    if (!feature) {
+        throw new Error("No feature passed");
+    }
+    if (!name) {
+        throw new Error(".featureOf() requires a name");
+    }
+    if (!feature || feature.type !== "Feature" || !feature.geometry) {
+        throw new Error("Invalid input to " + name + ", Feature with geometry required");
     }
     if (!feature.geometry || feature.geometry.type !== type) {
-        throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+        throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + feature.geometry.type);
     }
 }
-
+exports.featureOf = featureOf;
 /**
  * Enforce expectations about types of {@link FeatureCollection} inputs for Turf.
  * Internally this uses {@link geojsonType} to judge geometry types.
@@ -119,22 +133,26 @@ function featureOf(feature, type, name) {
  * @throws {Error} if value is not the expected type.
  */
 function collectionOf(featureCollection, type, name) {
-    if (!featureCollection) throw new Error('No featureCollection passed');
-    if (!name) throw new Error('.collectionOf() requires a name');
-    if (!featureCollection || featureCollection.type !== 'FeatureCollection') {
-        throw new Error('Invalid input to ' + name + ', FeatureCollection required');
+    if (!featureCollection) {
+        throw new Error("No featureCollection passed");
     }
-    for (var i = 0; i < featureCollection.features.length; i++) {
-        var feature = featureCollection.features[i];
-        if (!feature || feature.type !== 'Feature' || !feature.geometry) {
-            throw new Error('Invalid input to ' + name + ', Feature with geometry required');
+    if (!name) {
+        throw new Error(".collectionOf() requires a name");
+    }
+    if (!featureCollection || featureCollection.type !== "FeatureCollection") {
+        throw new Error("Invalid input to " + name + ", FeatureCollection required");
+    }
+    for (var _i = 0, _a = featureCollection.features; _i < _a.length; _i++) {
+        var feature = _a[_i];
+        if (!feature || feature.type !== "Feature" || !feature.geometry) {
+            throw new Error("Invalid input to " + name + ", Feature with geometry required");
         }
         if (!feature.geometry || feature.geometry.type !== type) {
-            throw new Error('Invalid input to ' + name + ': must be a ' + type + ', given ' + feature.geometry.type);
+            throw new Error("Invalid input to " + name + ": must be a " + type + ", given " + feature.geometry.type);
         }
     }
 }
-
+exports.collectionOf = collectionOf;
 /**
  * Get Geometry from Feature or Geometry Object
  *
@@ -154,21 +172,12 @@ function collectionOf(featureCollection, type, name) {
  * //={"type": "Point", "coordinates": [110, 40]}
  */
 function getGeom(geojson) {
-    if (!geojson) throw new Error('geojson is required');
-    if (geojson.geometry !== undefined) return geojson.geometry;
-    if (geojson.coordinates || geojson.geometries) return geojson;
-    throw new Error('geojson must be a valid Feature or Geometry Object');
+    if (geojson.type === "Feature") {
+        return geojson.geometry;
+    }
+    return geojson;
 }
-
-/**
- * Get Geometry Type from Feature or Geometry Object
- *
- * @throws {Error} **DEPRECATED** in v5.0.0 in favor of getType
- */
-function getGeomType() {
-    throw new Error('invariant.getGeomType has been deprecated in v5.0 in favor of invariant.getType');
-}
-
+exports.getGeom = getGeom;
 /**
  * Get GeoJSON object's type, Geometry type is prioritize.
  *
@@ -188,20 +197,15 @@ function getGeomType() {
  * //="Point"
  */
 function getType(geojson, name) {
-    if (!geojson) throw new Error((name || 'geojson') + ' is required');
-    // GeoJSON Feature & GeometryCollection
-    if (geojson.geometry && geojson.geometry.type) return geojson.geometry.type;
-    // GeoJSON Geometry & FeatureCollection
-    if (geojson.type) return geojson.type;
-    throw new Error((name || 'geojson') + ' is invalid');
+    if (geojson.type === "FeatureCollection") {
+        return "FeatureCollection";
+    }
+    if (geojson.type === "GeometryCollection") {
+        return "GeometryCollection";
+    }
+    if (geojson.type === "Feature" && geojson.geometry !== null) {
+        return geojson.geometry.type;
+    }
+    return geojson.type;
 }
-
-exports.getCoord = getCoord;
-exports.getCoords = getCoords;
-exports.containsNumber = containsNumber;
-exports.geojsonType = geojsonType;
-exports.featureOf = featureOf;
-exports.collectionOf = collectionOf;
-exports.getGeom = getGeom;
-exports.getGeomType = getGeomType;
 exports.getType = getType;

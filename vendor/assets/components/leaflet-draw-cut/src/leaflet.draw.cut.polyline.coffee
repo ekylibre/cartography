@@ -42,7 +42,7 @@ class L.Cut.Polyline extends L.Handler
 
     @_featureGroup = options.featureGroup
     @_uneditedLayerProps = []
-    @_polygonSliceMarkers = new L.LayerGroup 
+    @_polygonSliceMarkers = new L.LayerGroup
 
     if !(@_featureGroup instanceof L.FeatureGroup)
       throw new Error('options.featureGroup must be a L.FeatureGroup')
@@ -356,7 +356,7 @@ class L.Cut.Polyline extends L.Handler
         latlngs.splice(-1, 1)
         @_activeLayer.cutting._markers.splice(-1,1)
         @_activeLayer.cutting._markerGroup.removeLayer marker
-    
+
     if @_activeLayer.cutting._markers.length > 1
       unless isInPolygon
         @_stopCutDrawing()
@@ -393,13 +393,13 @@ class L.Cut.Polyline extends L.Handler
 
       polygon.feature.properties.num = index+1
       polygon.feature.properties.color = "c-#{index}"
-      
+
       polygon.fromTurfFeature turfPolygon
       featureGroup.addLayer polygon
       index++
 
     featureGroup
-      
+
 
   _innerLineStrings: (poly) ->
     results = []
@@ -450,7 +450,6 @@ class L.Cut.Polyline extends L.Handler
 
       #splitter = L.polyline(drawnPolyline.getLatLngs())
       splitter = L.polyline drawnPolyline.getLatLngs(), @options.cuttingPathOptions
-
       layerGroup = @_slice @_activeLayer, drawnPolyline
 
       return unless layerGroup && layerGroup.getLayers().length >= 2
