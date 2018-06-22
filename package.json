@@ -11,8 +11,8 @@
     "leaflet-draw-merge": "https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-layerindex": "https://github.com/ekylibre/Leaflet.LayerIndex.git",
     "leaflet-providers": "1.1.17",
-    "leaflet-reactive_measure": "../Leaflet.ReactiveMeasure",
-    "leaflet-snap": "../Leaflet.Snap",
+    "leaflet-reactive_measure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure",
+    "leaflet-snap": "https://github.com/ekylibre/Leaflet.Snap",
     "pure-uuid": "^1.4.10"
   }
 }

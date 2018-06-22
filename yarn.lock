@@ -618,13 +618,14 @@ leaflet-draw@^0.4.12:
   version "0.4.14"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
 
-leaflet-geometryutil@*:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.0.tgz#c09c0fc37628f402846ad5723c80ef95b3d2057c"
+"leaflet-geographicutil@git+https://github.com/ekylibre/Leaflet.GeographicUtil.git":
+  version "0.0.1"
+  resolved "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git#c2a7777155c8b16d1d350ff849fe8e687863f319"
   dependencies:
-    leaflet ">=0.7.0"
+    geographiclib "^1.49.0"
+    leaflet "^1.2.0"
 
-leaflet-geometryutil@^0.8.0:
+leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.1.tgz#d12c70c9db466497c13bab4e8067b6d5fb4423fe"
   dependencies:
@@ -641,24 +642,28 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
+"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#4dcc58605f91637e2251c9a585891c527e7eb9c0"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
+    leaflet-geographicutil "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git"
 
-leaflet-snap@../Leaflet.Snap:
+"leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
   version "0.0.4"
+  uid "5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
-"leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
+"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
   version "0.0.4"
-  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"
