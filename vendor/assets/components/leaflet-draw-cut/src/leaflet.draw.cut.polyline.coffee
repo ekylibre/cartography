@@ -3,10 +3,10 @@ _ = require 'lodash'
 
 turf = require '@turf/helpers'
 turfLineSlice = require '@turf/line-slice'
-turfRewind = require '@turf/rewind'
+turfRewind = require('@turf/rewind')
 turfBooleanPointInPolygon = require('@turf/boolean-point-in-polygon').default
+turfCleanCoords = require('@turf/clean-coords').default
 turfLineToPolygon = require('@turf/line-to-polygon').default
-turfKinks = require '@turf/kinks'
 turfMeta = require '@turf/meta'
 turfPolygonize = require '@turf/polygonize'
 turfDifference = require('@turf/difference')
@@ -417,14 +417,17 @@ class L.Cut.Polyline extends L.Handler
     outerLineStrings = []
 
     # split outers
-    turfMeta.featureEach turfLineSplit(outerRing, splitter), (line) ->
+    turfMeta.featureEach bboxLineSplit(outerRing, splitter), (line) ->
       outerLineStrings.push line
 
     # split splitter
-    turfMeta.featureEach turfLineSplit(splitter, poly), (line) ->
+    turfMeta.featureEach bboxLineSplit(splitter, poly), (line) ->
       outerLineStrings.push line
 
-    outerLineStrings = turfTruncate(turf.featureCollection(outerLineStrings), precision: 6)
+    outerLineStrings = turf.featureCollection(outerLineStrings)
+
+    turfMeta.featureEach outerLineStrings, (feature) =>
+      turfCleanCoords feature, mutate: true
 
     polygons = turfPolygonize.default(outerLineStrings)
 
@@ -487,6 +490,9 @@ class L.Cut.Polyline extends L.Handler
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
           #marker.on 'click', @_moveMarker, @
+    catch e 
+      console.log e
+      debugger
 
   _moveMarker: (e) ->
     marker = e.marker || e.target || e
