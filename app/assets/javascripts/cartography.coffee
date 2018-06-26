@@ -156,7 +156,7 @@
           p = layer.feature.properties
           measure = layer.getMeasure()
 
-          { num: p.num, area: measure.area, perimeter: measure.perimeter, color: p.color, shape: layer.toGeoJSON() }
+          { num: p.num, area: measure.extrapolatedArea, perimeter: measure.extrapolatedPerimeter, color: p.color, shape: layer.toGeoJSON() }
 
         @getMap().fire C.Events.split.change, data: data
 
@@ -287,7 +287,11 @@
 
     ##### PUBLIC API ######
     setView: ->
-      #TMP
+      if @options.bounds
+        bounds = @options.bounds.split(',')
+        @getMap().fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]],{ maxZoom: 21 })
+        return
+
       if @getFeatureGroup().getLayers().length
         @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
       else
