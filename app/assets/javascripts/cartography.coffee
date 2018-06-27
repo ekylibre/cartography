@@ -37,6 +37,7 @@
         selection: false
         locking: false
         zoom: true
+        home: true
         scale: true
       snap:
         panel:
@@ -208,6 +209,9 @@
       @controls.register 'zoom', true, =>
         new C.Controls.Zoom(@getMap(), @options.zoom)
 
+      @controls.register 'home', true, =>
+        new C.Controls.Home(@getMap(), home: { featureGroup: @getFeatureGroup() } )
+
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
 
@@ -257,6 +261,9 @@
 
       if @options.controls.zoom
         @controls.add 'zoom'
+
+      if @options.controls.home
+        @controls.add 'home'
 
       if @options.controls.edit
         @controls.add 'edit'
