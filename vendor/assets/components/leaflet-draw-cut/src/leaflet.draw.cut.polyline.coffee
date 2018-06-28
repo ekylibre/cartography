@@ -33,6 +33,8 @@ L.Cutting.Polyline.Event.CUTTING = "cut:polyline:cutting"
 
 class L.Cut.Polyline extends L.Handler
   @TYPE: 'cut-polyline'
+  @options:
+    cycling: 2
 
   constructor: (map, options) ->
     @type = @constructor.TYPE
@@ -163,7 +165,9 @@ class L.Cut.Polyline extends L.Handler
 
       if addList.length
         for l in addList
-          unless @_availableLayers.hasUUIDLayer l
+          named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name
+
+          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
             geojson = l.toGeoJSON()
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
@@ -225,7 +229,8 @@ class L.Cut.Polyline extends L.Handler
 
     layer.setStyle layer.options.disabled
 
-    layer.on 'click', @_selectLayer, @
+    unless @_activeLayer
+      layer.on 'click', @_selectLayer, @
 
   activate: (layerId) ->
     activateLayer = undefined
@@ -241,24 +246,9 @@ class L.Cut.Polyline extends L.Handler
     layer = e.layer or e.target or e
 
     if layer != @_activeLayer
+      @_availableLayers.eachLayer (layer) =>
+        layer.off 'click', @_selectLayer, @
       @_activate layer
-    #
-    #mouseLatLng = e.latlng
-    #found = false
-
-    #@_availableLayers.eachLayer (layer) =>
-      #mousePoint = mouseLatLng.toTurfFeature()
-      #polygon = layer.toTurfFeature()
-
-      #if turfinside.default(mousePoint, polygon)
-        #if layer != @_activeLayer
-          #@_activate layer, mouseLatLng
-        #found = true
-        #return
-
-    #return if found
-    ##if @_activeLayer && !@_activeLayer.glue
-      ##@_unselectLayer @_activeLayer
 
   _unselectLayer: (e) ->
     layer = e.layer or e.target or e
@@ -378,13 +368,13 @@ class L.Cut.Polyline extends L.Handler
       buffered = turfBuffer(poly, 0.01)
 
     index = 0
-    turfMeta.featureEach turfPolygonsCollection, (turfPolygon) ->
+    turfMeta.featureEach turfPolygonsCollection, (turfPolygon) =>
 
       if turfPolygonsCollection.features.length > 2
         diff = turfDifference(turfPolygon, buffered)
         return if diff?
 
-      polygon = new L.polygon [], className: "leaflet-polygon-slice c-#{index}"
+      polygon = new L.polygon [], className: "leaflet-polygon-slice c-#{index%@options.cycling}"
 
       polygon._polygonSliceIcon = new L.PolygonSliceIcon html: "#{index+1}"
 
@@ -392,7 +382,7 @@ class L.Cut.Polyline extends L.Handler
       polygon.feature.properties ||= {}
 
       polygon.feature.properties.num = index+1
-      polygon.feature.properties.color = "c-#{index}"
+      polygon.feature.properties.color = "c-#{index%@options.cycling}"
       
       polygon.fromTurfFeature turfPolygon
       featureGroup.addLayer polygon
@@ -489,10 +479,7 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer.editing._poly.on 'editstart', (e) =>
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
-          #marker.on 'click', @_moveMarker, @
-    catch e 
-      console.log e
-      debugger
+          marker.on 'click', @_moveMarker, @
 
   _moveMarker: (e) ->
     marker = e.marker || e.target || e

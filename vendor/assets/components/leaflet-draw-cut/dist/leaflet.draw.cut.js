@@ -27396,6 +27396,10 @@ L.Cut.Polyline = (function(superClass) {
 
   Polyline.TYPE = 'cut-polyline';
 
+  Polyline.options = {
+    cycling: 2
+  };
+
   function Polyline(map, options) {
     this._on_click = bind(this._on_click, this);
     this._on_move_measure = bind(this._on_move_measure, this);
@@ -27499,7 +27503,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype.refreshAvailableLayers = function() {
-    var addList, geojson, i, j, l, len, len1, newLayers, removeList;
+    var addList, geojson, i, j, l, len, len1, named, newLayers, removeList;
     this._featureGroup.addTo(this._map);
     if (!this._featureGroup.getLayers().length) {
       return;
@@ -27523,7 +27527,8 @@ L.Cut.Polyline = (function(superClass) {
       if (addList.length) {
         for (j = 0, len1 = addList.length; j < len1; j++) {
           l = addList[j];
-          if (!this._availableLayers.hasUUIDLayer(l)) {
+          named = this._activeLayer && this._activeLayer.feature && this._activeLayer.feature.properties && this._activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name;
+          if (!((!named && this._availableLayers.hasUUIDLayer(l)) || (named && this._activeLayer.feature.properties.name === l.feature.properties.name))) {
             geojson = l.toGeoJSON();
             geojson.properties.color = l.options.color;
             this._availableLayers.addData(geojson);
@@ -27586,7 +27591,9 @@ L.Cut.Polyline = (function(superClass) {
       layer.options.selected = pathOptions;
     }
     layer.setStyle(layer.options.disabled);
-    return layer.on('click', this._selectLayer, this);
+    if (!this._activeLayer) {
+      return layer.on('click', this._selectLayer, this);
+    }
   };
 
   Polyline.prototype.activate = function(layerId) {
@@ -27606,6 +27613,11 @@ L.Cut.Polyline = (function(superClass) {
     var layer;
     layer = e.layer || e.target || e;
     if (layer !== this._activeLayer) {
+      this._availableLayers.eachLayer((function(_this) {
+        return function(layer) {
+          return layer.off('click', _this._selectLayer, _this);
+        };
+      })(this));
       return this._activate(layer);
     }
   };
@@ -27724,28 +27736,30 @@ L.Cut.Polyline = (function(superClass) {
       buffered = turfBuffer(poly, 0.01);
     }
     index = 0;
-    turfMeta.featureEach(turfPolygonsCollection, function(turfPolygon) {
-      var base, diff;
-      if (turfPolygonsCollection.features.length > 2) {
-        diff = turfDifference(turfPolygon, buffered);
-        if (diff != null) {
-          return;
+    turfMeta.featureEach(turfPolygonsCollection, (function(_this) {
+      return function(turfPolygon) {
+        var base, diff;
+        if (turfPolygonsCollection.features.length > 2) {
+          diff = turfDifference(turfPolygon, buffered);
+          if (diff != null) {
+            return;
+          }
         }
-      }
-      polygon = new L.polygon([], {
-        className: "leaflet-polygon-slice c-" + index
-      });
-      polygon._polygonSliceIcon = new L.PolygonSliceIcon({
-        html: "" + (index + 1)
-      });
-      polygon.feature || (polygon.feature = {});
-      (base = polygon.feature).properties || (base.properties = {});
-      polygon.feature.properties.num = index + 1;
-      polygon.feature.properties.color = "c-" + index;
-      polygon.fromTurfFeature(turfPolygon);
-      featureGroup.addLayer(polygon);
-      return index++;
-    });
+        polygon = new L.polygon([], {
+          className: "leaflet-polygon-slice c-" + (index % _this.options.cycling)
+        });
+        polygon._polygonSliceIcon = new L.PolygonSliceIcon({
+          html: "" + (index + 1)
+        });
+        polygon.feature || (polygon.feature = {});
+        (base = polygon.feature).properties || (base.properties = {});
+        polygon.feature.properties.num = index + 1;
+        polygon.feature.properties.color = "c-" + (index % _this.options.cycling);
+        polygon.fromTurfFeature(turfPolygon);
+        featureGroup.addLayer(polygon);
+        return index++;
+      };
+    })(this));
     return featureGroup;
   };
 
@@ -27800,7 +27814,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype._stopCutDrawing = function() {
-    var drawnPolyline, e, layerGroup, splitter;
+    var drawnPolyline, layerGroup, splitter;
     try {
       drawnPolyline = this._activeLayer.cutting._poly;
       splitter = L.polyline(drawnPolyline.getLatLngs(), this.options.cuttingPathOptions);
@@ -27842,16 +27856,13 @@ L.Cut.Polyline = (function(superClass) {
           results1 = [];
           for (i = 0, len = ref.length; i < len; i++) {
             marker = ref[i];
-            results1.push(marker.on('move', _this._moveMarker, _this));
+            marker.on('move', _this._moveMarker, _this);
+            results1.push(marker.on('click', _this._moveMarker, _this));
           }
           return results1;
         };
       })(this));
-    } catch (error) {
-      e = error;
-      console.log(e);
-      debugger;
-    }
+    } catch (error) {}
   };
 
   Polyline.prototype._moveMarker = function(e) {
