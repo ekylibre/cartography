@@ -27396,6 +27396,10 @@ L.Cut.Polyline = (function(superClass) {
 
   Polyline.TYPE = 'cut-polyline';
 
+  Polyline.options = {
+    cycling: 2
+  };
+
   function Polyline(map, options) {
     this._on_click = bind(this._on_click, this);
     this._on_move_measure = bind(this._on_move_measure, this);
@@ -27724,28 +27728,30 @@ L.Cut.Polyline = (function(superClass) {
       buffered = turfBuffer(poly, 0.01);
     }
     index = 0;
-    turfMeta.featureEach(turfPolygonsCollection, function(turfPolygon) {
-      var base, diff;
-      if (turfPolygonsCollection.features.length > 2) {
-        diff = turfDifference(turfPolygon, buffered);
-        if (diff != null) {
-          return;
+    turfMeta.featureEach(turfPolygonsCollection, (function(_this) {
+      return function(turfPolygon) {
+        var base, diff;
+        if (turfPolygonsCollection.features.length > 2) {
+          diff = turfDifference(turfPolygon, buffered);
+          if (diff != null) {
+            return;
+          }
         }
-      }
-      polygon = new L.polygon([], {
-        className: "leaflet-polygon-slice c-" + index
-      });
-      polygon._polygonSliceIcon = new L.PolygonSliceIcon({
-        html: "" + (index + 1)
-      });
-      polygon.feature || (polygon.feature = {});
-      (base = polygon.feature).properties || (base.properties = {});
-      polygon.feature.properties.num = index + 1;
-      polygon.feature.properties.color = "c-" + index;
-      polygon.fromTurfFeature(turfPolygon);
-      featureGroup.addLayer(polygon);
-      return index++;
-    });
+        polygon = new L.polygon([], {
+          className: "leaflet-polygon-slice c-" + (index % _this.options.cycling)
+        });
+        polygon._polygonSliceIcon = new L.PolygonSliceIcon({
+          html: "" + (index + 1)
+        });
+        polygon.feature || (polygon.feature = {});
+        (base = polygon.feature).properties || (base.properties = {});
+        polygon.feature.properties.num = index + 1;
+        polygon.feature.properties.color = "c-" + (index % _this.options.cycling);
+        polygon.fromTurfFeature(turfPolygon);
+        featureGroup.addLayer(polygon);
+        return index++;
+      };
+    })(this));
     return featureGroup;
   };
 
@@ -27800,7 +27806,7 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype._stopCutDrawing = function() {
-    var drawnPolyline, e, layerGroup, splitter;
+    var drawnPolyline, layerGroup, splitter;
     try {
       drawnPolyline = this._activeLayer.cutting._poly;
       splitter = L.polyline(drawnPolyline.getLatLngs(), this.options.cuttingPathOptions);
@@ -27847,11 +27853,7 @@ L.Cut.Polyline = (function(superClass) {
           return results1;
         };
       })(this));
-    } catch (error) {
-      e = error;
-      console.log(e);
-      debugger;
-    }
+    } catch (error) {}
   };
 
   Polyline.prototype._moveMarker = function(e) {
