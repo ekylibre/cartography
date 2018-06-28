@@ -147,6 +147,7 @@ class L.Cut.Polyline extends L.Handler
 
     return unless @_featureGroup.getLayers().length
 
+    console.log @_activeLayer.feature.properties if @_activeLayer
     #RTree
     if typeof @_featureGroup.search == 'function'
       newLayers = new L.FeatureGroup(@_featureGroup.search(@_map.getBounds()))
@@ -163,7 +164,12 @@ class L.Cut.Polyline extends L.Handler
 
       if addList.length
         for l in addList
-          unless @_availableLayers.hasUUIDLayer l
+          named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name
+          if named
+            console.log l.feature.properties.name, @_activeLayer.feature.properties.name
+          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
+            console.log 'adding', (named && @_activeLayer.feature.properties.name == l.feature.properties.name), @_availableLayers.hasUUIDLayer l
+
             geojson = l.toGeoJSON()
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
@@ -225,7 +231,8 @@ class L.Cut.Polyline extends L.Handler
 
     layer.setStyle layer.options.disabled
 
-    layer.on 'click', @_selectLayer, @
+    unless @_activeLayer
+      layer.on 'click', @_selectLayer, @
 
   activate: (layerId) ->
     activateLayer = undefined
@@ -241,24 +248,9 @@ class L.Cut.Polyline extends L.Handler
     layer = e.layer or e.target or e
 
     if layer != @_activeLayer
+      @_availableLayers.eachLayer (layer) =>
+        layer.off 'click', @_selectLayer, @
       @_activate layer
-    #
-    #mouseLatLng = e.latlng
-    #found = false
-
-    #@_availableLayers.eachLayer (layer) =>
-      #mousePoint = mouseLatLng.toTurfFeature()
-      #polygon = layer.toTurfFeature()
-
-      #if turfinside.default(mousePoint, polygon)
-        #if layer != @_activeLayer
-          #@_activate layer, mouseLatLng
-        #found = true
-        #return
-
-    #return if found
-    ##if @_activeLayer && !@_activeLayer.glue
-      ##@_unselectLayer @_activeLayer
 
   _unselectLayer: (e) ->
     layer = e.layer or e.target or e
