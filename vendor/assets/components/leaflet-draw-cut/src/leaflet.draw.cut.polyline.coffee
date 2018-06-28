@@ -33,6 +33,8 @@ L.Cutting.Polyline.Event.CUTTING = "cut:polyline:cutting"
 
 class L.Cut.Polyline extends L.Handler
   @TYPE: 'cut-polyline'
+  @options:
+    cycling: 2
 
   constructor: (map, options) ->
     @type = @constructor.TYPE
@@ -366,13 +368,13 @@ class L.Cut.Polyline extends L.Handler
       buffered = turfBuffer(poly, 0.01)
 
     index = 0
-    turfMeta.featureEach turfPolygonsCollection, (turfPolygon) ->
+    turfMeta.featureEach turfPolygonsCollection, (turfPolygon) =>
 
       if turfPolygonsCollection.features.length > 2
         diff = turfDifference(turfPolygon, buffered)
         return if diff?
 
-      polygon = new L.polygon [], className: "leaflet-polygon-slice c-#{index}"
+      polygon = new L.polygon [], className: "leaflet-polygon-slice c-#{index%@options.cycling}"
 
       polygon._polygonSliceIcon = new L.PolygonSliceIcon html: "#{index+1}"
 
@@ -380,7 +382,7 @@ class L.Cut.Polyline extends L.Handler
       polygon.feature.properties ||= {}
 
       polygon.feature.properties.num = index+1
-      polygon.feature.properties.color = "c-#{index}"
+      polygon.feature.properties.color = "c-#{index%@options.cycling}"
       
       polygon.fromTurfFeature turfPolygon
       featureGroup.addLayer polygon
@@ -478,9 +480,6 @@ class L.Cut.Polyline extends L.Handler
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
           #marker.on 'click', @_moveMarker, @
-    catch e 
-      console.log e
-      debugger
 
   _moveMarker: (e) ->
     marker = e.marker || e.target || e

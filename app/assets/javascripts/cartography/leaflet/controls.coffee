@@ -392,6 +392,7 @@
       cuttingPathOptions:
         color: '#FF6226'
         className: 'leaflet-polygon-splitter'
+      cycling: 2
 
     constructor: (map, options) ->
       C.Util.setOptions @, options

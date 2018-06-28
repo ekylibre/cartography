@@ -46,6 +46,7 @@
           snapDistance: 15
           snapOriginDistance: 15
       cut:
+        cycling: 2
         panel:
           title: 'Splitter tool'
           animatedHelper: undefined
