@@ -147,7 +147,6 @@ class L.Cut.Polyline extends L.Handler
 
     return unless @_featureGroup.getLayers().length
 
-    console.log @_activeLayer.feature.properties if @_activeLayer
     #RTree
     if typeof @_featureGroup.search == 'function'
       newLayers = new L.FeatureGroup(@_featureGroup.search(@_map.getBounds()))
@@ -165,11 +164,8 @@ class L.Cut.Polyline extends L.Handler
       if addList.length
         for l in addList
           named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name
-          if named
-            console.log l.feature.properties.name, @_activeLayer.feature.properties.name
-          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
-            console.log 'adding', (named && @_activeLayer.feature.properties.name == l.feature.properties.name), @_availableLayers.hasUUIDLayer l
 
+          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
             geojson = l.toGeoJSON()
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)

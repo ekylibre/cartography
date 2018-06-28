@@ -27504,9 +27504,6 @@ L.Cut.Polyline = (function(superClass) {
     if (!this._featureGroup.getLayers().length) {
       return;
     }
-    if (this._activeLayer) {
-      console.log(this._activeLayer.feature.properties);
-    }
     if (typeof this._featureGroup.search === 'function') {
       newLayers = new L.FeatureGroup(this._featureGroup.search(this._map.getBounds()));
       removeList = this._availableLayers.getLayers().filter(function(layer) {
@@ -27527,11 +27524,7 @@ L.Cut.Polyline = (function(superClass) {
         for (j = 0, len1 = addList.length; j < len1; j++) {
           l = addList[j];
           named = this._activeLayer && this._activeLayer.feature && this._activeLayer.feature.properties && this._activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name;
-          if (named) {
-            console.log(l.feature.properties.name, this._activeLayer.feature.properties.name);
-          }
           if (!((!named && this._availableLayers.hasUUIDLayer(l)) || (named && this._activeLayer.feature.properties.name === l.feature.properties.name))) {
-            console.log('adding', named && this._activeLayer.feature.properties.name === l.feature.properties.name, this._availableLayers.hasUUIDLayer(l));
             geojson = l.toGeoJSON();
             geojson.properties.color = l.options.color;
             this._availableLayers.addData(geojson);
