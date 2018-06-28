@@ -1,6 +1,30 @@
 ((C) ->
   "use strict"
 
+  class L.Control.Home extends L.Control
+    options:
+      position: 'topleft'
+      featureGroup: null
+
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super options
+
+      if L.HomeToolbar && !@_toolbar
+        @_toolbar = new L.HomeToolbar @options
+
+    onAdd: (map) ->
+      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
+      topClassName = 'leaflet-draw-toolbar-top'
+      toolbarContainer = @_toolbar.addToolbar(map)
+      if toolbarContainer
+        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
+      container.appendChild toolbarContainer
+      container
+
+    onRemove: ->
+      @_toolbar.removeToolbar()
+
   class L.Control.SnapEdit extends L.Control
     options:
       position: 'topleft'
@@ -368,6 +392,7 @@
       cuttingPathOptions:
         color: '#FF6226'
         className: 'leaflet-polygon-splitter'
+      cycling: 2
 
     constructor: (map, options) ->
       C.Util.setOptions @, options

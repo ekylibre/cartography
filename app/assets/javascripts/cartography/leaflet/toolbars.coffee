@@ -176,6 +176,57 @@
 
       button.setAttribute 'title', title
 
+  class L.HomeToolbar extends L.Toolbar
+    @TYPE: 'home'
+
+    options:
+      position: 'topleft'
+      featureGroup: null
+
+    constructor: (options = {}) ->
+      C.Util.setOptions @, options
+      @type = @constructor.TYPE
+      @_toolbarClass = 'leaflet-home'
+
+      super @options
+      this
+
+    #Get mode handlers information
+    getModeHandlers: (map) ->
+      [
+        {
+          enabled: true
+          handler: new L.Home map, @options
+          title: L.drawLocal.home.toolbar.buttons.home
+        }
+      ]
+
+    #Get actions information
+    getActions: (handler) ->
+      []
+
+    addToolbar: (map) ->
+      container = super map
+
+      @_checkDisabled()
+
+      @options.featureGroup.on 'layeradd layerremove', @_checkDisabled, @
+
+      container
+
+    removeToolbar: ->
+      @options.featureGroup.off 'layeradd layerremove', @_checkDisabled, @
+      super
+
+    _checkDisabled: ->
+      featureGroup = @options.featureGroup
+      hasLayers = featureGroup.getLayers().length != 0
+      button = this._modes[L.Home.TYPE].button
+
+      if hasLayers
+        L.DomUtil.removeClass button, 'leaflet-hidden'
+      else
+        L.DomUtil.addClass button, 'leaflet-hidden'
 
   class L.CutToolbar extends L.Toolbar
     @TYPE: 'cut'

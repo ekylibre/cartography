@@ -37,6 +37,7 @@
         selection: false
         locking: false
         zoom: true
+        home: true
         scale: true
       snap:
         panel:
@@ -45,6 +46,7 @@
           snapDistance: 15
           snapOriginDistance: 15
       cut:
+        cycling: 2
         panel:
           title: 'Splitter tool'
           animatedHelper: undefined
@@ -208,6 +210,9 @@
       @controls.register 'zoom', true, =>
         new C.Controls.Zoom(@getMap(), @options.zoom)
 
+      @controls.register 'home', true, =>
+        new C.Controls.Home(@getMap(), home: { featureGroup: @getFeatureGroup() } )
+
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
 
@@ -257,6 +262,9 @@
 
       if @options.controls.zoom
         @controls.add 'zoom'
+
+      if @options.controls.home
+        @controls.add 'home'
 
       if @options.controls.edit
         @controls.add 'edit'

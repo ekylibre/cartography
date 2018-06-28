@@ -158,6 +158,39 @@
 
   L.LayerSelection.include(L.Mixin.Events)
 
+  class L.Home extends L.Handler
+    @TYPE: 'home'
+
+    options:
+      featureGroup:null
+
+    constructor: (map, options) ->
+      @type = @constructor.TYPE
+      @_map = map
+      super map
+      C.Util.setOptions @, options
+      @_featureGroup = options.featureGroup
+
+      if !(@_featureGroup instanceof L.FeatureGroup)
+        throw new Error('options.featureGroup must be a L.FeatureGroup')
+
+    enable: ->
+      return unless @_hasAvailableLayers
+
+      @_map.fitBounds(@_featureGroup.getBounds())
+
+      super
+      return
+
+    addHooks: (->)
+
+    removeHooks: (->)
+
+    _hasAvailableLayers: ->
+      @_featureGroup.getLayers().length != 0
+
+  L.Home.include(L.Mixin.Events)
+
   class L.LayerLocking extends L.Handler
     @TYPE: 'LayerLocking'
 
