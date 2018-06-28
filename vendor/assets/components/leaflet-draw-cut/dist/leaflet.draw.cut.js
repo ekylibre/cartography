@@ -27856,7 +27856,8 @@ L.Cut.Polyline = (function(superClass) {
           results1 = [];
           for (i = 0, len = ref.length; i < len; i++) {
             marker = ref[i];
-            results1.push(marker.on('move', _this._moveMarker, _this));
+            marker.on('move', _this._moveMarker, _this);
+            results1.push(marker.on('click', _this._moveMarker, _this));
           }
           return results1;
         };

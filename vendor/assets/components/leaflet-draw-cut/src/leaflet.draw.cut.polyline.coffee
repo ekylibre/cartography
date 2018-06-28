@@ -479,7 +479,7 @@ class L.Cut.Polyline extends L.Handler
       @_activeLayer.editing._poly.on 'editstart', (e) =>
         for marker in @_activeLayer.editing._verticesHandlers[0]._markers
           marker.on 'move', @_moveMarker, @
-          #marker.on 'click', @_moveMarker, @
+          marker.on 'click', @_moveMarker, @
 
   _moveMarker: (e) ->
     marker = e.marker || e.target || e
