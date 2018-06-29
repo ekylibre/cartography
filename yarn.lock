@@ -196,14 +196,14 @@
     "@turf/invariant" "^5.1.5"
 
 "@turf/difference@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@turf/difference/-/difference-6.0.1.tgz#a5ee3433eddb7d707cac227adf0d43ab0d651682"
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@turf/difference/-/difference-6.0.2.tgz#dd20c0e2301ba6c22019e38a36eea3975205a77f"
   dependencies:
     "@turf/area" "6.x"
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
     "@turf/meta" "6.x"
-    martinez-polygon-clipping "*"
+    martinez-polygon-clipping "^0.4.3"
 
 "@turf/distance@6.x":
   version "6.0.1"
@@ -240,15 +240,7 @@
   dependencies:
     "@turf/meta" "^4.7.3"
 
-"@turf/helpers@*", "@turf/helpers@^5.1.5":
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.5.tgz#153405227ab933d004a5bb9641a9ed999fcbe0cf"
-
-"@turf/helpers@6.0.0-beta.3":
-  version "6.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.0.0-beta.3.tgz#f1bdb0d9d571b399aa5342a4a2258a3e5003ff03"
-
-"@turf/helpers@6.x":
+"@turf/helpers@*", "@turf/helpers@6.x":
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.1.4.tgz#d6fd7ebe6782dd9c87dca5559bda5c48ae4c3836"
 
@@ -260,15 +252,19 @@
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.0.1.tgz#d950df25b10c9ed347f7811927ec14e72ccc58b2"
 
+"@turf/helpers@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.5.tgz#153405227ab933d004a5bb9641a9ed999fcbe0cf"
+
 "@turf/inside@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@turf/inside/-/inside-5.0.0.tgz#31193c7f1429469bfaa16c6685f54234e59131a0"
   dependencies:
     "@turf/invariant" "^5.0.0"
 
-"@turf/invariant@6.x":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-6.0.1.tgz#45581b41f82d91b682cef427e897c840d1741757"
+"@turf/invariant@6.x", "@turf/invariant@^6.0.0-beta.3":
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-6.1.2.tgz#6013ed6219f9ac2edada9b31e1dfa5918eb0a2f7"
   dependencies:
     "@turf/helpers" "6.x"
 
@@ -281,12 +277,6 @@
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.2.0.tgz#f0150ff7290b38577b73d088b7932c1ee0aa90a7"
   dependencies:
     "@turf/helpers" "^5.1.5"
-
-"@turf/invariant@^6.0.0-beta.3":
-  version "6.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-6.0.0-beta.3.tgz#45073498bcf332b76cfa5c17ae99038d98e749dc"
-  dependencies:
-    "@turf/helpers" "6.0.0-beta.3"
 
 "@turf/line-intersect@6.x":
   version "6.0.2"
@@ -398,13 +388,7 @@
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
 
-"@turf/meta@*", "@turf/meta@^5.1.5":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.2.0.tgz#3b1ad485ee0c3b0b1775132a32c384d53e4ba53d"
-  dependencies:
-    "@turf/helpers" "^5.1.5"
-
-"@turf/meta@6.x":
+"@turf/meta@*", "@turf/meta@6.x", "@turf/meta@^6.0.0-beta.3":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.2.tgz#eb92951126d24a613ac1b7b99d733fcc20fd30cf"
   dependencies:
@@ -420,11 +404,11 @@
   dependencies:
     "@turf/helpers" "^5.0.0"
 
-"@turf/meta@^6.0.0-beta.3":
-  version "6.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.0-beta.3.tgz#4affbd91e0686bbb7f6f075e41ccfe2f4e223201"
+"@turf/meta@^5.1.5":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.2.0.tgz#3b1ad485ee0c3b0b1775132a32c384d53e4ba53d"
   dependencies:
-    "@turf/helpers" "6.0.0-beta.3"
+    "@turf/helpers" "^5.1.5"
 
 "@turf/nearest-point-on-line@6.x":
   version "6.0.2"
@@ -559,10 +543,6 @@
     "@turf/invariant" "6.x"
     martinez-polygon-clipping "^0.4.3"
 
-avl@^1.4.1:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/avl/-/avl-1.4.3.tgz#2aabd46efafcc5fc3c7e2fcdee9ead3f37965b10"
-
 d3-array@1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.1.tgz#d1ca33de2f6ac31efadb8e050a021d7e2396d5dc"
@@ -670,13 +650,17 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet-geometryutil "^0.8.0"
     lodash "^4.17.4"
 
-leaflet-draw@0.4.12, leaflet-draw@^0.4.12:
+leaflet-draw@0.4.12:
   version "0.4.12"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.12.tgz#04c9f3506e3b3a8a488ad389381331dc5b2affd8"
 
 leaflet-draw@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.3.2.tgz#717ee8fed4c2a9679c12162e1f922d2da503d109"
+
+leaflet-draw@^0.4.12:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
 
 "leaflet-geographicutil@git+https://github.com/ekylibre/Leaflet.GeographicUtil.git":
   version "0.0.1"
@@ -685,9 +669,15 @@ leaflet-draw@^0.3.2:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
 
-leaflet-geometryutil@*, leaflet-geometryutil@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.0.tgz#c09c0fc37628f402846ad5723c80ef95b3d2057c"
+leaflet-geometryutil@*:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.9.0.tgz#b5da9ddb49f89c86f7c5516db465676c722280ce"
+  dependencies:
+    leaflet ">=0.7.0"
+
+leaflet-geometryutil@^0.8.0:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/leaflet-geometryutil/-/leaflet-geometryutil-0.8.1.tgz#d12c70c9db466497c13bab4e8067b6d5fb4423fe"
   dependencies:
     leaflet ">=0.7.0"
 
@@ -702,21 +692,14 @@ leaflet-providers@1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46"
 
-leaflet-reactive_measure@../Leaflet.ReactiveMeasure:
+"leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure":
   version "0.1.2"
+  resolved "https://github.com/ekylibre/Leaflet.ReactiveMeasure#4dcc58605f91637e2251c9a585891c527e7eb9c0"
   dependencies:
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     leaflet-geographicutil "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git"
-
-leaflet-snap@../Leaflet.Snap:
-  version "0.0.4"
-  dependencies:
-    leaflet "^0.7.7"
-    leaflet-geometryutil "*"
-  optionalDependencies:
-    leaflet-draw "^0.3.2"
 
 "leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
   version "0.0.4"
@@ -727,24 +710,30 @@ leaflet-snap@../Leaflet.Snap:
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
-leaflet@*, leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
+"leaflet-snap@https://github.com/ekylibre/Leaflet.Snap":
+  version "0.0.4"
+  resolved "https://github.com/ekylibre/Leaflet.Snap#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  dependencies:
+    leaflet "^0.7.7"
+    leaflet-geometryutil "*"
+  optionalDependencies:
+    leaflet-draw "^0.3.2"
+
+leaflet@*, leaflet@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
+
+leaflet@>=0.7.0, leaflet@^1.2.0:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.3.1.tgz#86f336d2fb0e2d0ff446677049a5dc34cf0ea60e"
 
 leaflet@^0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
 
 lodash@^4.17.4:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
-martinez-polygon-clipping@*:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/martinez-polygon-clipping/-/martinez-polygon-clipping-0.3.3.tgz#a7b9429c9d13cb118a86c97a5e1af5a62aedb6d9"
-  dependencies:
-    avl "^1.4.1"
-    tinyqueue "^1.2.0"
+  version "4.17.10"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
 martinez-polygon-clipping@^0.4.3:
   version "0.4.3"
@@ -757,25 +746,15 @@ pure-uuid@^1.4.10:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/pure-uuid/-/pure-uuid-1.4.10.tgz#884903c01a811a59a69d49959591b5147a51ca18"
 
-quickselect@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/quickselect/-/quickselect-1.0.0.tgz#02630818f9aae4ecab26f0103f98d061c17c58f3"
-
 quickselect@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/quickselect/-/quickselect-1.0.1.tgz#1e6ceaa9db1ca7c75aafcc863c7bef2037ca62a1"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/quickselect/-/quickselect-1.1.1.tgz#852e412ce418f237ad5b660d70cffac647ae94c2"
 
-rbush@*:
+rbush@*, rbush@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/rbush/-/rbush-2.0.2.tgz#bb6005c2731b7ba1d5a9a035772927d16a614605"
   dependencies:
     quickselect "^1.0.1"
-
-rbush@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/rbush/-/rbush-2.0.1.tgz#4cfaca28c3064bc0ee75431a1b79990e875eefa9"
-  dependencies:
-    quickselect "^1.0.0"
 
 rtree@*:
   version "1.4.2"

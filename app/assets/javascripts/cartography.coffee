@@ -111,7 +111,7 @@
         return unless e.layerType == "polygon" or e.layerType is undefined
 
         feature = if e.layer instanceof L.Layer
-        then e.layer.toGeoJSON()
+        then e.layer.toGeoJSON(17)
         else e.layer
 
         @getFeatureGroup(name: "edition").addData(feature)
@@ -158,7 +158,7 @@
           p = layer.feature.properties
           measure = layer.getMeasure()
 
-          { num: p.num, area: measure.extrapolatedArea, perimeter: measure.extrapolatedPerimeter, color: p.color, shape: layer.toGeoJSON() }
+          { num: p.num, area: measure.extrapolatedArea, perimeter: measure.extrapolatedPerimeter, color: p.color, shape: layer.toGeoJSON(17) }
 
         @getMap().fire C.Events.split.change, data: data
 
@@ -175,7 +175,7 @@
           latlngs = e.layer.getLatLngs()
 
         area = L.GeometryUtil.geodesicArea(latlngs)
-        feature = e.layer.toGeoJSON()
+        feature = e.layer.toGeoJSON(17)
 
         uuid = feature.properties.uuid
         type = feature.properties.type = @getMode()
@@ -438,6 +438,13 @@
         layer._editToolbar.enable()
         layer._editToolbar._activate layer
 
+    union: (polygons) ->
+      L.Calculation.union(polygons).geometry
+
+    difference: (polygon1, polygon2) ->
+      remainingShape = L.Calculation.difference(polygon1, polygon2)
+      if remainingShape then remainingShape.geometry else null
+
     sync: (data, layerName, options = {}) =>
 
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
@@ -484,7 +491,7 @@
         addList = newLayers.getLayers()
 
       for layer in addList
-        geojson = layer.toGeoJSON()
+        geojson = layer.toGeoJSON(17)
         layerGroup.addData(geojson)
         # newLayer = @_findLayerByUUID(layerGroup, geojson.properties.uuid)
 
