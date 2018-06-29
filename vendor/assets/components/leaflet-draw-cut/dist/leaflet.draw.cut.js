@@ -23611,7 +23611,7 @@ L.Cut.Polyline = (function(superClass) {
         for (j = 0, len1 = addList.length; j < len1; j++) {
           l = addList[j];
           if (!this._availableLayers.hasUUIDLayer(l)) {
-            geojson = l.toGeoJSON(6);
+            geojson = l.toGeoJSON(17);
             geojson.properties.color = l.options.color;
             this._availableLayers.addData(geojson);
           }
@@ -23634,7 +23634,7 @@ L.Cut.Polyline = (function(superClass) {
     if (this._activeLayer && this._activeLayer._polys) {
       this._activeLayer._polys.eachLayer((function(_this) {
         return function(l) {
-          return _this._featureGroup.addData(l.toGeoJSON(6));
+          return _this._featureGroup.addData(l.toGeoJSON(17));
         };
       })(this));
       this._activeLayer._polys.clearLayers();
@@ -23799,12 +23799,6 @@ L.Cut.Polyline = (function(superClass) {
     var buffered, featureGroup, index, poly, splitter, turfPolygonsCollection;
     poly = polygon.toTurfFeature();
     splitter = polyline.toTurfFeature();
-    poly = turfTruncate(poly, {
-      precision: 6
-    });
-    splitter = turfTruncate(splitter, {
-      precision: 6
-    });
     turfPolygonsCollection = this._polygonSlice(poly, splitter);
     featureGroup = new L.FeatureGroup();
     if (turfPolygonsCollection.features.length > 2) {
@@ -23847,10 +23841,11 @@ L.Cut.Polyline = (function(superClass) {
   };
 
   Polyline.prototype._polygonSlice = function(poly, splitter) {
-    var coords, innerRings, newPolygons, outerLineStrings, outerRing, polygons;
+    var coords, feature, i, inPolygonIntersectPoint, inPolygonPoint, index, innerRings, intersectPoint, intersectPoints, j, k, len, len1, len2, newPolygons, outerLineStrings, outerRing, point, points, polygons, ref, roundedIntersectPoint, roundedPoint;
     coords = turfGetCoords(poly);
     outerRing = turf.lineString(coords[0]);
     innerRings = this._innerLineStrings(poly);
+    intersectPoints = turfLineIntersect(poly, splitter);
     outerLineStrings = [];
     turfMeta.featureEach(turfLineSplit(outerRing, splitter), function(line) {
       return outerLineStrings.push(line);
@@ -23858,9 +23853,25 @@ L.Cut.Polyline = (function(superClass) {
     turfMeta.featureEach(turfLineSplit(splitter, poly), function(line) {
       return outerLineStrings.push(line);
     });
-    outerLineStrings = turfTruncate(turf.featureCollection(outerLineStrings), {
-      precision: 6
-    });
+    for (i = 0, len = outerLineStrings.length; i < len; i++) {
+      feature = outerLineStrings[i];
+      points = feature.geometry.coordinates;
+      for (index = j = 0, len1 = points.length; j < len1; index = ++j) {
+        point = points[index];
+        ref = intersectPoints.features;
+        for (k = 0, len2 = ref.length; k < len2; k++) {
+          intersectPoint = ref[k];
+          roundedIntersectPoint = [Math.floor(intersectPoint.geometry.coordinates[0] * 1000000) / 1000000, Math.floor(intersectPoint.geometry.coordinates[1] * 1000000) / 1000000];
+          roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000];
+          if (JSON.stringify(roundedIntersectPoint) === JSON.stringify(roundedPoint)) {
+            inPolygonIntersectPoint = turfBooleanPointOnLine(intersectPoint.geometry.coordinates, outerRing);
+            inPolygonPoint = turfBooleanPointOnLine(point, outerRing);
+            feature.geometry.coordinates[index] = intersectPoint.geometry.coordinates;
+          }
+        }
+      }
+    }
+    outerLineStrings = turf.featureCollection(outerLineStrings);
     polygons = turfPolygonize["default"](outerLineStrings);
     if (innerRings.features.length) {
       newPolygons = [];
