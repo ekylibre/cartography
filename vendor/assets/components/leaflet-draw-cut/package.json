@@ -36,10 +36,12 @@
   },
   "dependencies": {
     "@mapbox/polylabel": "^1.0.2",
+    "@turf/bearing": "^6.0.1",
     "@turf/boolean-disjoint": "^6.0.2",
     "@turf/boolean-overlap": "^6.0.1",
     "@turf/boolean-point-on-line": "^5.1.5",
     "@turf/boolean-within": "^6.0.1",
+    "@turf/buffer": "^5.1.5",
     "@turf/clean-coords": "^6.0.1",
     "@turf/difference": "^6.0.1",
     "@turf/flip": "^4.7.3",
@@ -51,15 +53,16 @@
     "@turf/line-to-polygon": "^6.0.1",
     "@turf/meta": "^6.0.0-beta.3",
     "@turf/nearest-point-on-line": "^5.1.5",
+    "@turf/point-to-line-distance": "^6.0.0",
     "@turf/polygonize": "^5.1.5",
     "@turf/rewind": "^4.7.3",
     "@turf/truncate": "^5.1.5",
+    "@turf/union": "^6.0.3",
     "geographiclib": "^1.49.0",
     "leaflet": "^1.2.0",
     "leaflet-draw": "^0.4.12",
     "leaflet-geometryutil": "^0.8.0",
-    "leaflet-reactive_measure": "../Leaflet.ReactiveMeasure",
-    "leaflet-snap": "../Leaflet.Snap",
+    "leaflet-snap": "git+https://github.com/ekylibre/Leaflet.Snap.git",
     "lodash": "^4.17.4"
   }
 }

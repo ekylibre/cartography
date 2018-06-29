@@ -35,7 +35,7 @@
     "@turf/helpers" "^5.1.5"
     "@turf/meta" "^5.1.5"
 
-"@turf/bearing@6.x":
+"@turf/bearing@6.x", "@turf/bearing@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/bearing/-/bearing-6.0.1.tgz#8da5d17092e571f170cde7bfb2e5b0d74923c92d"
   dependencies:
@@ -136,12 +136,43 @@
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
 
+"@turf/buffer@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/buffer/-/buffer-5.1.5.tgz#841c9627cfb974b122ac4e1a956f0466bc0231c4"
+  dependencies:
+    "@turf/bbox" "^5.1.5"
+    "@turf/center" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
+    "@turf/projection" "^5.1.5"
+    d3-geo "1.7.1"
+    turf-jsts "*"
+
+"@turf/center@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/center/-/center-5.1.5.tgz#44ab2cd954f63c0d37757f7158a99c3ef5114b80"
+  dependencies:
+    "@turf/bbox" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+
 "@turf/clean-coords@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/clean-coords/-/clean-coords-6.0.1.tgz#162eb24c33bb3d484efaf3298787909498a9bc81"
   dependencies:
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
+
+"@turf/clone@6.x":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@turf/clone/-/clone-6.0.2.tgz#7563cebbb3e2e19f361599bb244467e0dcc205c9"
+  dependencies:
+    "@turf/helpers" "6.x"
+
+"@turf/clone@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/clone/-/clone-5.1.5.tgz#253e8d35477181976e33adfab50a0f02a7f0e367"
+  dependencies:
+    "@turf/helpers" "^5.1.5"
 
 "@turf/destination@6.x":
   version "6.0.1"
@@ -431,6 +462,19 @@
     "@turf/line-intersect" "^4.7.3"
     "@turf/meta" "^4.7.3"
 
+"@turf/point-to-line-distance@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@turf/point-to-line-distance/-/point-to-line-distance-6.0.0.tgz#e2f59177273a5f2a9e7fa8d2c054bae7da815ccf"
+  dependencies:
+    "@turf/bearing" "6.x"
+    "@turf/distance" "6.x"
+    "@turf/helpers" "6.x"
+    "@turf/invariant" "6.x"
+    "@turf/meta" "6.x"
+    "@turf/projection" "6.x"
+    "@turf/rhumb-bearing" "6.x"
+    "@turf/rhumb-distance" "6.x"
+
 "@turf/polygon-to-line@6.x":
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/@turf/polygon-to-line/-/polygon-to-line-6.0.3.tgz#a7c5416f61651d5d25ff51ee006522725cb1adf1"
@@ -448,6 +492,22 @@
     "@turf/invariant" "^5.1.5"
     "@turf/meta" "^5.1.5"
 
+"@turf/projection@6.x":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@turf/projection/-/projection-6.0.1.tgz#bde70ae8441b9cefddf26d71c7db74bc3d9792b1"
+  dependencies:
+    "@turf/clone" "6.x"
+    "@turf/helpers" "6.x"
+    "@turf/meta" "6.x"
+
+"@turf/projection@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/projection/-/projection-5.1.5.tgz#24517eeeb2f36816ba9f712e7ae6d6a368edf757"
+  dependencies:
+    "@turf/clone" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
+
 "@turf/rewind@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@turf/rewind/-/rewind-4.7.3.tgz#69899fc3ec53d611b55051fa00c51508d903c5bf"
@@ -456,6 +516,20 @@
     "@turf/helpers" "^4.7.3"
     "@turf/invariant" "^4.7.3"
     "@turf/meta" "^4.7.3"
+
+"@turf/rhumb-bearing@6.x":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@turf/rhumb-bearing/-/rhumb-bearing-6.0.1.tgz#182c4c21fe951e097fb468ae128dc22ef6078f3f"
+  dependencies:
+    "@turf/helpers" "6.x"
+    "@turf/invariant" "6.x"
+
+"@turf/rhumb-distance@6.x":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@turf/rhumb-distance/-/rhumb-distance-6.0.1.tgz#ae1c5c823b4b04f75cd7fc240f7f93647db8bdd4"
+  dependencies:
+    "@turf/helpers" "6.x"
+    "@turf/invariant" "6.x"
 
 "@turf/square@^5.1.5":
   version "5.1.5"
@@ -477,9 +551,27 @@
   dependencies:
     jsts-es "*"
 
+"@turf/union@^6.0.3":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@turf/union/-/union-6.0.3.tgz#463b62d71c406f40a6978f560bfb92e88fe7db56"
+  dependencies:
+    "@turf/helpers" "6.x"
+    "@turf/invariant" "6.x"
+    martinez-polygon-clipping "^0.4.3"
+
 avl@^1.4.1:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/avl/-/avl-1.4.3.tgz#2aabd46efafcc5fc3c7e2fcdee9ead3f37965b10"
+
+d3-array@1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/d3-array/-/d3-array-1.2.1.tgz#d1ca33de2f6ac31efadb8e050a021d7e2396d5dc"
+
+d3-geo@1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.7.1.tgz#44bbc7a218b1fd859f3d8fd7c443ca836569ce99"
+  dependencies:
+    d3-array "1"
 
 deep-equal@1.x, deep-equal@^1.0.0, deep-equal@^1.0.1:
   version "1.0.1"
@@ -535,10 +627,12 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
   version "0.0.1"
   dependencies:
     "@mapbox/polylabel" "^1.0.2"
+    "@turf/bearing" "^6.0.1"
     "@turf/boolean-disjoint" "^6.0.2"
     "@turf/boolean-overlap" "^6.0.1"
     "@turf/boolean-point-on-line" "^5.1.5"
     "@turf/boolean-within" "^6.0.1"
+    "@turf/buffer" "^5.1.5"
     "@turf/clean-coords" "^6.0.1"
     "@turf/difference" "^6.0.1"
     "@turf/flip" "^4.7.3"
@@ -550,15 +644,16 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     "@turf/line-to-polygon" "^6.0.1"
     "@turf/meta" "^6.0.0-beta.3"
     "@turf/nearest-point-on-line" "^5.1.5"
+    "@turf/point-to-line-distance" "^6.0.0"
     "@turf/polygonize" "^5.1.5"
     "@turf/rewind" "^4.7.3"
     "@turf/truncate" "^5.1.5"
+    "@turf/union" "^6.0.3"
     geographiclib "^1.49.0"
     leaflet "^1.2.0"
     leaflet-draw "^0.4.12"
     leaflet-geometryutil "^0.8.0"
-    leaflet-reactive_measure "../Leaflet.ReactiveMeasure"
-    leaflet-snap "../Leaflet.Snap"
+    leaflet-snap "git+https://github.com/ekylibre/Leaflet.Snap.git"
     lodash "^4.17.4"
 
 "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
@@ -623,6 +718,15 @@ leaflet-snap@../Leaflet.Snap:
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
+"leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
+  version "0.0.4"
+  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  dependencies:
+    leaflet "^0.7.7"
+    leaflet-geometryutil "*"
+  optionalDependencies:
+    leaflet-draw "^0.3.2"
+
 leaflet@*, leaflet@1.2.0, leaflet@>=0.7.0, leaflet@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
@@ -640,6 +744,13 @@ martinez-polygon-clipping@*:
   resolved "https://registry.yarnpkg.com/martinez-polygon-clipping/-/martinez-polygon-clipping-0.3.3.tgz#a7b9429c9d13cb118a86c97a5e1af5a62aedb6d9"
   dependencies:
     avl "^1.4.1"
+    tinyqueue "^1.2.0"
+
+martinez-polygon-clipping@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/martinez-polygon-clipping/-/martinez-polygon-clipping-0.4.3.tgz#a3971ddf1da147104b5d0fbbf68f728bb62885c1"
+  dependencies:
+    splaytree "^0.1.4"
     tinyqueue "^1.2.0"
 
 pure-uuid@^1.4.10:
@@ -670,6 +781,14 @@ rtree@*:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/rtree/-/rtree-1.4.2.tgz#8b8c588c58a1f87fea5da2d497ae3b2c5e4bb32e"
 
+splaytree@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/splaytree/-/splaytree-0.1.4.tgz#fc35475248edcc29d4938c9b67e43c6b7e55a659"
+
 tinyqueue@^1.1.0, tinyqueue@^1.2.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-1.2.3.tgz#b6a61de23060584da29f82362e45df1ec7353f3d"
+
+turf-jsts@*:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/turf-jsts/-/turf-jsts-1.2.3.tgz#59757f542afbff9a577bbf411f183b8f48d38aa4"

@@ -11,12 +11,12 @@ turfMeta = require '@turf/meta'
 turfPolygonize = require '@turf/polygonize'
 turfDifference = require('@turf/difference')
 turfBuffer = require('@turf/buffer').default
-# turfBooleanPointOnLine = require '@turf/boolean-point-on-line'
 turfNearestPointOnLine = require '@turf/nearest-point-on-line'
-turfLineIntersect = require '@turf/line-intersect'
+turfLineIntersect = require('@turf/line-intersect').default
 turfLineSplit = require('@turf/line-split').default
 turfTruncate = require('@turf/truncate').default
 turfGetCoords = require('@turf/invariant').getCoords
+turfBooleanPointOnLine = require("@turf/boolean-point-on-line").default
 require 'leaflet-geometryutil'
 
 L.Cutting = {}
@@ -44,7 +44,7 @@ class L.Cut.Polyline extends L.Handler
 
     @_featureGroup = options.featureGroup
     @_uneditedLayerProps = []
-    @_polygonSliceMarkers = new L.LayerGroup 
+    @_polygonSliceMarkers = new L.LayerGroup
 
     if !(@_featureGroup instanceof L.FeatureGroup)
       throw new Error('options.featureGroup must be a L.FeatureGroup')
@@ -168,7 +168,7 @@ class L.Cut.Polyline extends L.Handler
           named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name
 
           unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
-            geojson = l.toGeoJSON()
+            geojson = l.toGeoJSON(17)
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
 
@@ -188,7 +188,7 @@ class L.Cut.Polyline extends L.Handler
 
     if @_activeLayer && @_activeLayer._polys
       @_activeLayer._polys.eachLayer (l) =>
-        @_featureGroup.addData l.toGeoJSON()
+        @_featureGroup.addData l.toGeoJSON(17)
 
       @_activeLayer._polys.clearLayers()
       delete @_activeLayer._polys
@@ -346,19 +346,15 @@ class L.Cut.Polyline extends L.Handler
         latlngs.splice(-1, 1)
         @_activeLayer.cutting._markers.splice(-1,1)
         @_activeLayer.cutting._markerGroup.removeLayer marker
-    
+
     if @_activeLayer.cutting._markers.length > 1
       unless isInPolygon
         @_stopCutDrawing()
 
 
   _slice: (polygon, polyline) ->
-
     poly = polygon.toTurfFeature()
     splitter = polyline.toTurfFeature()
-
-    poly = turfTruncate(poly, precision: 6)
-    splitter = turfTruncate(splitter, precision: 6)
 
     turfPolygonsCollection = @_polygonSlice(poly, splitter)
 
@@ -382,6 +378,7 @@ class L.Cut.Polyline extends L.Handler
       polygon.feature.properties ||= {}
 
       polygon.feature.properties.num = index+1
+
       polygon.feature.properties.color = "c-#{index%@options.cycling}"
       
       polygon.fromTurfFeature turfPolygon
@@ -389,7 +386,7 @@ class L.Cut.Polyline extends L.Handler
       index++
 
     featureGroup
-      
+
 
   _innerLineStrings: (poly) ->
     results = []
@@ -404,6 +401,8 @@ class L.Cut.Polyline extends L.Handler
     outerRing = turf.lineString(coords[0])
     innerRings = @_innerLineStrings(poly)
 
+    intersectPoints = turfLineIntersect(poly, splitter)
+
     outerLineStrings = []
 
     # split outers
@@ -413,6 +412,17 @@ class L.Cut.Polyline extends L.Handler
     # split splitter
     turfMeta.featureEach bboxLineSplit(splitter, poly), (line) ->
       outerLineStrings.push line
+
+    for feature in outerLineStrings
+      points = feature.geometry.coordinates
+      for point, index in points
+        for intersectPoint in intersectPoints.features
+          roundedIntersectPoint = [Math.floor(intersectPoint.geometry.coordinates[0] * 1000000) / 1000000, Math.floor(intersectPoint.geometry.coordinates[1] * 1000000) / 1000000]
+          roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000]
+          if JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)
+            inPolygonIntersectPoint = turfBooleanPointOnLine(intersectPoint.geometry.coordinates, outerRing)
+            inPolygonPoint = turfBooleanPointOnLine(point, outerRing)
+            feature.geometry.coordinates[index] = intersectPoint.geometry.coordinates
 
     outerLineStrings = turf.featureCollection(outerLineStrings)
 
@@ -443,7 +453,6 @@ class L.Cut.Polyline extends L.Handler
 
       #splitter = L.polyline(drawnPolyline.getLatLngs())
       splitter = L.polyline drawnPolyline.getLatLngs(), @options.cuttingPathOptions
-
       layerGroup = @_slice @_activeLayer, drawnPolyline
 
       return unless layerGroup && layerGroup.getLayers().length >= 2

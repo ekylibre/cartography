@@ -1,9 +1,9 @@
-import { getCoord } from '@turf/invariant';
-import { isObject, degreesToRadians, radiansToDegrees } from '@turf/helpers';
-
-//http://en.wikipedia.org/wiki/Haversine_formula
-//http://www.movable-type.co.uk/scripts/latlong.html
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = require("@turf/helpers");
+var invariant_1 = require("@turf/invariant");
+// http://en.wikipedia.org/wiki/Haversine_formula
+// http://www.movable-type.co.uk/scripts/latlong.html
 /**
  * Takes two {@link Point|points} and finds the geographic bearing between them,
  * i.e. the angle measured in degrees from the north line (0 degrees)
@@ -27,28 +27,22 @@ import { isObject, degreesToRadians, radiansToDegrees } from '@turf/helpers';
  * point1.properties.bearing = bearing
  */
 function bearing(start, end, options) {
-    // Optional parameters
-    options = options || {};
-    if (!isObject(options)) throw new Error('options is invalid');
-    var final = options.final;
-
+    if (options === void 0) { options = {}; }
     // Reverse calculation
-    if (final === true) return calculateFinalBearing(start, end);
-
-    var coordinates1 = getCoord(start);
-    var coordinates2 = getCoord(end);
-
-    var lon1 = degreesToRadians(coordinates1[0]);
-    var lon2 = degreesToRadians(coordinates2[0]);
-    var lat1 = degreesToRadians(coordinates1[1]);
-    var lat2 = degreesToRadians(coordinates2[1]);
+    if (options.final === true) {
+        return calculateFinalBearing(start, end);
+    }
+    var coordinates1 = invariant_1.getCoord(start);
+    var coordinates2 = invariant_1.getCoord(end);
+    var lon1 = helpers_1.degreesToRadians(coordinates1[0]);
+    var lon2 = helpers_1.degreesToRadians(coordinates2[0]);
+    var lat1 = helpers_1.degreesToRadians(coordinates1[1]);
+    var lat2 = helpers_1.degreesToRadians(coordinates2[1]);
     var a = Math.sin(lon2 - lon1) * Math.cos(lat2);
     var b = Math.cos(lat1) * Math.sin(lat2) -
         Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-
-    return radiansToDegrees(Math.atan2(a, b));
+    return helpers_1.radiansToDegrees(Math.atan2(a, b));
 }
-
 /**
  * Calculates Final Bearing
  *
@@ -63,5 +57,4 @@ function calculateFinalBearing(start, end) {
     bear = (bear + 180) % 360;
     return bear;
 }
-
-export default bearing;
+exports.default = bearing;
