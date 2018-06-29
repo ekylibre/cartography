@@ -16,7 +16,7 @@ module.exports = {
       }
     ]
   },
-  entry: ['./src/leaflet.draw.cut.coffee', './src/leaflet.draw.cut.polyline.coffee', './src/util.coffee', './src/geographic_util.coffee', './src/leaflet.draw.cut.scss', './src/leaflet.draw.overlapping.drawing.locking.coffee'],
+	entry: ['./src/leaflet.draw.cut.coffee', './src/leaflet.draw.cut.polyline.coffee', './src/util.coffee', './src/leaflet.draw.cut.scss', './src/leaflet.draw.overlapping.drawing.locking.coffee', './src/line-split.js'],
   output: {
     path: __dirname + '/dist',
     filename: 'leaflet.draw.cut.js'

@@ -7,12 +7,18 @@
   C.Events.new.complete = "cartography:events:new:complete"
   C.Events.new.cancel = "cartography:events:new:cancel"
   C.Events.new.change = "cartography:events:new:change"
+  C.Events.shapeDraw = {}
+  C.Events.shapeDraw.start = "cartography:events:shapeDraw:start"
+  C.Events.shapeDraw.draw = "cartography:events:shapeDraw:draw"
+  C.Events.shapeDraw.edit = "cartography:events:shapeDraw:edit"
+  C.Events.shapeDraw.warn = "cartography:events:shapeDraw:warn"
   C.Events.split = {}
   C.Events.split.start = "cartography:events:split:start"
   C.Events.split.complete = "cartography:events:split:complete"
   C.Events.split.cancel = "cartography:events:split:cancel"
   C.Events.split.change = "cartography:events:split:change"
   C.Events.split.select = "cartography:events:split:select"
+  C.Events.split.cutting = "cartography:events:split:cutting"
   C.Events.edit = {}
   C.Events.edit.start = "cartography:events:edit:start"
   C.Events.edit.complete = "cartography:events:edit:complete"
@@ -25,5 +31,6 @@
   C.Events.select.start = "cartography:events:select:start"
   C.Events.select.stop = "cartography:events:select:stop"
 
+  L.Draw.Event.INVALIDATED = 'draw:invalidated'
 
 )(window.Cartography = window.Cartography || {})

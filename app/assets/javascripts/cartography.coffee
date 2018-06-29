@@ -35,7 +35,9 @@
         snap: true
         reactiveMeasure: true
         selection: false
+        locking: false
         zoom: true
+        home: true
         scale: true
       snap:
         panel:
@@ -44,6 +46,7 @@
           snapDistance: 15
           snapOriginDistance: 15
       cut:
+        cycling: 2
         panel:
           title: 'Splitter tool'
           animatedHelper: undefined
@@ -60,11 +63,10 @@
           ignoreActions: true
       edit:
         selectedPathOptions:
-          dashArray: '10, 10'
           fill: true
-          fillColor: '#fe57a1'
+          fillColor: '#D84315'
           fillOpacity: 0.7
-          maintainColor: false
+          maintainColor: true
         panel:
           title: 'Edit plot'
           animatedHelper: undefined
@@ -149,25 +151,22 @@
         type = e.layer.feature.properties.type || @getMode()
         @getMap().fire C.Events.split.select, data: { uuid: uuid, type: type }
 
-      @getMap().on L.Cutting.Polyline.Event.UPDATED, (e) =>
+      onSplitChange = (e) =>
+        data = {}
+        data['old'] = {uuid: e.parent.feature.properties.uuid, name: e.parent.feature.properties.name}
+        data['new'] = e.layers.map (layer) ->
+          p = layer.feature.properties
+          measure = layer.getMeasure()
 
-      @getMap().on L.Cutting.Polyline.Event.SAVED, (e) =>
-        newLayers = []
+          { num: p.num, area: measure.extrapolatedArea, perimeter: measure.extrapolatedPerimeter, color: p.color, shape: layer.toGeoJSON() }
 
-        for l in e.layers
-          p = l.feature.properties
+        @getMap().fire C.Events.split.change, data: data
 
-          if l.getLatLngs().constructor.name is 'Array'
-            latlngs = l.getLatLngs()[0]
-          else
-            latlngs = l.getLatLngs()
+      @getMap().on L.Cutting.Polyline.Event.CREATED, onSplitChange, @
+      @getMap().on L.Cutting.Polyline.Event.UPDATED, onSplitChange, @
 
-          area = L.GeometryUtil.geodesicArea(latlngs)
-          centroid = l.getCenter()
-
-          newLayers.push uuid: p.uuid, type: p.type || @getMode(), shape: l.toGeoJSON(), area: area, centroid: centroid
-
-        @getMap().fire C.Events.split.complete, data: { old: e.oldLayer, new: newLayers }
+      @getMap().on L.Cutting.Polyline.Event.CUTTING, (e) =>
+        @getMap().fire C.Events.split.cutting, data: perimeter: e.perimeter
 
       @getMap().on L.SnapEditing.Event.CHANGE, (e) =>
         if e.layer.getLatLngs().constructor.name is 'Array'
@@ -201,19 +200,22 @@
           return unless @options.controls.snap?
           layers = @controls.get('overlays').getLayers()
           @options.snap.polygon.guideLayers = Object.values(layers)
-     
+
         if @options.controls.backgrounds
           @controls.add 'backgrounds'
 
         if @options.controls.overlays
-          @controls.add 'overlays'  
+          @controls.add 'overlays'
 
       @controls.register 'zoom', true, =>
         new C.Controls.Zoom(@getMap(), @options.zoom)
 
+      @controls.register 'home', true, =>
+        new C.Controls.Home(@getMap(), home: { featureGroup: @getFeatureGroup() } )
+
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
-      
+
       @controls.register 'edit', true, =>
         C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
@@ -221,7 +223,7 @@
         return unless @options.controls.reactiveMeasure?
         @controls.register 'measure', true, =>
           new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
-        @controls.add 'measure' 
+        @controls.add 'measure'
         @removeControl 'edit'
 
       @controls.register 'scale', true, =>
@@ -232,35 +234,60 @@
       , =>
         @controls.get('selection').getControl().enable()
 
+      @controls.register 'locking', false, =>
+        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup()}})
+      , =>
+        @controls.get('locking').getControl().enable()
+
+      @controls.register 'shape_draw', false, =>
+        unless @options.draw.allowOverlap
+          layers = @controls.get('overlays').getLayers()
+          @options.draw.overlapLayers = Object.values(layers)
+        new C.Controls.ShapeDraw(@getMap(), @options)
+      , =>
+        @controls.get('shape_draw').getControl().enable()
 
       @controls.register 'cut', true, =>
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
         new C.Controls.Cut(@getMap(), @options)
-      
+
+      @controls.register 'shape_cut', false, =>
+        C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
+        new C.Controls.ShapeCut(@getMap(), @options)
+      , =>
+        @controls.get('shape_cut').getControl().enable()
 
       if @options.controls.layers
-        @controls.add 'layers' 
+        @controls.add 'layers'
 
       if @options.controls.zoom
-        @controls.add 'zoom'  
+        @controls.add 'zoom'
+
+      if @options.controls.home
+        @controls.add 'home'
 
       if @options.controls.edit
-        @controls.add 'edit'  
+        @controls.add 'edit'
 
       if @options.controls.scale
-        @controls.add 'scale'  
+        @controls.add 'scale'
 
       if @options.controls.selection
-        @controls.add 'selection'  
+        @controls.add 'selection'
+
+      if @options.controls.locking
+        @controls.add 'locking'
 
       if @options.controls.draw
-        @controls.add 'draw'  
+        @controls.add 'draw'
 
       if @options.controls.cut
-        @controls.add 'cut' 
+        @controls.add 'cut'
 
       style = (feature) ->
-        color: "#3F51B5", fillOpacity: 0.7, opacity: 1, fill: true
+        console.log feature.properties
+        feature.properties.style ||= {}
+        color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
 
       serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
       @addOverlay(serie)
@@ -268,7 +295,11 @@
 
     ##### PUBLIC API ######
     setView: ->
-      #TMP
+      if @options.bounds
+        bounds = @options.bounds.split(',')
+        @getMap().fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]],{ maxZoom: 21 })
+        return
+
       if @getFeatureGroup().getLayers().length
         @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
       else
@@ -299,14 +330,16 @@
           return
       containerLayer
 
-    select: (uuid, center = false, featureGroup = undefined) ->
+    select: (uuid, center = false, featureGroup = undefined, trigger = true) ->
       name = featureGroup if featureGroup
       featureGroup = @getFeatureGroup(name: name)
       layer = @_findLayerByUUID(featureGroup, uuid)
-
-      if center && layer && !layer.selected
-        layer.fire 'click'
-        @getMap().fitBounds layer.getBounds()
+      if layer && !layer.selected
+        if trigger
+          layer.fire 'click'
+          layer.fire 'select'
+        if center
+          @getMap().fitBounds layer.getBounds()
 
       layer
 
@@ -356,29 +389,36 @@
       featureGroup = @getFeatureGroup()
       layer = @_findLayerByUUID(featureGroup, uuid)
       if layer && layer.selected
-        layer.fire 'click'
+        @unhighlight(uuid)
+        layer.fire 'select'
 
     highlight: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       if layer
         layer.options.highlightOriginal = L.extend({}, layer.options)
         layer.setStyle color: "#D84315", fillOpacity: 0.5
 
     unhighlight: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       if layer
         layer.setStyle layer.options.highlightOriginal
         delete layer.options.highlightOriginal
 
     destroy: (uuid, featureGroup = undefined) ->
-      layer = @select uuid, false, featureGroup
+      layer = @select uuid, false, featureGroup, false
       name = featureGroup if featureGroup
       if layer
         @getFeatureGroup(name: name).removeLayer layer
 
-    edit: (uuid, options = {}) ->
+    buildControls: (name = undefined) ->
+      featureGroup = @getFeatureGroup(name: featureGroup)
+      return unless featureGroup && featureGroup.getLayers()
+      featureGroup.eachLayer (layer) ->
+        layer.onBuild.call @ if layer.onBuild and layer.onBuild.constructor.name == 'Function'
+
+    edit: (uuid, featureGroup = undefined, options = {}) ->
       @unhighlight uuid
-      layer = @select uuid, false
+      layer = @select uuid, false, featureGroup, false
       if layer
         if options.cancel && layer._editToolbar
           layer._editToolbar.disable()
@@ -391,7 +431,7 @@
 
         layer._editToolbar = new L.EditToolbar.SelectableSnapEdit @getMap(),
           snapOptions: options.snap
-          featureGroup: @getFeatureGroup()
+          featureGroup: @getFeatureGroup(name: featureGroup)
           selectedPathOptions: options.edit.selectedPathOptions
           disabledPathOptions: options.edit.disabledPathOptions
           poly: options.poly

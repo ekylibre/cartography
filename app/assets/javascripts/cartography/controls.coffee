@@ -19,25 +19,31 @@
       @controls[id] = control
       @getMap().addControl control.getControl() unless !item.addToMap
 
-      if control.getToolbar() 
+      if control.getToolbar()
         control.getToolbar().on 'enable', (e) =>
           for toolbar in @getToolbars()
             continue if toolbar is e.target
             toolbar.disable()
-      
+
       if item.callback and item.callback.constructor.name is 'Function'
         item.callback.call @
-   
-    register: (id, addToMap = true, constructor, callback) -> 
-      @collection[id] = addToMap: addToMap, constructor: constructor, callback: callback    
-      
+
+    register: (id, addToMap = true, constructor, callback) ->
+      @collection[id] = addToMap: addToMap, constructor: constructor, callback: callback
+
     unregister: (id) ->
       @collection[id] = undefined
       @remove(id)
 
     remove: (id) ->
       if control = @get(id)
-        @getMap().removeControl control.getControl()
+        item = @collection[id]
+        @getMap().removeControl control.getControl() unless !item.addToMap
+
+        c = control.getControl()
+        if c and c.disable and c.disable.constructor.name is 'Function'
+          c.disable()
+
       @controls[id] = undefined
 
     get: (id) ->
@@ -173,6 +179,18 @@
       super(map)
       C.Util.setOptions @, options
       @control = new L.Control.Zoom(@options)
+
+    getControl: ->
+      @control
+
+  class C.Controls.Home extends C.Controls
+    options:
+      position: "topleft"
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      C.Util.setOptions @, options
+      @control = new L.Control.Home(@options.home)
 
     getControl: ->
       @control
@@ -319,6 +337,25 @@
     getControl: ->
       @control
 
+  class C.Controls.LayerLocking extends C.Controls
+    options:
+      layerLocking:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.LayerLocking(map, @options.layerLocking)
+
+      @initHooks()
+
+    initHooks: (->)
+
+    getControl: ->
+      @control
+
   class C.Controls.Cut extends C.Controls
     options:
       cut:
@@ -357,6 +394,68 @@
       @initHooks()
 
     initHooks: (->)
+
+    getControl: ->
+      @control
+
+  class C.Controls.ShapeDraw extends C.Controls
+    options:
+      draw:
+        edit: false
+        draw:
+          marker: false
+          circlemarker: false
+          polyline: false
+          rectangle: false
+          circle: false
+          polygon:
+            allowIntersection: false
+            showArea: false
+      snap:
+        polygon:
+          guideLayers: []
+          snapDistance: 15
+          snapOriginDistance: 30
+          allowIntersection: false
+          guidelineDistance: 8
+          shapeOptions:
+            dashArray: '8, 8'
+            fill: false
+            color: '#FF5722'
+            opacity: 1
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @options.draw.guideLayers = @options.snap.polygon.guideLayers
+      @control = new L.Control.ShapeDraw(map, @options.draw)
+
+      @initHooks()
+
+    initHooks: ->
+
+
+    getControl: ->
+      @control
+
+  class C.Controls.ShapeCut extends C.Controls
+    options:
+      cut:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.ShapeCut(map, @options.cut)
+
+      @initHooks()
+
+    initHooks: ->
+
 
     getControl: ->
       @control

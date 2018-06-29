@@ -20,5 +20,12 @@ _.merge(L.drawLocal, {
   zoom: {
     zoomInTitle: 'Zoom in',
     zoomOutTitle: 'Zoom out'
+  },
+  home: {
+    toolbar: {
+      buttons: {
+        home: 'Center to polygons'
+      }
+    }
   }
 })

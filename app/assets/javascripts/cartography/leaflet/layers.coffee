@@ -57,3 +57,4 @@ L.LayerGroup.include
 
 L.LayerGroup.addInitHook ->
   @initialized = {}
+

@@ -51,8 +51,8 @@
       overlays: []
       series: {}
       properties:
-        color: "#00BCD4"
-        fillOpacity: 0.5
+        color: "#FAEBD7"
+        fillOpacity: 0.35
 
     constructor: ( map, options = {} ) ->
       C.Util.setOptions @, options
