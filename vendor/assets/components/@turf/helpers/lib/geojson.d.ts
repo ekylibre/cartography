@@ -22,7 +22,8 @@ export type GeometryTypes = "Point" |
                             "Polygon" |
                             "MultiPoint" |
                             "MultiLineString" |
-                            "MultiPolygon";
+                            "MultiPolygon" |
+                            "GeometryCollection";
 
 export type CollectionTypes = "FeatureCollection" | "GeometryCollection";
 
@@ -36,7 +37,7 @@ export type Types = "Feature" | GeometryTypes | CollectionTypes;
 
 /**
  * Bounding box
- * 
+ *
  * https://tools.ietf.org/html/rfc7946#section-5
  * A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections.
  * The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries,
@@ -58,7 +59,7 @@ export type Id = string | number;
 
 /**
  * Position
- * 
+ *
  * https://tools.ietf.org/html/rfc7946#section-3.1.1
  * Array should contain between two and three elements.
  * The previous GeoJSON specification allowed more elements (e.g., which could be used to represent M values),
@@ -192,15 +193,15 @@ export interface MultiPolygon extends GeometryObject {
  * GeometryCollection
  *
  * https://tools.ietf.org/html/rfc7946#section-3.1.8
- * 
- * A GeoJSON object with type "GeometryCollection" is a Geometry object. 
+ *
+ * A GeoJSON object with type "GeometryCollection" is a Geometry object.
  * A GeometryCollection has a member with the name "geometries".
  * The value of "geometries" is an array.  Each element of this array is a GeoJSON Geometry object.
  * It is possible for this array to be empty.
  */
-export interface GeometryCollection extends GeoJSONObject {
+export interface GeometryCollection extends GeometryObject {
     type: "GeometryCollection";
-    geometries: Geometries[];
+    geometries: Array<Point | LineString | Polygon | MultiPoint | MultiLineString | MultiPolygon>;
 }
 
 /**
@@ -212,7 +213,7 @@ export interface GeometryCollection extends GeoJSONObject {
  */
 export interface Feature<G = Geometry | GeometryCollection, P = Properties> extends GeoJSONObject {
     type: "Feature";
-    geometry: G | null;
+    geometry: G;
     /**
      * A value that uniquely identifies this feature in a
      * https://tools.ietf.org/html/rfc7946#section-3.2.
@@ -221,12 +222,12 @@ export interface Feature<G = Geometry | GeometryCollection, P = Properties> exte
     /**
      * Properties associated with this feature.
      */
-    properties: P | null;
+    properties: P;
 }
 
 /**
  * Feature Collection
- * 
+ *
  * https://tools.ietf.org/html/rfc7946#section-3.3
  * A GeoJSON object with the type "FeatureCollection" is a FeatureCollection object.
  * A FeatureCollection object has a member with the name "features".
@@ -234,5 +235,6 @@ export interface Feature<G = Geometry | GeometryCollection, P = Properties> exte
  * It is possible for this array to be empty.
  */
 export interface FeatureCollection<G = Geometry | GeometryCollection, P = Properties> extends GeoJSONObject {
+    type: "FeatureCollection";
     features: Array<Feature<G, P>>;
 }

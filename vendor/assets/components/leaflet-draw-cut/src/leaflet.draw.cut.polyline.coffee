@@ -11,12 +11,12 @@ turfMeta = require '@turf/meta'
 turfPolygonize = require '@turf/polygonize'
 turfDifference = require('@turf/difference')
 turfBuffer = require('@turf/buffer').default
-# turfBooleanPointOnLine = require '@turf/boolean-point-on-line'
 turfNearestPointOnLine = require '@turf/nearest-point-on-line'
-turfLineIntersect = require '@turf/line-intersect'
+turfLineIntersect = require('@turf/line-intersect').default
 turfLineSplit = require('@turf/line-split').default
 turfTruncate = require('@turf/truncate').default
 turfGetCoords = require('@turf/invariant').getCoords
+turfBooleanPointOnLine = require("@turf/boolean-point-on-line").default
 require 'leaflet-geometryutil'
 
 L.Cutting = {}
@@ -164,7 +164,7 @@ class L.Cut.Polyline extends L.Handler
       if addList.length
         for l in addList
           unless @_availableLayers.hasUUIDLayer l
-            geojson = l.toGeoJSON()
+            geojson = l.toGeoJSON(6)
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
 
@@ -184,7 +184,7 @@ class L.Cut.Polyline extends L.Handler
 
     if @_activeLayer && @_activeLayer._polys
       @_activeLayer._polys.eachLayer (l) =>
-        @_featureGroup.addData l.toGeoJSON()
+        @_featureGroup.addData l.toGeoJSON(6)
 
       @_activeLayer._polys.clearLayers()
       delete @_activeLayer._polys
@@ -363,7 +363,6 @@ class L.Cut.Polyline extends L.Handler
 
 
   _slice: (polygon, polyline) ->
-
     poly = polygon.toTurfFeature()
     splitter = polyline.toTurfFeature()
 
@@ -414,6 +413,8 @@ class L.Cut.Polyline extends L.Handler
     outerRing = turf.lineString(coords[0])
     innerRings = @_innerLineStrings(poly)
 
+    # intersectPoints = turfLineIntersect(poly, splitter)
+
     outerLineStrings = []
 
     # split outers
@@ -424,8 +425,48 @@ class L.Cut.Polyline extends L.Handler
     turfMeta.featureEach turfLineSplit(splitter, poly), (line) ->
       outerLineStrings.push line
 
-    outerLineStrings = turfTruncate(turf.featureCollection(outerLineStrings), precision: 6)
+    # accurateIntersectPoints = []
 
+    # for feature in outerLineStrings
+    #   points = feature.geometry.coordinates
+    #   for point in points
+    #     for intersectPoint in intersectPoints.features
+    #       roundedIntersectPoint = [Math.floor(intersectPoint.geometry.coordinates[0] * 1000000) / 1000000, Math.floor(intersectPoint.geometry.coordinates[1] * 1000000) / 1000000]
+    #       roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000]
+    #       if (JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)) && (JSON.stringify(point) != JSON.stringify(intersectPoint.geometry.coordinates))
+    #         accurateIntersectPoints.push point
+
+    # stingifiedAccurateIntersectPoints = accurateIntersectPoints.map (point) ->
+    #   JSON.stringify(point)
+
+    # accurateIntersectPoints = _.uniq(stingifiedAccurateIntersectPoints).map (point) ->
+    #   JSON.parse(point)
+
+    # for feature in outerLineStrings
+    #   points = feature.geometry.coordinates
+    #   for point, index in points
+    #     for accurateIntersectPoint in accurateIntersectPoints
+    #       roundedIntersectPoint = [Math.floor(accurateIntersectPoint[0] * 1000000) / 1000000, Math.floor(accurateIntersectPoint[1] * 1000000) / 1000000]
+    #       roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000]
+    #       feature.geometry.coordinates[index] = accurateIntersectPoint if JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)
+
+
+
+
+
+    # for feature in outerLineStrings
+    #   points = feature.geometry.coordinates
+    #   for point, index in points
+    #     for intersectPoint in intersectPoints.features
+    #       roundedIntersectPoint = [Math.floor(intersectPoint.geometry.coordinates[0] * 1000000) / 1000000, Math.floor(intersectPoint.geometry.coordinates[1] * 1000000) / 1000000]
+    #       roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000]
+    #       if JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)
+    #         inPolygonIntersectPoint = turfBooleanPointOnLine(intersectPoint.geometry.coordinates, outerRing)
+    #         inPolygonPoint = turfBooleanPointOnLine(point, outerRing)
+    #         feature.geometry.coordinates[index] = intersectPoint.geometry.coordinates
+
+    outerLineStrings = turfTruncate(turf.featureCollection(outerLineStrings), precision: 6)
+    # outerLineStrings = turf.featureCollection(outerLineStrings)
     polygons = turfPolygonize.default(outerLineStrings)
 
     if innerRings.features.length

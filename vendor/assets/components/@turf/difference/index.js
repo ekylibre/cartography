@@ -2,7 +2,7 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var martinez = _interopDefault(require('martinez-polygon-clipping'));
+var martinez = require('martinez-polygon-clipping');
 var area = _interopDefault(require('@turf/area'));
 var helpers = require('@turf/helpers');
 var invariant = require('@turf/invariant');
