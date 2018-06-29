@@ -390,7 +390,6 @@
       layer = @_findLayerByUUID(featureGroup, uuid)
       if layer && layer.selected
         @unhighlight(uuid)
-        layer.fire 'click'
         layer.fire 'select'
 
     highlight: (uuid, featureGroup = undefined) ->
