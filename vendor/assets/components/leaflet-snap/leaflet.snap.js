@@ -628,10 +628,16 @@ L.Draw.Feature.SnapMixin = {
             marker.setIcon(this.options.icon);
             var snapPoint = this._map.latLngToLayerPoint(marker._latlng);
             this._updateGuide(snapPoint);
+            if(marker._icon){
+                L.DomUtil.addClass(marker._icon, 'marker-snapped');
+	    }
         }, this);
 
         marker.on('unsnap', function (e) {
             marker.setIcon(icon);
+            if(marker._icon){
+                L.DomUtil.removeClass(marker._icon, 'marker-snapped');
+	    }
         }, this);
 
         if(L.Browser.touch){
