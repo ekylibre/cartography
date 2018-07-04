@@ -64,6 +64,7 @@
     "leaflet-draw": "^0.4.12",
     "leaflet-geometryutil": "^0.8.0",
     "leaflet-snap": "git+https://github.com/ekylibre/Leaflet.Snap.git",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "polygon-clipping": "^0.7.0"
   }
 }

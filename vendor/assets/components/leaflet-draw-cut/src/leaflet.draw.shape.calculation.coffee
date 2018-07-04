@@ -12,6 +12,7 @@ martinez = require "martinez-polygon-clipping"
 turfArea = require("@turf/area").default
 turfMeta = require("@turf/meta")
 turfArea = require("@turf/area").default
+polygonClipping = require("polygon-clipping")
 
 
 removeEmptyPolygon = (geom) ->
@@ -154,13 +155,15 @@ class L.Calculation
   @difference: (polygon1, polygon2) ->
     polygon1 = turf.feature(polygon1)
     polygon2 = turf.feature(polygon2)
-    difference = customDifference(polygon1, polygon2)
-    difference = cleanPolygon difference
-    diffCoords = difference.geometry.coordinates if difference
-    if difference && difference.geometry.type == 'Polygon' && diffCoords.length > 1
-      difference = diffCoords.reduce (coords1, coords2) ->
-        wholePolygon = if coords1.hasOwnProperty('type') then coords1 else turf.polygon([coords1])
-        polygonHole = turf.polygon([coords2])
-        diff = customDifference(wholePolygon, polygonHole)
-        cleanPolygon diff
-    difference
+    diffCoordinates = polygonClipping.difference(polygon1.geometry.coordinates, polygon2.geometry.coordinates)
+    turf.multiPolygon(diffCoordinates)
+    # difference = customDifference(polygon1, polygon2)
+    # difference = cleanPolygon difference
+    # diffCoords = difference.geometry.coordinates if difference
+    # if difference && difference.geometry.type == 'Polygon' && diffCoords.length > 1
+    #   difference = diffCoords.reduce (coords1, coords2) ->
+    #     wholePolygon = if coords1.hasOwnProperty('type') then coords1 else turf.polygon([coords1])
+    #     polygonHole = turf.polygon([coords2])
+    #     diff = customDifference(wholePolygon, polygonHole)
+    #     cleanPolygon diff
+    # difference
