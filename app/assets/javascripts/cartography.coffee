@@ -153,6 +153,7 @@
 
       onSplitChange = (e) =>
         data = {}
+        data['splitter'] = e.splitter
         data['old'] = {uuid: e.parent.feature.properties.uuid, name: e.parent.feature.properties.name}
         data['new'] = e.layers.map (layer) ->
           p = layer.feature.properties

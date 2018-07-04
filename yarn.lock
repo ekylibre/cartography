@@ -8,7 +8,7 @@
   dependencies:
     tinyqueue "^1.1.0"
 
-"@turf/area@6.x":
+"@turf/area@6.x", "@turf/area@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.0.1.tgz#50ed63c70ef2bdb72952384f1594319d94f3b051"
   dependencies:
@@ -388,7 +388,7 @@
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
 
-"@turf/meta@*", "@turf/meta@6.x", "@turf/meta@^6.0.0-beta.3":
+"@turf/meta@*", "@turf/meta@6.x", "@turf/meta@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.2.tgz#eb92951126d24a613ac1b7b99d733fcc20fd30cf"
   dependencies:
@@ -607,6 +607,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
   version "0.0.1"
   dependencies:
     "@mapbox/polylabel" "^1.0.2"
+    "@turf/area" "^6.0.1"
     "@turf/bearing" "^6.0.1"
     "@turf/boolean-disjoint" "^6.0.2"
     "@turf/boolean-overlap" "^6.0.1"
@@ -622,7 +623,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     "@turf/line-slice" "^4.7.3"
     "@turf/line-split" "^5.1.5"
     "@turf/line-to-polygon" "^6.0.1"
-    "@turf/meta" "^6.0.0-beta.3"
+    "@turf/meta" "^6.0.2"
     "@turf/nearest-point-on-line" "^5.1.5"
     "@turf/point-to-line-distance" "^6.0.0"
     "@turf/polygonize" "^5.1.5"
@@ -703,7 +704,7 @@ leaflet-providers@1.1.17:
 
 "leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
   version "0.0.4"
-  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#7104eeece816a97c9ebdb2d01ca6a976c9aebea4"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"

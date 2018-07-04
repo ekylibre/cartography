@@ -380,7 +380,7 @@ class L.Cut.Polyline extends L.Handler
       polygon.feature.properties.num = index+1
 
       polygon.feature.properties.color = "c-#{index%@options.cycling}"
-      
+
       polygon.fromTurfFeature turfPolygon
       featureGroup.addLayer polygon
       index++
@@ -419,10 +419,7 @@ class L.Cut.Polyline extends L.Handler
         for intersectPoint in intersectPoints.features
           roundedIntersectPoint = [Math.floor(intersectPoint.geometry.coordinates[0] * 1000000) / 1000000, Math.floor(intersectPoint.geometry.coordinates[1] * 1000000) / 1000000]
           roundedPoint = [Math.floor(point[0] * 1000000) / 1000000, Math.floor(point[1] * 1000000) / 1000000]
-          if JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)
-            inPolygonIntersectPoint = turfBooleanPointOnLine(intersectPoint.geometry.coordinates, outerRing)
-            inPolygonPoint = turfBooleanPointOnLine(point, outerRing)
-            feature.geometry.coordinates[index] = intersectPoint.geometry.coordinates
+          feature.geometry.coordinates[index] = intersectPoint.geometry.coordinates if JSON.stringify(roundedIntersectPoint) == JSON.stringify(roundedPoint)
 
     outerLineStrings = turf.featureCollection(outerLineStrings)
 
@@ -475,7 +472,7 @@ class L.Cut.Polyline extends L.Handler
 
       @_activeLayer.cutting.disable()
 
-      @_map.fire L.Cutting.Polyline.Event.CREATED, layers: layerGroup.getLayers(), parent: @_activeLayer
+      @_map.fire L.Cutting.Polyline.Event.CREATED, layers: layerGroup.getLayers(), parent: @_activeLayer, splitter: splitter._latlngs
 
       @_activeLayer.editing = new L.Edit.Poly splitter
 
@@ -495,6 +492,7 @@ class L.Cut.Polyline extends L.Handler
 
     try
       drawnPolyline = @_activeLayer.editing._poly
+      splitter = L.polyline drawnPolyline.getLatLngs(), @options.cuttingPathOptions
 
       layerGroup = @_slice @_activeLayer, drawnPolyline
 
@@ -516,7 +514,7 @@ class L.Cut.Polyline extends L.Handler
         return unless layer._polygonSliceIcon
         @_polygonSliceMarkers.addLayer L.marker(layer.getCenter(), icon: layer._polygonSliceIcon)
 
-      @_map.fire L.Cutting.Polyline.Event.UPDATED, layers: layerGroup.getLayers(), parent: @_activeLayer
+      @_map.fire L.Cutting.Polyline.Event.UPDATED, layers: layerGroup.getLayers(), parent: @_activeLayer, splitter: splitter._latlngs
 
     #catch e
 

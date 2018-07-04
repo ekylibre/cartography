@@ -1,4 +1,5 @@
 {
+  "nodeVersion": "v8.9.4",
   "modulesFolders": [
     "vendor/assets/components"
   ],
@@ -6,7 +7,6 @@
   "linkedModules": [],
   "topLevelPatterns": [
     "leaflet-controlpanel@https://github.com/ekylibre/Leaflet.ControlPanel",
-    "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-cut@../Leaflet.Draw.Cut",
     "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-draw@0.4.12",
@@ -20,6 +20,7 @@
   "lockfileEntries": {
     "@mapbox/polylabel@^1.0.2": "https://registry.yarnpkg.com/@mapbox/polylabel/-/polylabel-1.0.2.tgz#c5714619b65add082638ea06027e69b14500efa6",
     "@turf/area@6.x": "https://registry.yarnpkg.com/@turf/area/-/area-6.0.1.tgz#50ed63c70ef2bdb72952384f1594319d94f3b051",
+    "@turf/area@^6.0.1": "https://registry.yarnpkg.com/@turf/area/-/area-6.0.1.tgz#50ed63c70ef2bdb72952384f1594319d94f3b051",
     "@turf/bbox-polygon@^5.1.5": "https://registry.yarnpkg.com/@turf/bbox-polygon/-/bbox-polygon-5.1.5.tgz#6aeba4ed51d85d296e0f7c38b88c339f01eee024",
     "@turf/bbox@*": "https://registry.yarnpkg.com/@turf/bbox/-/bbox-6.0.1.tgz#b966075771475940ee1c16be2a12cf389e6e923a",
     "@turf/bbox@6.x": "https://registry.yarnpkg.com/@turf/bbox/-/bbox-6.0.1.tgz#b966075771475940ee1c16be2a12cf389e6e923a",
@@ -80,7 +81,7 @@
     "@turf/meta@^4.7.3": "https://registry.yarnpkg.com/@turf/meta/-/meta-4.7.4.tgz#6de2f1e9890b8f64b669e4b47c09b20893063977",
     "@turf/meta@^5.0.2": "https://registry.yarnpkg.com/@turf/meta/-/meta-5.0.2.tgz#712ff485cdaa6024d1f97d6fbed69d3f8e31e686",
     "@turf/meta@^5.1.5": "https://registry.yarnpkg.com/@turf/meta/-/meta-5.2.0.tgz#3b1ad485ee0c3b0b1775132a32c384d53e4ba53d",
-    "@turf/meta@^6.0.0-beta.3": "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.2.tgz#eb92951126d24a613ac1b7b99d733fcc20fd30cf",
+    "@turf/meta@^6.0.2": "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.2.tgz#eb92951126d24a613ac1b7b99d733fcc20fd30cf",
     "@turf/nearest-point-on-line@6.x": "https://registry.yarnpkg.com/@turf/nearest-point-on-line/-/nearest-point-on-line-6.0.2.tgz#4b2c1177595d9a1743af76905a9013ced03bc0dc",
     "@turf/nearest-point-on-line@^5.1.5": "https://registry.yarnpkg.com/@turf/nearest-point-on-line/-/nearest-point-on-line-5.1.5.tgz#5606ae297f15947524bea51a2a9ef51ec1bf9c36",
     "@turf/point-on-line@^4.7.3": "https://registry.yarnpkg.com/@turf/point-on-line/-/point-on-line-4.7.3.tgz#944a1e7b2c4375f488e83ce55eab35454e9ab7b7",
@@ -119,7 +120,7 @@
     "leaflet-layerindex@https://github.com/ekylibre/Leaflet.LayerIndex.git": "https://github.com/ekylibre/Leaflet.LayerIndex.git#4eea0e8cf78cbc8e4ee25dd1bc0310b26373a1ab",
     "leaflet-providers@1.1.17": "https://registry.yarnpkg.com/leaflet-providers/-/leaflet-providers-1.1.17.tgz#674628895dacae7f185ec0896039e95bbbadee46",
     "leaflet-reactive_measure@https://github.com/ekylibre/Leaflet.ReactiveMeasure": "https://github.com/ekylibre/Leaflet.ReactiveMeasure#4dcc58605f91637e2251c9a585891c527e7eb9c0",
-    "leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git": "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce",
+    "leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git": "git+https://github.com/ekylibre/Leaflet.Snap.git#7104eeece816a97c9ebdb2d01ca6a976c9aebea4",
     "leaflet-snap@https://github.com/ekylibre/Leaflet.Snap": "https://github.com/ekylibre/Leaflet.Snap#5db9d0108ea68a03ee717aac3eab6b087d3935ce",
     "leaflet@*": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
     "leaflet@1.2.0": "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697",
