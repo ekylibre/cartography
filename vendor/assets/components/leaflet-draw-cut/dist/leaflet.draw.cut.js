@@ -55098,7 +55098,7 @@ exports.default = booleanPointOnLine;
 /* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var L, cleanCoords, cleanPolygon, customDifference, findNextPoint, findPrevPoint, martinez, polygonClipping, removeEmptyPolygon, turf, turfArea, turfBearing, turfBooleanPointInPolygon, turfDifference, turfFlip, turfInvariant, turfMeta, turfTruncate, turfUnion;
+var L, martinez, polygonClipping, turf, turfArea, turfBearing, turfBooleanPointInPolygon, turfDifference, turfFlip, turfInvariant, turfMeta, turfTruncate, turfUnion;
 
 L = __webpack_require__(17);
 
@@ -55128,182 +55128,6 @@ turfArea = __webpack_require__(31)["default"];
 
 polygonClipping = __webpack_require__(235);
 
-removeEmptyPolygon = function(geom) {
-  var coordinates;
-  switch (geom.type) {
-    case 'Polygon':
-      if (turfArea(geom) > 1) {
-        return geom;
-      }
-      return null;
-    case 'MultiPolygon':
-      coordinates = [];
-      turfMeta.flattenEach(geom, function(feature) {
-        if (turfArea(feature) > 1) {
-          return coordinates.push(feature.geometry.coordinates);
-        }
-      });
-      if (coordinates.length) {
-        return {
-          type: 'MultiPolygon',
-          coordinates: coordinates
-        };
-      }
-  }
-};
-
-customDifference = function(polygon1, polygon2) {
-  var contour, differenced, geom1, geom2, i, j, len, len1, polygon, properties;
-  geom1 = turfInvariant.getGeom(polygon1);
-  geom2 = turfInvariant.getGeom(polygon2);
-  properties = polygon1.properties || {};
-  geom1 = removeEmptyPolygon(geom1);
-  geom2 = removeEmptyPolygon(geom2);
-  if (!geom1) {
-    return null;
-  }
-  if (!geom2) {
-    return turf.feature(geom1, properties);
-  }
-  differenced = martinez.diff(geom1.coordinates, geom2.coordinates);
-  for (i = 0, len = differenced.length; i < len; i++) {
-    contour = differenced[i];
-    for (j = 0, len1 = contour.length; j < len1; j++) {
-      polygon = contour[j];
-      if (JSON.stringify(polygon[polygon.length - 1]) !== JSON.stringify(polygon[0])) {
-        polygon.push(polygon[0]);
-      }
-    }
-  }
-  if (differenced.length === 0) {
-    return null;
-  }
-  if (differenced.length === 1) {
-    return turf.polygon(differenced[0], properties);
-  }
-  return turf.multiPolygon(differenced, properties);
-};
-
-findPrevPoint = function(array, currentIndex) {
-  var prevIndex, prevPoint;
-  if (currentIndex === 0) {
-    prevIndex = array.length - 1 - 1;
-    prevPoint = array[prevIndex];
-    while (!prevPoint && (prevIndex > currentIndex + 1)) {
-      prevIndex -= 1;
-      prevPoint = array[prevIndex];
-    }
-  } else {
-    prevIndex = currentIndex - 1;
-    prevPoint = array[prevIndex];
-    while (!prevPoint && (prevIndex > 0)) {
-      prevIndex -= 1;
-      prevPoint = array[prevIndex];
-    }
-  }
-  return prevPoint;
-};
-
-findNextPoint = function(array, currentIndex) {
-  var nextIndex, nextPoint;
-  if (currentIndex === array.length - 1) {
-    nextIndex = 1;
-    nextPoint = array[nextIndex];
-    while (!nextPoint && (nextIndex < currentIndex - 1)) {
-      nextIndex += 1;
-      nextPoint = array[nextIndex];
-    }
-  } else {
-    nextIndex = currentIndex + 1;
-    nextPoint = array[nextIndex];
-    while (!nextPoint && (nextIndex < array.length - 1 - 1)) {
-      nextIndex += 1;
-      nextPoint = array[nextIndex];
-    }
-  }
-  return nextPoint;
-};
-
-cleanCoords = function(coordinates) {
-  return coordinates.filter(function(coords) {
-    return coords !== void 0;
-  });
-};
-
-cleanPolygon = function(polygon) {
-  var area, bearing1, bearing2, coordinates, coords, i, index, j, k, l, len, len1, len2, len3, newCoordinates, newPolygons, nextCoord, nextPoint, point, pointIndex, pointRemoved, points, poly, polyIndex, prevPoint, realCoords, realPolygon, ref, roundedBearing1, roundedBearing2, roundedCoord, roundedNextCoord, type;
-  type = polygon.geometry.type;
-  if (type === 'MultiPolygon') {
-    ref = polygon.geometry.coordinates;
-    for (index = i = 0, len = ref.length; i < len; index = ++i) {
-      poly = ref[index];
-      realPolygon = turf.polygon(poly);
-      area = turfArea(realPolygon);
-      if (area < 0.000001) {
-        polygon.geometry.coordinates.splice(index, 1);
-      }
-    }
-  }
-  newPolygons = [];
-  coordinates = polygon.geometry.coordinates;
-  for (polyIndex = j = 0, len1 = coordinates.length; j < len1; polyIndex = ++j) {
-    points = coordinates[polyIndex];
-    realCoords = type === 'Polygon' ? points : type === 'MultiPolygon' ? points[0] : void 0;
-    pointRemoved = true;
-    while (pointRemoved) {
-      newCoordinates = [];
-      pointRemoved = false;
-      for (index = k = 0, len2 = realCoords.length; k < len2; index = ++k) {
-        coords = realCoords[index];
-        if (!(coords && (nextCoord = realCoords[index + 1]))) {
-          continue;
-        }
-        roundedCoord = [Math.floor(coords[0] * 1000000) / 1000000, Math.floor(coords[1] * 1000000) / 1000000];
-        roundedNextCoord = [Math.floor(nextCoord[0] * 1000000) / 1000000, Math.floor(nextCoord[1] * 1000000) / 1000000];
-        if (JSON.stringify(roundedCoord) === JSON.stringify(roundedNextCoord)) {
-          delete realCoords[index];
-          if (index === 0) {
-            realCoords.splice(realCoords.length - 1, 1);
-            realCoords[0] = realCoords[realCoords.length - 1];
-          }
-          pointRemoved = true;
-        }
-      }
-      realCoords = cleanCoords(realCoords);
-      for (pointIndex = l = 0, len3 = realCoords.length; l < len3; pointIndex = ++l) {
-        point = realCoords[pointIndex];
-        if (!point) {
-          continue;
-        }
-        prevPoint = findPrevPoint(realCoords, pointIndex);
-        nextPoint = findNextPoint(realCoords, pointIndex);
-        bearing1 = turfBearing(point, prevPoint);
-        bearing2 = turfBearing(point, nextPoint);
-        roundedBearing1 = Math.floor(bearing1 * 100) / 100;
-        roundedBearing2 = Math.floor(bearing2 * 100) / 100;
-        if (roundedBearing1 === roundedBearing2) {
-          delete realCoords[pointIndex];
-          if (pointIndex === 0) {
-            realCoords.splice(realCoords.length - 1, 1);
-            realCoords[0] = realCoords[realCoords.length - 1];
-          }
-          pointRemoved = true;
-        } else {
-          newCoordinates.push(point);
-        }
-      }
-      realCoords = cleanCoords(realCoords);
-    }
-    if (type === 'Polygon') {
-      newPolygons.push(newCoordinates);
-    } else if (type === 'MultiPolygon') {
-      newPolygons.push([newCoordinates]);
-    }
-  }
-  polygon.geometry.coordinates = newPolygons;
-  return polygon;
-};
-
 L.Calculation = (function() {
   function Calculation() {}
 
@@ -55319,9 +55143,7 @@ L.Calculation = (function() {
 
   Calculation.difference = function(polygon1, polygon2) {
     var diffCoordinates;
-    polygon1 = turf.feature(polygon1);
-    polygon2 = turf.feature(polygon2);
-    diffCoordinates = polygonClipping.difference(polygon1.geometry.coordinates, polygon2.geometry.coordinates);
+    diffCoordinates = polygonClipping.difference(polygon1.coordinates, polygon2.coordinates);
     return turf.multiPolygon(diffCoordinates);
   };
 
