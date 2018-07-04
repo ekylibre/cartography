@@ -3,15 +3,6 @@ L = require 'leaflet'
 turf = require '@turf/helpers'
 turfDifference = require('@turf/difference')
 turfUnion = require('@turf/union').default
-turfTruncate = require('@turf/truncate').default
-turfFlip = require '@turf/flip'
-turfBooleanPointInPolygon = require('@turf/boolean-point-in-polygon').default
-turfBearing = require('@turf/bearing').default
-turfInvariant = require("@turf/invariant")
-martinez = require "martinez-polygon-clipping"
-turfArea = require("@turf/area").default
-turfMeta = require("@turf/meta")
-turfArea = require("@turf/area").default
 polygonClipping = require("polygon-clipping")
 
 class L.Calculation
