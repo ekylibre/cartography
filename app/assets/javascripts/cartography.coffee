@@ -440,11 +440,10 @@
         layer._editToolbar._activate layer
 
     union: (polygons) ->
-      L.Calculation.union(polygons).geometry
+      L.Calculation.union(polygons)
 
-    difference: (polygon1, polygon2) ->
-      remainingShape = L.Calculation.difference(polygon1, polygon2)
-      if remainingShape then remainingShape.geometry else null
+    difference: (feature1, feature2) ->
+      L.Calculation.difference(feature1, feature2)
 
     sync: (data, layerName, options = {}) =>
 
