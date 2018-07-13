@@ -67591,6 +67591,8 @@ polygonClipping = __webpack_require__(254);
 L.Calculation = (function() {
   function Calculation() {}
 
+  Calculation.PRECISION = 6;
+
   Calculation.union = function(polygons) {
     var turfFeatures;
     turfFeatures = polygons.map(function(polygon) {
@@ -67656,7 +67658,7 @@ L.Calculation = (function() {
         poly = ref[index];
         realPolygon = turf.polygon(poly);
         area = turfArea(realPolygon);
-        if (area < 0.000001) {
+        if (area < Math.pow(10, -this.PRECISION)) {
           polygon.geometry.coordinates.splice(index, 1);
         }
       }
@@ -67675,8 +67677,8 @@ L.Calculation = (function() {
           if (!(coords && (nextCoord = realCoords[index + 1]))) {
             continue;
           }
-          roundedCoord = [Math.floor(coords[0] * 1000000) / 1000000, Math.floor(coords[1] * 1000000) / 1000000];
-          roundedNextCoord = [Math.floor(nextCoord[0] * 1000000) / 1000000, Math.floor(nextCoord[1] * 1000000) / 1000000];
+          roundedCoord = [Math.floor(coords[0] * Math.pow(10, this.PRECISION)) / Math.pow(10, this.PRECISION), Math.floor(coords[1] * Math.pow(10, this.PRECISION)) / Math.pow(10, this.PRECISION)];
+          roundedNextCoord = [Math.floor(nextCoord[0] * Math.pow(10, this.PRECISION)) / Math.pow(10, this.PRECISION), Math.floor(nextCoord[1] * Math.pow(10, this.PRECISION)) / Math.pow(10, this.PRECISION)];
           if (JSON.stringify(roundedCoord) === JSON.stringify(roundedNextCoord)) {
             delete realCoords[index];
             if (index === 0) {

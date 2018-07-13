@@ -9,6 +9,7 @@ turfArea = require("@turf/area").default
 polygonClipping = require("polygon-clipping")
 
 class L.Calculation
+  @PRECISION: 6
 
   @union: (polygons) ->
     turfFeatures = polygons.map (polygon) ->
@@ -59,7 +60,7 @@ class L.Calculation
       for poly, index in polygon.geometry.coordinates
         realPolygon = turf.polygon(poly)
         area = turfArea(realPolygon)
-        polygon.geometry.coordinates.splice(index, 1) if area < 0.000001
+        polygon.geometry.coordinates.splice(index, 1) if area < 10**-@PRECISION
 
     newPolygons = []
     coordinates = polygon.geometry.coordinates
@@ -77,8 +78,8 @@ class L.Calculation
 
         for coords, index in realCoords
           continue unless coords && (nextCoord = realCoords[index + 1])
-          roundedCoord = [Math.floor(coords[0] * 1000000) / 1000000, Math.floor(coords[1] * 1000000) / 1000000]
-          roundedNextCoord = [Math.floor(nextCoord[0] * 1000000) / 1000000, Math.floor(nextCoord[1] * 1000000) / 1000000]
+          roundedCoord = [Math.floor(coords[0] * 10**@PRECISION) / 10**@PRECISION, Math.floor(coords[1] * 10**@PRECISION) / 10**@PRECISION]
+          roundedNextCoord = [Math.floor(nextCoord[0] * 10**@PRECISION) / 10**@PRECISION, Math.floor(nextCoord[1] * 10**@PRECISION) / 10**@PRECISION]
           if JSON.stringify(roundedCoord) == JSON.stringify(roundedNextCoord)
             delete realCoords[index]
             if index == 0
