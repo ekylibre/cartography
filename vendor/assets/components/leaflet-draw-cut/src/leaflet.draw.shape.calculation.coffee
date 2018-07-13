@@ -4,82 +4,124 @@ turf = require '@turf/helpers'
 turfDifference = require('@turf/difference')
 turfUnion = require('@turf/union').default
 turfTruncate = require('@turf/truncate').default
-turfFlip = require '@turf/flip'
-turfBooleanPointInPolygon = require('@turf/boolean-point-in-polygon').default
 turfBearing = require('@turf/bearing').default
-turfInvariant = require("@turf/invariant")
-martinez = require "martinez-polygon-clipping"
 turfArea = require("@turf/area").default
-
-
-removeEmptyPolygon = (geom) ->
-  switch (geom.type)
-    when 'Polygon'
-      return geom if (turfArea(geom) > 1)
-      return null
-    when 'MultiPolygon'
-      coordinates = []
-      meta.flattenEach geom, (feature) ->
-        coordinates.push(feature.geometry.coordinates) if (turfArea(feature) > 1)
-      return {type: 'MultiPolygon', coordinates: coordinates} if (coordinates.length)
-
-customDifference = (polygon1, polygon2) ->
-  geom1 = turfInvariant.getGeom(polygon1)
-  geom2 = turfInvariant.getGeom(polygon2)
-  properties = polygon1.properties || {}
-
-  geom1 = removeEmptyPolygon(geom1)
-  geom2 = removeEmptyPolygon(geom2)
-  return null if (!geom1)
-  return turf.feature(geom1, properties) if (!geom2)
-
-  differenced = martinez.diff(geom1.coordinates, geom2.coordinates)
-  for contour in differenced
-    for polygon in contour
-      polygon.push polygon[0] unless JSON.stringify(polygon[polygon.length - 1]) == JSON.stringify(polygon[0])
-  return null if (differenced.length == 0)
-  return turf.polygon(differenced[0], properties) if (differenced.length == 1)
-  turf.multiPolygon(differenced, properties)
-
-
+polygonClipping = require("polygon-clipping")
 
 class L.Calculation
+  @PRECISION: 6
 
   @union: (polygons) ->
-    turfPolygons = polygons.map (polygon) ->
+    turfFeatures = polygons.map (polygon) ->
       turf.feature(polygon)
-    turfUnion(turfPolygons...)
+    turfFeatures.reduce (poly1, poly2) ->
+      turfUnion(poly1, poly2)
 
-  @difference: (polygon1, polygon2) ->
-    polygon1 = turf.feature(polygon1)
-    polygon2 = turf.feature(polygon2)
-    difference = customDifference(polygon1, polygon2)
+  @cleanCoords: (coordinates) ->
+    coordinates.filter (coords) ->
+      coords != undefined
+
+  @findPrevPoint: (array, currentIndex) ->
+    if currentIndex == 0
+      prevIndex = array.length - 1 - 1
+      prevPoint = array[prevIndex]
+      while !prevPoint && (prevIndex > currentIndex + 1)
+        prevIndex -= 1
+        prevPoint = array[prevIndex]
+    else
+      prevIndex = currentIndex - 1
+      prevPoint = array[prevIndex]
+      while !prevPoint && (prevIndex > 0)
+        prevIndex -= 1
+        prevPoint = array[prevIndex]
+
+    prevPoint
+
+  @findNextPoint: (array, currentIndex) ->
+    if currentIndex == array.length - 1
+      nextIndex = 1
+      nextPoint = array[nextIndex]
+      while !nextPoint && (nextIndex < currentIndex - 1)
+        nextIndex += 1
+        nextPoint = array[nextIndex]
+    else
+      nextIndex = currentIndex + 1
+      nextPoint = array[nextIndex]
+      while !nextPoint && (nextIndex < array.length - 1 - 1)
+        nextIndex += 1
+        nextPoint = array[nextIndex]
+
+    nextPoint
+
+  @cleanPolygon: (polygon) ->
+    type = polygon.geometry.type
+
+    if type == 'MultiPolygon'
+      for poly, index in polygon.geometry.coordinates
+        realPolygon = turf.polygon(poly)
+        area = turfArea(realPolygon)
+        polygon.geometry.coordinates.splice(index, 1) if area < 10**-@PRECISION
 
     newPolygons = []
-    coordinates = difference.geometry.coordinates
+    coordinates = polygon.geometry.coordinates
     for points, polyIndex in coordinates
-      newCoordinates = []
-      for point, pointIndex in points
-        if pointIndex == 0
-          prevPoint = points[coordinates[polyIndex].length - 1 - 1]
-        else
-          prevPoint = points[pointIndex - 1]
-          # In case the previous point has been deleted in a previous iteration because it is irrelevant
-          prevPoint ||= points[pointIndex - 2]
-        nextPoint = points[pointIndex + 1]
-        # For the last point of the coordinates array, which is also the first
-        nextPoint ||= points[1]
-        bearing1 = turfBearing(point, prevPoint)
-        bearing2 = turfBearing(point, nextPoint)
-        roundedBearing1 = Math.floor(bearing1 * 100) / 100
-        roundedBearing2 = Math.floor(bearing2 * 100) / 100
-        if roundedBearing1 == roundedBearing2
-          delete coordinates[polyIndex][pointIndex]
-        else
-          newCoordinates.push point
-      newPolygons.push newCoordinates
+      realCoords = if type == 'Polygon'
+                     points
+                   else if type == 'MultiPolygon'
+                     points[0]
 
-    difference.geometry.coordinates = newPolygons
-    difference
+      pointRemoved = true
 
+      while pointRemoved
+        newCoordinates = []
+        pointRemoved = false
 
+        for coords, index in realCoords
+          continue unless coords && (nextCoord = realCoords[index + 1])
+          roundedCoord = [Math.floor(coords[0] * 10**@PRECISION) / 10**@PRECISION, Math.floor(coords[1] * 10**@PRECISION) / 10**@PRECISION]
+          roundedNextCoord = [Math.floor(nextCoord[0] * 10**@PRECISION) / 10**@PRECISION, Math.floor(nextCoord[1] * 10**@PRECISION) / 10**@PRECISION]
+          if JSON.stringify(roundedCoord) == JSON.stringify(roundedNextCoord)
+            delete realCoords[index]
+            if index == 0
+              realCoords.splice(realCoords.length - 1, 1)
+              realCoords[0] = realCoords[realCoords.length - 1]
+            pointRemoved = true
+
+        realCoords = @cleanCoords realCoords
+
+        for point, pointIndex in realCoords
+          continue unless point
+          prevPoint = @findPrevPoint realCoords, pointIndex
+          nextPoint = @findNextPoint realCoords, pointIndex
+          bearing1 = turfBearing(point, prevPoint)
+          bearing2 = turfBearing(point, nextPoint)
+          roundedBearing1 = Math.floor(bearing1 * 100) / 100
+          roundedBearing2 = Math.floor(bearing2 * 100) / 100
+          if roundedBearing1 == roundedBearing2
+            delete realCoords[pointIndex]
+            if pointIndex == 0
+              realCoords.splice(realCoords.length - 1, 1)
+              realCoords[0] = realCoords[realCoords.length - 1]
+            pointRemoved = true
+          else
+            newCoordinates.push point
+
+        realCoords = @cleanCoords realCoords
+
+      if type == 'Polygon'
+        newPolygons.push newCoordinates
+      else if type == 'MultiPolygon'
+        newPolygons.push [newCoordinates]
+
+    polygon.geometry.coordinates = newPolygons
+    polygon
+
+  @difference: (feature1, feature2) ->
+    p1 = turfTruncate(feature1, precision: 10).geometry
+    p2 = turfTruncate(feature2, precision: 10).geometry
+    diffCoordinates = polygonClipping.difference(p1.coordinates, p2.coordinates)
+
+    cleanPolygons = @cleanPolygon turf.multiPolygon(diffCoordinates)
+    cleanPolygons
+   
+    

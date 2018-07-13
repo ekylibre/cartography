@@ -8,7 +8,7 @@
   dependencies:
     tinyqueue "^1.1.0"
 
-"@turf/area@6.x":
+"@turf/area@6.x", "@turf/area@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.0.1.tgz#50ed63c70ef2bdb72952384f1594319d94f3b051"
   dependencies:
@@ -388,7 +388,7 @@
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
 
-"@turf/meta@*", "@turf/meta@6.x", "@turf/meta@^6.0.0-beta.3":
+"@turf/meta@*", "@turf/meta@6.x", "@turf/meta@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.0.2.tgz#eb92951126d24a613ac1b7b99d733fcc20fd30cf"
   dependencies:
@@ -607,6 +607,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
   version "0.0.1"
   dependencies:
     "@mapbox/polylabel" "^1.0.2"
+    "@turf/area" "^6.0.1"
     "@turf/bearing" "^6.0.1"
     "@turf/boolean-disjoint" "^6.0.2"
     "@turf/boolean-overlap" "^6.0.1"
@@ -622,7 +623,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     "@turf/line-slice" "^4.7.3"
     "@turf/line-split" "^5.1.5"
     "@turf/line-to-polygon" "^6.0.1"
-    "@turf/meta" "^6.0.0-beta.3"
+    "@turf/meta" "^6.0.2"
     "@turf/nearest-point-on-line" "^5.1.5"
     "@turf/point-to-line-distance" "^6.0.0"
     "@turf/polygonize" "^5.1.5"
@@ -635,6 +636,7 @@ leaflet-draw-cut@../Leaflet.Draw.Cut:
     leaflet-geometryutil "^0.8.0"
     leaflet-snap "git+https://github.com/ekylibre/Leaflet.Snap.git"
     lodash "^4.17.4"
+    polygon-clipping "^0.7.0"
 
 "leaflet-draw-merge@https://github.com/ekylibre/Leaflet.Draw.Merge":
   version "0.0.1"
@@ -703,7 +705,7 @@ leaflet-providers@1.1.17:
 
 "leaflet-snap@git+https://github.com/ekylibre/Leaflet.Snap.git":
   version "0.0.4"
-  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#5db9d0108ea68a03ee717aac3eab6b087d3935ce"
+  resolved "git+https://github.com/ekylibre/Leaflet.Snap.git#7104eeece816a97c9ebdb2d01ca6a976c9aebea4"
   dependencies:
     leaflet "^0.7.7"
     leaflet-geometryutil "*"
@@ -742,9 +744,21 @@ martinez-polygon-clipping@^0.4.3:
     splaytree "^0.1.4"
     tinyqueue "^1.2.0"
 
+polygon-clipping@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/polygon-clipping/-/polygon-clipping-0.7.0.tgz#8e8dbba27e1a59592232c63db3a2ab3f6baa75fe"
+  dependencies:
+    qheap "^1.4.0"
+    splaytree "^2.0.2"
+    tinyqueue "^1.2.3"
+
 pure-uuid@^1.4.10:
   version "1.4.10"
   resolved "https://registry.yarnpkg.com/pure-uuid/-/pure-uuid-1.4.10.tgz#884903c01a811a59a69d49959591b5147a51ca18"
+
+qheap@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/qheap/-/qheap-1.4.0.tgz#2d263edb4c1f7244a7a591f9b77645bcbcd9dd2e"
 
 quickselect@^1.0.1:
   version "1.1.1"
@@ -764,7 +778,11 @@ splaytree@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/splaytree/-/splaytree-0.1.4.tgz#fc35475248edcc29d4938c9b67e43c6b7e55a659"
 
-tinyqueue@^1.1.0, tinyqueue@^1.2.0:
+splaytree@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/splaytree/-/splaytree-2.0.2.tgz#cabbce3bd4608e2c4fcc2802effde63afbe0e9a2"
+
+tinyqueue@^1.1.0, tinyqueue@^1.2.0, tinyqueue@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-1.2.3.tgz#b6a61de23060584da29f82362e45df1ec7353f3d"
 

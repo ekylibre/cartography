@@ -153,6 +153,7 @@
 
       onSplitChange = (e) =>
         data = {}
+        data['splitter'] = e.splitter
         data['old'] = {uuid: e.parent.feature.properties.uuid, name: e.parent.feature.properties.name}
         data['new'] = e.layers.map (layer) ->
           p = layer.feature.properties
@@ -235,7 +236,7 @@
         @controls.get('selection').getControl().enable()
 
       @controls.register 'locking', false, =>
-        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup()}})
+        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup(name: 'crops')}})
       , =>
         @controls.get('locking').getControl().enable()
 
@@ -285,7 +286,6 @@
         @controls.add 'cut'
 
       style = (feature) ->
-        console.log feature.properties
         feature.properties.style ||= {}
         color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
 
@@ -411,7 +411,7 @@
         @getFeatureGroup(name: name).removeLayer layer
 
     buildControls: (name = undefined) ->
-      featureGroup = @getFeatureGroup(name: featureGroup)
+      featureGroup = @getFeatureGroup(name: name)
       return unless featureGroup && featureGroup.getLayers()
       featureGroup.eachLayer (layer) ->
         layer.onBuild.call @ if layer.onBuild and layer.onBuild.constructor.name == 'Function'
@@ -439,11 +439,10 @@
         layer._editToolbar._activate layer
 
     union: (polygons) ->
-      L.Calculation.union(polygons).geometry
+      L.Calculation.union(polygons)
 
-    difference: (polygon1, polygon2) ->
-      remainingShape = L.Calculation.difference(polygon1, polygon2)
-      if remainingShape then remainingShape.geometry else null
+    difference: (feature1, feature2) ->
+      L.Calculation.difference(feature1, feature2)
 
     sync: (data, layerName, options = {}) =>
 
