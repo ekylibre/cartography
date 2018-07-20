@@ -1,7 +1,10 @@
-import { point } from '@turf/helpers';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var helpers_1 = require("@turf/helpers");
 /**
- * Takes a {@link LineString|linestring}, {@link MultiLineString|multi-linestring}, {@link MultiPolygon|multi-polygon}, or {@link Polygon|polygon} and returns {@link Point|points} at all self-intersections.
+ * Takes a {@link LineString|linestring}, {@link MultiLineString|multi-linestring},
+ * {@link MultiPolygon|multi-polygon} or {@link Polygon|polygon} and
+ * returns {@link Point|points} at all self-intersections.
  *
  * @name kinks
  * @param {Feature<LineString|MultiLineString|MultiPolygon|Polygon>} featureIn input feature
@@ -24,30 +27,36 @@ function kinks(featureIn) {
     var coordinates;
     var feature;
     var results = {
-        type: 'FeatureCollection',
-        features: []
+        type: "FeatureCollection",
+        features: [],
     };
-    if (featureIn.type === 'Feature') {
+    if (featureIn.type === "Feature") {
         feature = featureIn.geometry;
-    } else {
+    }
+    else {
         feature = featureIn;
     }
-    if (feature.type === 'LineString') {
+    if (feature.type === "LineString") {
         coordinates = [feature.coordinates];
-    } else if (feature.type === 'MultiLineString') {
+    }
+    else if (feature.type === "MultiLineString") {
         coordinates = feature.coordinates;
-    } else if (feature.type === 'MultiPolygon') {
+    }
+    else if (feature.type === "MultiPolygon") {
         coordinates = [].concat.apply([], feature.coordinates);
-    } else if (feature.type === 'Polygon') {
+    }
+    else if (feature.type === "Polygon") {
         coordinates = feature.coordinates;
-    } else {
-        throw new Error('Input must be a LineString, MultiLineString, ' +
-            'Polygon, or MultiPolygon Feature or Geometry');
+    }
+    else {
+        throw new Error("Input must be a LineString, MultiLineString, " +
+            "Polygon, or MultiPolygon Feature or Geometry");
     }
     coordinates.forEach(function (line1) {
         coordinates.forEach(function (line2) {
             for (var i = 0; i < line1.length - 1; i++) {
-                // start iteration at i, intersections for k < i have already been checked in previous outer loop iterations
+                // start iteration at i, intersections for k < i have already
+                // been checked in previous outer loop iterations
                 for (var k = i; k < line2.length - 1; k++) {
                     if (line1 === line2) {
                         // segments are adjacent and always share a vertex, not a kink
@@ -56,21 +65,18 @@ function kinks(featureIn) {
                         }
                         // first and last segment in a closed lineString or ring always share a vertex, not a kink
                         if (
-                            // segments are first and last segment of lineString
-                            i === 0 &&
+                        // segments are first and last segment of lineString
+                        i === 0 &&
                             k === line1.length - 2 &&
                             // lineString is closed
                             line1[i][0] === line1[line1.length - 1][0] &&
-                            line1[i][1] === line1[line1.length - 1][1]
-                        ) {
+                            line1[i][1] === line1[line1.length - 1][1]) {
                             continue;
                         }
                     }
-
-                    var intersection = lineIntersects(line1[i][0], line1[i][1], line1[i + 1][0], line1[i + 1][1],
-                        line2[k][0], line2[k][1], line2[k + 1][0], line2[k + 1][1]);
+                    var intersection = lineIntersects(line1[i][0], line1[i][1], line1[i + 1][0], line1[i + 1][1], line2[k][0], line2[k][1], line2[k + 1][0], line2[k + 1][1]);
                     if (intersection) {
-                        results.features.push(point([intersection[0], intersection[1]]));
+                        results.features.push(helpers_1.point([intersection[0], intersection[1]]));
                     }
                 }
             }
@@ -78,23 +84,29 @@ function kinks(featureIn) {
     });
     return results;
 }
-
-
+exports.default = kinks;
 // modified from http://jsfiddle.net/justin_c_rounds/Gd2S2/light/
 function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2StartX, line2StartY, line2EndX, line2EndY) {
-    // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
-    var denominator, a, b, numerator1, numerator2,
-        result = {
-            x: null,
-            y: null,
-            onLine1: false,
-            onLine2: false
-        };
+    // if the lines intersect, the result contains the x and y of the
+    // intersection (treating the lines as infinite) and booleans for whether
+    // line segment 1 or line segment 2 contain the point
+    var denominator;
+    var a;
+    var b;
+    var numerator1;
+    var numerator2;
+    var result = {
+        x: null,
+        y: null,
+        onLine1: false,
+        onLine2: false,
+    };
     denominator = ((line2EndY - line2StartY) * (line1EndX - line1StartX)) - ((line2EndX - line2StartX) * (line1EndY - line1StartY));
     if (denominator === 0) {
         if (result.x !== null && result.y !== null) {
             return result;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -104,11 +116,9 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
     numerator2 = ((line1EndX - line1StartX) * a) - ((line1EndY - line1StartY) * b);
     a = numerator1 / denominator;
     b = numerator2 / denominator;
-
     // if we cast these lines infinitely in both directions, they intersect here:
     result.x = line1StartX + (a * (line1EndX - line1StartX));
     result.y = line1StartY + (a * (line1EndY - line1StartY));
-
     // if line1 is a segment and line2 is infinite, they intersect if:
     if (a >= 0 && a <= 1) {
         result.onLine1 = true;
@@ -120,9 +130,8 @@ function lineIntersects(line1StartX, line1StartY, line1EndX, line1EndY, line2Sta
     // if line1 and line2 are segments, they intersect if both of the above are true
     if (result.onLine1 && result.onLine2) {
         return [result.x, result.y];
-    } else {
+    }
+    else {
         return false;
     }
 }
-
-export default kinks;
