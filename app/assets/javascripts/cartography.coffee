@@ -444,6 +444,9 @@
     difference: (feature1, feature2) ->
       L.Calculation.difference(feature1, feature2)
 
+    contains: (feature1, feature2) ->
+      L.Calculation.contains feature1, feature2
+
     sync: (data, layerName, options = {}) =>
 
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
