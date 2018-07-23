@@ -17,11 +17,16 @@ class L.Calculation
 
   @union: (polygons) ->
     adjustPoints = (poly) =>
-      if poly.geometry.type == 'Polygon'
+      polygonsCoordinates = if poly.geometry.type == 'Polygon'
+                              [poly.geometry.coordinates]
+                            else if poly.geometry.type == 'MultiPolygon'
+                              poly.geometry.coordinates
+
+      for polygon, polyIndex in polygonsCoordinates
         pointChanged = true
         while pointChanged
           pointChanged = false
-          for ring, ringIndex in poly.geometry.coordinates
+          for ring, ringIndex in polygon
             for coord, coordIndex in ring
               continue if (coordIndex == 0) || (coordIndex == ring.length - 1)
               ringMinusCoord = ring.filter (coordinate, index) ->
@@ -30,35 +35,16 @@ class L.Calculation
                 newCoords = coord.map (latlng) =>
                               newLatlng = @roundCoord latlng, 10
                               newLatlng += coordIndex * (10**-10)
-                poly.geometry.coordinates[ringIndex][coordIndex] = newCoords
+                polygonsCoordinates[polyIndex][ringIndex][coordIndex] = newCoords
                 pointChanged = true
 
-
-      else if poly.geometry.type == 'MultiPolygon'
-        for polygon, polyIndex in poly.geometry.coordinates
-          pointChanged = true
-          while pointChanged
-            pointChanged = false
-            for ring, ringIndex in polygon
-              for coord, coordIndex in ring
-                continue if (coordIndex == 0) || (coordIndex == ring.length - 1)
-                ringMinusCoord = ring.filter (coordinate, index) ->
-                                   JSON.stringify(coordinate) == JSON.stringify(coord)
-                if ringMinusCoord.length > 1
-                  newCoords = coord.map (latlng) =>
-                                newLatlng = @roundCoord latlng, 10
-                                newLatlng += coordIndex * (10**-10)
-                  poly.geometry.coordinates[polyIndex][ringIndex][coordIndex] = newCoords
-                  pointChanged = true
-
-    polygonUnion = (poly1, poly2, index) =>
+    polygonUnion = (poly1, poly2) =>
       allCoordinates = []
       if poly1
-        for poly in [poly1]
-          switch poly.geometry.type
-            when 'Polygon'      then allCoordinates.push poly.geometry.coordinates
-            when 'MultiPolygon' then for coords in poly.geometry.coordinates
-                                     allCoordinates.push coords
+        switch poly1.geometry.type
+          when 'Polygon'      then allCoordinates.push poly1.geometry.coordinates
+          when 'MultiPolygon' then for coords in poly1.geometry.coordinates
+                                   allCoordinates.push coords
 
       uniqCoordinates = []
       for coords in allCoordinates
@@ -69,23 +55,18 @@ class L.Calculation
             roundedPoint = [@roundCoord(point[0]), @roundCoord(point[1])]
             uniqCoordinates.push point unless JSON.stringify(roundedUniqCoords).includes JSON.stringify(roundedPoint)
 
-      for poly in [poly2]
-        if poly.geometry.type == 'Polygon'
-          for points, pointsIndex in poly.geometry.coordinates
-            for point, pointIndex in points
-              for uniqCoord in uniqCoordinates
-                roundedPoint = [@roundCoord(point[0]), @roundCoord(point[1])]
-                roundedUniqCoord = [@roundCoord(uniqCoord[0]), @roundCoord(uniqCoord[1])]
-                poly.geometry.coordinates[pointsIndex][pointIndex] = uniqCoord if (JSON.stringify(roundedPoint) == JSON.stringify(roundedUniqCoord)) && (JSON.stringify(point) != JSON.stringify(uniqCoord))
+      poly2Coordinates = if poly2.geometry.type == 'Polygon'
+                           [poly2.geometry.coordinates]
+                         else if poly2.geometry.type == 'MultiPolygon'
+                           poly2.geometry.coordinates
 
-        else if poly.geometry.type == 'MultiPolygon'
-          for coords, coordsIndex in poly.geometry.coordinates
-            for points, pointsIndex in coords
-              for point, pointIndex in points
-                for uniqCoord in uniqCoordinates
-                  roundedPoint = [@roundCoord(point[0]), @roundCoord(point[1])]
-                  roundedUniqCoord = [@roundCoord(uniqCoord[0]), @roundCoord(uniqCoord[1])]
-                  poly.geometry.coordinates[coordsIndex][pointsIndex][pointIndex] = uniqCoord if (JSON.stringify(roundedPoint) == JSON.stringify(roundedUniqCoord)) && (JSON.stringify(point) != JSON.stringify(uniqCoord))
+      for coords, coordsIndex in poly2Coordinates
+        for points, pointsIndex in coords
+          for point, pointIndex in points
+            for uniqCoord in uniqCoordinates
+              roundedPoint = [@roundCoord(point[0]), @roundCoord(point[1])]
+              roundedUniqCoord = [@roundCoord(uniqCoord[0]), @roundCoord(uniqCoord[1])]
+              poly2Coordinates[coordsIndex][pointsIndex][pointIndex] = uniqCoord if (JSON.stringify(roundedPoint) == JSON.stringify(roundedUniqCoord)) && (JSON.stringify(point) != JSON.stringify(uniqCoord))
 
       return poly2 unless poly1
 
@@ -94,9 +75,8 @@ class L.Calculation
 
       turf.multiPolygon polygonClipping.union(poly1.geometry.coordinates, turfBuffer(poly2, 0.0001).geometry.coordinates)
 
-
     turfFeatures = polygons.map (polygon) ->
-          turf.feature(polygon)
+                     turf.feature(polygon)
     turfFeatures.reduce polygonUnion, false
 
   @findPrevPoint: (array, currentIndex) ->
