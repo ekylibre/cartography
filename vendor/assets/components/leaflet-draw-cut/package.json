@@ -21,6 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "ajv": "^6.5.2",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-preset-es2015": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",
@@ -48,6 +49,7 @@
     "@mapbox/polylabel": "^1.0.2",
     "@turf/area": "^6.0.1",
     "@turf/bearing": "^6.0.1",
+    "@turf/boolean-contains": "^6.0.1",
     "@turf/boolean-disjoint": "^6.0.2",
     "@turf/boolean-overlap": "^6.0.1",
     "@turf/boolean-point-on-line": "^5.1.5",

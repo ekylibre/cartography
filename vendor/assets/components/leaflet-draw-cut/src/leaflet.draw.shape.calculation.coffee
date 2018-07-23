@@ -7,10 +7,17 @@ turfTruncate = require('@turf/truncate').default
 turfBearing = require('@turf/bearing').default
 turfArea = require("@turf/area").default
 turfBuffer = require("@turf/buffer").default
+turfContains = require("@turf/boolean-contains").default
 polygonClipping = require("polygon-clipping")
 
 class L.Calculation
   @PRECISION: 6
+
+  @contains: (poly1, poly2) ->
+    # Might need a small buffer on poly1 since a common border would return false
+    poly1 = turf.feature poly1 unless poly1.type == 'Feature'
+    poly2 = turf.feature poly2 unless poly2.type == 'Feature'
+    turfContains poly1, poly2
 
   @roundCoord: (c, precision = @PRECISION) ->
     Math.floor(c * 10**precision) / 10**precision
