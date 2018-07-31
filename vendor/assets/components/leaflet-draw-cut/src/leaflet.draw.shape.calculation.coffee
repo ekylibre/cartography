@@ -173,7 +173,6 @@ class L.Calculation
           nextCoord = @findNextPoint ring, index
           roundedBearing1 = turf.bearingToAngle(turfBearing(coord, prevCoord))
           roundedBearing2 = turf.bearingToAngle(turfBearing(coord, nextCoord))
-          debugger
           angleDiff = 180 - Math.abs(Math.abs(roundedBearing1 - roundedBearing2) - 180)
 
           if angleDiff <= 0.05
