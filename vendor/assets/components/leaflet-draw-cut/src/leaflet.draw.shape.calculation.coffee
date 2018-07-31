@@ -8,10 +8,12 @@ turfBearing = require('@turf/bearing').default
 turfArea = require("@turf/area").default
 turfBuffer = require("@turf/buffer").default
 turfContains = require("@turf/boolean-contains").default
+turfIntersect = require("@turf/intersect").default
 polygonClipping = require("polygon-clipping")
 
 class L.Calculation
   @PRECISION: 6
+  @PERCENTAGE: 1
 
   @contains: (poly1, poly2) ->
     # Might need a small buffer on poly1 since a common border would return false
@@ -124,11 +126,15 @@ class L.Calculation
     if type == 'MultiPolygon'
 
       polys = polygon.geometry.coordinates.map (polyCoords) =>
-        poly = turf.polygon(polyCoords)
-        area = turfArea(poly)
-        return if area < 10**-@PRECISION
+        newPolyCoords = []
+        for polyCoord in polyCoords
+          poly = turf.polygon([polyCoord])
+          area = turfArea(poly)
+          continue if area < 10**-@PRECISION
+          newPolyCoords.push polyCoord
 
-        @cleanPolygon(poly).geometry.coordinates
+        newPoly = turf.polygon(newPolyCoords)
+        @cleanPolygon(newPoly).geometry.coordinates
 
       return turf.multiPolygon polys
 
@@ -181,5 +187,22 @@ class L.Calculation
     turf.polygon(poly)
 
   @difference: (feature1, feature2) ->
-    diffCoordinates = polygonClipping.difference(feature1.geometry.coordinates, feature2.geometry.coordinates)
-    @cleanPolygon turf.multiPolygon(diffCoordinates)
+    try
+      diffCoordinates = polygonClipping.difference(feature1.geometry.coordinates, feature2.geometry.coordinates)
+      @cleanPolygon turf.multiPolygon(diffCoordinates)
+    catch e
+      difference = turfDifference(feature1, feature2)
+      @cleanPolygon difference
+
+  @intersect: (feature1, feature2, percentage = @PERCENTAGE) ->
+    try
+      intersectionCoords = polygonClipping.intersection(feature1.coordinates, feature2.coordinates)
+      intersection = turf.multiPolygon(intersectionCoords)
+    catch e
+      feature1 = turf.feature feature1
+      feature2 = turf.feature feature2
+      intersection = turfIntersect(feature1, feature2)
+
+    poly1Area = turfArea feature1
+    intersectionArea = turfArea intersection
+    ((intersectionArea / poly1Area) * 100) >= percentage
