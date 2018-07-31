@@ -203,6 +203,7 @@ class L.Calculation
       feature2 = turf.feature feature2
       intersection = turfIntersect(feature1, feature2)
 
+    return false unless intersection
     poly1Area = turfArea feature1
     intersectionArea = turfArea intersection
     ((intersectionArea / poly1Area) * 100) >= percentage
