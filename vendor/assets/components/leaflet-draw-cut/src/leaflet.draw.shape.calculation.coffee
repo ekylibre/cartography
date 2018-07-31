@@ -8,10 +8,12 @@ turfBearing = require('@turf/bearing').default
 turfArea = require("@turf/area").default
 turfBuffer = require("@turf/buffer").default
 turfContains = require("@turf/boolean-contains").default
+turfIntersect = require("@turf/intersect").default
 polygonClipping = require("polygon-clipping")
 
 class L.Calculation
   @PRECISION: 6
+  @PERCENTAGE: 1
 
   @contains: (poly1, poly2) ->
     # Might need a small buffer on poly1 since a common border would return false
@@ -192,7 +194,15 @@ class L.Calculation
       difference = turfDifference(feature1, feature2)
       @cleanPolygon difference
 
+  @intersect: (feature1, feature2, percentage = @PERCENTAGE) ->
+    try
+      intersectionCoords = polygonClipping.intersection(feature1.coordinates, feature2.coordinates)
+      intersection = turf.multiPolygon(intersectionCoords)
+    catch e
+      feature1 = turf.feature feature1
+      feature2 = turf.feature feature2
+      intersection = turfIntersect(feature1, feature2)
 
-  @intersect: (feature1, feature2) ->
-    intersectionCoords = polygonClipping.intersection(feature1.geometry.coordinates, feature2.geometry.coordinates)
-    intersection = turf.multiPolygon(intersectionCoords)
+    poly1Area = turfArea feature1
+    intersectionArea = turfArea intersection
+    ((intersectionArea / poly1Area) * 100) >= percentage
