@@ -171,10 +171,11 @@ class L.Calculation
           coord = ring[index]
           prevCoord = @findPrevPoint ring, index
           nextCoord = @findNextPoint ring, index
-          roundedBearing1 = Math.floor(turfBearing(coord, prevCoord) * 100) / 100
-          roundedBearing2 = Math.floor(turfBearing(coord, nextCoord) * 100) / 100
+          roundedBearing1 = Math.floor(turf.bearingToAngle(turfBearing(coord, prevCoord)) * 100) / 100
+          roundedBearing2 = Math.floor(turf.bearingToAngle(turfBearing(coord, nextCoord)) * 100) / 100
+          angleDiff = Math.abs(roundedBearing1 - roundedBearing2)
 
-          if roundedBearing1 == roundedBearing2
+          if angleDiff <= 0.05
             ring.splice(index, 1)
             if index == 0
               ring.pop()
