@@ -124,11 +124,15 @@ class L.Calculation
     if type == 'MultiPolygon'
 
       polys = polygon.geometry.coordinates.map (polyCoords) =>
-        poly = turf.polygon(polyCoords)
-        area = turfArea(poly)
-        return if area < 10**-@PRECISION
+        newPolyCoords = []
+        for polyCoord in polyCoords
+          poly = turf.polygon([polyCoord])
+          area = turfArea(poly)
+          continue if area < 10**-@PRECISION
+          newPolyCoords.push polyCoord
 
-        @cleanPolygon(poly).geometry.coordinates
+        newPoly = turf.polygon(newPolyCoords)
+        @cleanPolygon(newPoly).geometry.coordinates
 
       return turf.multiPolygon polys
 
@@ -181,5 +185,14 @@ class L.Calculation
     turf.polygon(poly)
 
   @difference: (feature1, feature2) ->
-    diffCoordinates = polygonClipping.difference(feature1.geometry.coordinates, feature2.geometry.coordinates)
-    @cleanPolygon turf.multiPolygon(diffCoordinates)
+    try
+      diffCoordinates = polygonClipping.difference(feature1.geometry.coordinates, feature2.geometry.coordinates)
+      @cleanPolygon turf.multiPolygon(diffCoordinates)
+    catch e
+      difference = turfDifference(feature1, feature2)
+      @cleanPolygon difference
+
+
+  @intersect: (feature1, feature2) ->
+    intersectionCoords = polygonClipping.intersection(feature1.geometry.coordinates, feature2.geometry.coordinates)
+    intersection = turf.multiPolygon(intersectionCoords)
