@@ -13,6 +13,7 @@ polygonClipping = require("polygon-clipping")
 
 class L.Calculation
   @PRECISION: 6
+  @AREA_PRECISION: 2
   @PERCENTAGE: 1
 
   @contains: (poly1, poly2) ->
@@ -133,13 +134,15 @@ class L.Calculation
         for polyCoord in polyCoords
           poly = turf.polygon([polyCoord])
           area = turfArea(poly)
-          continue if area < 10**-@PRECISION
+          continue if area < 10**-@AREA_PRECISION
           newPolyCoords.push polyCoord
 
+        return unless newPolyCoords.length
         newPoly = turf.polygon(newPolyCoords)
         @cleanPolygon(newPoly).geometry.coordinates
 
-      return turf.multiPolygon polys
+      return turf.multiPolygon polys.filter (e) ->
+        e
 
     poly = polygon.geometry.coordinates.map (ring) =>
       pointRemoved = true
@@ -149,7 +152,7 @@ class L.Calculation
         pointRemoved = false
 
         index = 0
-        while index < ring.length
+        while index < ring.length && ring.length > 4
           coord = ring[index]
           nextCoord = ring[index + 1]
           break unless nextCoord
@@ -170,7 +173,7 @@ class L.Calculation
 
         index = 0
 
-        while index < ring.length
+        while index < ring.length && ring.length > 4
           coord = ring[index]
           prevCoord = @findPrevPoint ring, index
           nextCoord = @findNextPoint ring, index
