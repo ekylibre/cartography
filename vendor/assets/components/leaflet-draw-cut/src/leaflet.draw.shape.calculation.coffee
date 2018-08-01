@@ -82,7 +82,10 @@ class L.Calculation
       for poly in [poly1, poly2]
         adjustPoints(poly)
 
-      turf.multiPolygon polygonClipping.union(poly1.geometry.coordinates, turfBuffer(poly2, 0.0001).geometry.coordinates)
+      try
+        turf.multiPolygon polygonClipping.union(poly1.geometry.coordinates, turfBuffer(poly2, 0.0001).geometry.coordinates)
+      catch e
+        turfUnion(poly1, turfBuffer(poly2, 0.0001))
 
     turfFeatures = polygons.map (polygon) ->
                      turf.feature(polygon)
