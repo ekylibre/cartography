@@ -14,7 +14,7 @@ polygonClipping = require("polygon-clipping")
 class L.Calculation
   @PRECISION: 6
   @AREA_PRECISION: 2
-  @PERCENTAGE: 1
+  @PERCENTAGE: 0.5
 
   @contains: (poly1, poly2) ->
     # Might need a small buffer on poly1 since a common border would return false
@@ -152,7 +152,7 @@ class L.Calculation
         pointRemoved = false
 
         index = 0
-        while index < ring.length && ring.length > 4
+        while index < ring.length
           coord = ring[index]
           nextCoord = ring[index + 1]
           break unless nextCoord
@@ -168,12 +168,14 @@ class L.Calculation
               ring.pop()
               ring.unshift ring[..].pop()
             pointRemoved = true
+            ring = ring.filter (e) ->
+                     e
           else
             index += 1
 
         index = 0
 
-        while index < ring.length && ring.length > 4
+        while index < ring.length
           coord = ring[index]
           prevCoord = @findPrevPoint ring, index
           nextCoord = @findNextPoint ring, index
@@ -187,19 +189,24 @@ class L.Calculation
               ring.pop()
               ring.unshift ring[..].pop()
             pointRemoved = true
+            ring = ring.filter (e) ->
+                     e
           else
             index += 1
 
-      ring
-    turf.polygon(poly)
+      if ring.length then ring else undefined
+
+    poly = poly.filter (e) ->
+             e
+    if poly.length then turf.polygon(poly) else null
 
   @difference: (feature1, feature2) ->
     try
       diffCoordinates = polygonClipping.difference(feature1.geometry.coordinates, feature2.geometry.coordinates)
-      @cleanPolygon turf.multiPolygon(diffCoordinates)
+      if diffCoordinates.length then @cleanPolygon turf.multiPolygon(diffCoordinates) else null
     catch e
       difference = turfDifference(feature1, feature2)
-      @cleanPolygon difference
+      if difference then @cleanPolygon difference else null
 
   @intersect: (feature1, feature2, percentage = @PERCENTAGE) ->
     try
