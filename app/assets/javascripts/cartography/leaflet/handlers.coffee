@@ -307,12 +307,8 @@
         L.Util.extend @snapOptions, @options.snapOptions
       return
 
-    enable: ->
-      @featureGroup.on 'layeradd', @_enableLayer, @
-      @featureGroup.on 'layerremove', @_disableLayer, @
-
-      @featureGroup.eachLayer (l) =>
-        @_enableLayer(l)
+    enable: (layer) ->
+      @_enableLayer layer
 
       @_map.on L.SnapEditing.Event.SELECT, @_editMode, @
 
