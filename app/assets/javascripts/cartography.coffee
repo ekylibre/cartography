@@ -435,7 +435,7 @@
           selectedPathOptions: options.edit.selectedPathOptions
           disabledPathOptions: options.edit.disabledPathOptions
           poly: options.poly
-        layer._editToolbar.enable()
+        layer._editToolbar.enable layer
         layer._editToolbar._activate layer
 
     union: (polygons) ->
