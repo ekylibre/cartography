@@ -381,6 +381,14 @@
         opacity: 1
         fillOpacity: 0.4
         maintainColor: false
+      editablePathOptions:
+        dashArray: null
+        fill: true
+        color: '#1195F5'
+        fillColor: '#1195F5'
+        opacity: 1
+        fillOpacity: 0.35
+        maintainColor: false
       selectedPathOptions:
         dashArray: null
         fill: true
