@@ -215,16 +215,6 @@ class L.Cut.Polyline extends L.Handler
 
       layer.options.disabled = pathOptions
 
-    if @options.editablePathOptions
-      pathOptions = L.Util.extend {}, @options.editablePathOptions
-
-      # Use the existing color of the layer
-      if pathOptions.maintainColor
-        pathOptions.color = layer.options.color
-        pathOptions.fillColor = layer.options.fillColor
-
-      layer.options.editable = pathOptions
-
     if @options.selectedPathOptions
       pathOptions = L.Util.extend {}, @options.selectedPathOptions
 
@@ -237,7 +227,7 @@ class L.Cut.Polyline extends L.Handler
 
       layer.options.selected = pathOptions
 
-    layer.setStyle layer.options.editable
+    layer.setStyle layer.options.disabled
 
     unless @_activeLayer
       layer.on 'click', @_selectLayer, @
@@ -264,7 +254,7 @@ class L.Cut.Polyline extends L.Handler
     layer = e.layer or e.target or e
     layer.selected = false
     if @options.selectedPathOptions
-      layer.setStyle layer.options.editable
+      layer.setStyle layer.options.disabled
 
     if layer.cutting
       layer.cutting.disable()
@@ -285,7 +275,6 @@ class L.Cut.Polyline extends L.Handler
 
     delete layer.options.disabled
     delete layer.options.selected
-    delete layer.options.editable
     delete layer.options.original
 
   _activate: (e) ->
@@ -293,8 +282,6 @@ class L.Cut.Polyline extends L.Handler
 
     if !layer.selected
       layer.selected = true
-      @_availableLayers.eachLayer (layer) ->
-        layer.setStyle layer.options.disabled
       layer.setStyle layer.options.selected
       if @_activeLayer
         @_unselectLayer @_activeLayer
@@ -304,7 +291,7 @@ class L.Cut.Polyline extends L.Handler
       @_map.fire L.Cutting.Polyline.Event.SELECT, layer: @_activeLayer
     else
       layer.selected = false
-      layer.setStyle(layer.options.editable)
+      layer.setStyle(layer.options.disabled)
 
       @_activeLayer.cutting.disable()
       delete @_activeLayer.cutting
