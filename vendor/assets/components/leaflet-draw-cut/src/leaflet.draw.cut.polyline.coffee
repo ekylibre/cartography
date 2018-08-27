@@ -167,16 +167,11 @@ class L.Cut.Polyline extends L.Handler
         for l in addList
           named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name && l.feature && l.feature.properties && l.feature.properties.name
 
-          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name && @_activeLayer._map?)
+          unless (!named && @_availableLayers.hasUUIDLayer l) || (named && @_activeLayer.feature.properties.name == l.feature.properties.name)
             geojson = l.toGeoJSON(17)
             geojson.properties.color = l.options.color
             @_availableLayers.addData(geojson)
 
-          if (named && @_activeLayer.feature.properties.name == l.feature.properties.name && !@_activeLayer._map?)
-            for layer in @_availableLayers.getLayers()
-              if @_activeLayer.feature.properties.name == layer.feature.properties.name
-                @_activeLayer = layer
-                break
     else
       @_availableLayers = @_featureGroup
 
@@ -242,17 +237,10 @@ class L.Cut.Polyline extends L.Handler
 
       layer.options.selected = pathOptions
 
-    layer.setStyle layer.options.disabled
+    layer.setStyle layer.options.editable
 
-    unless @_activeLayer && @_activeLayer._map?
-      layer.setStyle layer.options.editable
+    unless @_activeLayer
       layer.on 'click', @_selectLayer, @
-
-    activated = layer && layer.feature && layer.feature.properties && layer.feature.properties.name
-    named = @_activeLayer && @_activeLayer.feature && @_activeLayer.feature.properties && @_activeLayer.feature.properties.name
-
-    if @_activeLayer && !@_activeLayer._map? && activated && named
-      layer.fire 'click'
 
   activate: (layerId) ->
     activateLayer = undefined
