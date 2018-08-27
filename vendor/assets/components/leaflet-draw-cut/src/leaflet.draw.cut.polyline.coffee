@@ -215,6 +215,16 @@ class L.Cut.Polyline extends L.Handler
 
       layer.options.disabled = pathOptions
 
+    if @options.editablePathOptions
+      pathOptions = L.Util.extend {}, @options.editablePathOptions
+
+      # Use the existing color of the layer
+      if pathOptions.maintainColor
+        pathOptions.color = layer.options.color
+        pathOptions.fillColor = layer.options.fillColor
+
+      layer.options.editable = pathOptions
+
     if @options.selectedPathOptions
       pathOptions = L.Util.extend {}, @options.selectedPathOptions
 
@@ -230,6 +240,7 @@ class L.Cut.Polyline extends L.Handler
     layer.setStyle layer.options.disabled
 
     unless @_activeLayer
+      layer.setStyle layer.options.editable
       layer.on 'click', @_selectLayer, @
 
   activate: (layerId) ->
@@ -282,6 +293,8 @@ class L.Cut.Polyline extends L.Handler
 
     if !layer.selected
       layer.selected = true
+      @_availableLayers.eachLayer (layer) ->
+        layer.setStyle layer.options.disabled
       layer.setStyle layer.options.selected
       if @_activeLayer
         @_unselectLayer @_activeLayer
