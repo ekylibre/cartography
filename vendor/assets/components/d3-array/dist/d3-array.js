@@ -1,15 +1,15 @@
-// https://d3js.org/d3-array/ Version 1.2.1. Copyright 2017 Mike Bostock.
+// https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.d3 = global.d3 || {})));
+typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+typeof define === 'function' && define.amd ? define(['exports'], factory) :
+(factory((global.d3 = global.d3 || {})));
 }(this, (function (exports) { 'use strict';
 
-var ascending = function(a, b) {
+function ascending(a, b) {
   return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
-};
+}
 
-var bisector = function(compare) {
+function bisector(compare) {
   if (compare.length === 1) compare = ascendingComparator(compare);
   return {
     left: function(a, x, lo, hi) {
@@ -33,7 +33,7 @@ var bisector = function(compare) {
       return lo;
     }
   };
-};
+}
 
 function ascendingComparator(f) {
   return function(d, x) {
@@ -45,18 +45,18 @@ var ascendingBisect = bisector(ascending);
 var bisectRight = ascendingBisect.right;
 var bisectLeft = ascendingBisect.left;
 
-var pairs = function(array, f) {
+function pairs(array, f) {
   if (f == null) f = pair;
   var i = 0, n = array.length - 1, p = array[0], pairs = new Array(n < 0 ? 0 : n);
   while (i < n) pairs[i] = f(p, p = array[++i]);
   return pairs;
-};
+}
 
 function pair(a, b) {
   return [a, b];
 }
 
-var cross = function(values0, values1, reduce) {
+function cross(values0, values1, reduce) {
   var n0 = values0.length,
       n1 = values1.length,
       values = new Array(n0 * n1),
@@ -74,17 +74,17 @@ var cross = function(values0, values1, reduce) {
   }
 
   return values;
-};
+}
 
-var descending = function(a, b) {
+function descending(a, b) {
   return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
-};
+}
 
-var number = function(x) {
+function number(x) {
   return x === null ? NaN : +x;
-};
+}
 
-var variance = function(values, valueof) {
+function variance(values, valueof) {
   var n = values.length,
       m = 0,
       i = -1,
@@ -114,14 +114,14 @@ var variance = function(values, valueof) {
   }
 
   if (m > 1) return sum / (m - 1);
-};
+}
 
-var deviation = function(array, f) {
+function deviation(array, f) {
   var v = variance(array, f);
   return v ? Math.sqrt(v) : v;
-};
+}
 
-var extent = function(values, valueof) {
+function extent(values, valueof) {
   var n = values.length,
       i = -1,
       value,
@@ -157,24 +157,24 @@ var extent = function(values, valueof) {
   }
 
   return [min, max];
-};
+}
 
 var array = Array.prototype;
 
 var slice = array.slice;
 var map = array.map;
 
-var constant = function(x) {
+function constant(x) {
   return function() {
     return x;
   };
-};
+}
 
-var identity = function(x) {
+function identity(x) {
   return x;
-};
+}
 
-var range = function(start, stop, step) {
+function range(start, stop, step) {
   start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
 
   var i = -1,
@@ -186,13 +186,13 @@ var range = function(start, stop, step) {
   }
 
   return range;
-};
+}
 
-var e10 = Math.sqrt(50);
-var e5 = Math.sqrt(10);
-var e2 = Math.sqrt(2);
+var e10 = Math.sqrt(50),
+    e5 = Math.sqrt(10),
+    e2 = Math.sqrt(2);
 
-var ticks = function(start, stop, count) {
+function ticks(start, stop, count) {
   var reverse,
       i = -1,
       n,
@@ -219,7 +219,7 @@ var ticks = function(start, stop, count) {
   if (reverse) ticks.reverse();
 
   return ticks;
-};
+}
 
 function tickIncrement(start, stop, count) {
   var step = (stop - start) / Math.max(0, count),
@@ -240,11 +240,11 @@ function tickStep(start, stop, count) {
   return stop < start ? -step1 : step1;
 }
 
-var sturges = function(values) {
+function sturges(values) {
   return Math.ceil(Math.log(values.length) / Math.LN2) + 1;
-};
+}
 
-var histogram = function() {
+function histogram() {
   var value = identity,
       domain = extent,
       threshold = sturges;
@@ -267,7 +267,7 @@ var histogram = function() {
     // Convert number of thresholds into uniform thresholds.
     if (!Array.isArray(tz)) {
       tz = tickStep(x0, x1, tz);
-      tz = range(Math.ceil(x0 / tz) * tz, Math.floor(x1 / tz) * tz, tz); // exclusive
+      tz = range(Math.ceil(x0 / tz) * tz, x1, tz); // exclusive
     }
 
     // Remove any thresholds outside the domain.
@@ -309,9 +309,9 @@ var histogram = function() {
   };
 
   return histogram;
-};
+}
 
-var quantile = function(values, p, valueof) {
+function quantile(values, p, valueof) {
   if (valueof == null) valueof = number;
   if (!(n = values.length)) return;
   if ((p = +p) <= 0 || n < 2) return +valueof(values[0], 0, values);
@@ -322,18 +322,18 @@ var quantile = function(values, p, valueof) {
       value0 = +valueof(values[i0], i0, values),
       value1 = +valueof(values[i0 + 1], i0 + 1, values);
   return value0 + (value1 - value0) * (i - i0);
-};
+}
 
-var freedmanDiaconis = function(values, min, max) {
+function freedmanDiaconis(values, min, max) {
   values = map.call(values, number).sort(ascending);
   return Math.ceil((max - min) / (2 * (quantile(values, 0.75) - quantile(values, 0.25)) * Math.pow(values.length, -1 / 3)));
-};
+}
 
-var scott = function(values, min, max) {
+function scott(values, min, max) {
   return Math.ceil((max - min) / (3.5 * deviation(values) * Math.pow(values.length, -1 / 3)));
-};
+}
 
-var max = function(values, valueof) {
+function max(values, valueof) {
   var n = values.length,
       i = -1,
       value,
@@ -366,9 +366,9 @@ var max = function(values, valueof) {
   }
 
   return max;
-};
+}
 
-var mean = function(values, valueof) {
+function mean(values, valueof) {
   var n = values.length,
       m = n,
       i = -1,
@@ -390,9 +390,9 @@ var mean = function(values, valueof) {
   }
 
   if (m) return sum / m;
-};
+}
 
-var median = function(values, valueof) {
+function median(values, valueof) {
   var n = values.length,
       i = -1,
       value,
@@ -415,9 +415,9 @@ var median = function(values, valueof) {
   }
 
   return quantile(numbers.sort(ascending), 0.5);
-};
+}
 
-var merge = function(arrays) {
+function merge(arrays) {
   var n = arrays.length,
       m,
       i = -1,
@@ -437,9 +437,9 @@ var merge = function(arrays) {
   }
 
   return merged;
-};
+}
 
-var min = function(values, valueof) {
+function min(values, valueof) {
   var n = values.length,
       i = -1,
       value,
@@ -472,15 +472,15 @@ var min = function(values, valueof) {
   }
 
   return min;
-};
+}
 
-var permute = function(array, indexes) {
+function permute(array, indexes) {
   var i = indexes.length, permutes = new Array(i);
   while (i--) permutes[i] = array[indexes[i]];
   return permutes;
-};
+}
 
-var scan = function(values, compare) {
+function scan(values, compare) {
   if (!(n = values.length)) return;
   var n,
       i = 0,
@@ -497,9 +497,9 @@ var scan = function(values, compare) {
   }
 
   if (compare(xj, xj) === 0) return j;
-};
+}
 
-var shuffle = function(array, i0, i1) {
+function shuffle(array, i0, i1) {
   var m = (i1 == null ? array.length : i1) - (i0 = i0 == null ? 0 : +i0),
       t,
       i;
@@ -512,9 +512,9 @@ var shuffle = function(array, i0, i1) {
   }
 
   return array;
-};
+}
 
-var sum = function(values, valueof) {
+function sum(values, valueof) {
   var n = values.length,
       i = -1,
       value,
@@ -533,9 +533,9 @@ var sum = function(values, valueof) {
   }
 
   return sum;
-};
+}
 
-var transpose = function(matrix) {
+function transpose(matrix) {
   if (!(n = matrix.length)) return [];
   for (var i = -1, m = min(matrix, length), transpose = new Array(m); ++i < m;) {
     for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
@@ -543,15 +543,15 @@ var transpose = function(matrix) {
     }
   }
   return transpose;
-};
+}
 
 function length(d) {
   return d.length;
 }
 
-var zip = function() {
+function zip() {
   return transpose(arguments);
-};
+}
 
 exports.bisect = bisectRight;
 exports.bisectRight = bisectRight;
