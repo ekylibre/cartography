@@ -458,4 +458,62 @@
       return
 
 
+  class L.LayerImageOverlay extends L.Handler
+    @TYPE: 'LayerImageOverlay'
+
+    constructor: (map, options) ->
+      @type = @constructor.TYPE
+      @_map = map
+      super map
+      C.Util.setOptions @, options
+
+      @_layerGroup = new L.LayerGroup
+      @_featureGroup = @options.featureGroup
+
+      if !(@_featureGroup instanceof L.FeatureGroup)
+        throw new Error('options.featureGroup must be a L.FeatureGroup')
+
+    enable: ->
+      if @_enabled
+        return
+
+      @_layerGroup.addTo(@_map)
+
+      super
+
+      @_featureGroup.on 'layeradd', @_enableLayerImageOverlay, @
+      @_featureGroup.on 'layerremove', @_disableLayerImageOverlay, @
+      return
+
+    disable: ->
+      if !@_enabled
+        return
+
+      @_layerGroup.eachLayer (l) =>
+        @_map.removeLayer l
+
+
+      @_featureGroup.off 'layeradd', @_enableLayerImageOverlay, @
+      @_featureGroup.off 'layerremove', @_disableLayerImageOverlay, @
+
+      super
+
+      return
+
+    addHooks: ->
+      @_featureGroup.eachLayer @_enableLayerImageOverlay, @
+
+    removeHooks: ->
+      @_featureGroup.eachLayer @_disableLayerImageOverlay, @
+
+    _enableLayerImageOverlay: (e) ->
+      layer = e.layer or e.target or e
+      layer.imageOverlay = L.imageOverlay('https://i2.wp.com/www.opnminded.com/wp-content/uploads/2013/10/coupe-mulet-enfant.jpg?resize=416%2C416&ssl=1', layer.getBounds()).addTo(@_layerGroup)
+
+    _disableLayerImageOverlay: (e) ->
+      layer = e.layer or e.target or e
+      @_layerGroup.removeLayer layer.imageOverlay
+      delete layer.imageOverlay
+
+
 )(window.Cartography = window.Cartography || {})

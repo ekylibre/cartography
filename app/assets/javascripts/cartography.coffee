@@ -39,6 +39,7 @@
         zoom: true
         home: true
         scale: true
+        imageOverlay: false
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -261,6 +262,11 @@
       , =>
         @controls.get('shape_cut').getControl().enable()
 
+      @controls.register 'image_overlay', false, =>
+        new C.Controls.LayerImageOverlay(@getMap(), { layerImageOverlay: { featureGroup: @getFeatureGroup(name: 'crops') } })
+      , =>
+        @controls.get('image_overlay').getControl().enable()
+
       if @options.controls.layers
         @controls.add 'layers'
 
@@ -287,6 +293,9 @@
 
       if @options.controls.cut
         @controls.add 'cut'
+
+      if @options.controls.imageOverlay
+        @controls.add 'image_overlay'
 
       style = (feature) ->
         feature.properties.style ||= {}

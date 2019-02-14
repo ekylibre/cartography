@@ -417,4 +417,23 @@
     disable: ->
       @_handler.disable()
 
+
+  class L.Control.LayerImageOverlay extends L.Control
+    @_toolbar: {}
+
+    options:
+      featureGroup: undefined
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.LayerImageOverlay map, featureGroup: @options.featureGroup
+
+      return
+
+    enable: ->
+      @_handler.enable()
+
+
 )(window.Cartography = window.Cartography || {})

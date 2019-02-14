@@ -460,4 +460,20 @@
     getControl: ->
       @control
 
+
+  class C.Controls.LayerImageOverlay extends C.Controls
+    options:
+      layerImageOverlay:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.LayerImageOverlay(map, @options.layerImageOverlay)
+
+    getControl: ->
+      @control
+
 )(window.Cartography = window.Cartography || {}, jQuery)
