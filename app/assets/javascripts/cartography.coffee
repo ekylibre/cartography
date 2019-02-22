@@ -463,9 +463,7 @@
       L.Calculation.intersect feature1, feature2
 
     sync: (data, layerName, options = {}) =>
-
       layerGroup =  @controls.get('overlays').getLayers()[layerName]
-
       newLayers = new L.geoJSON()
 
       onAdd = (e) =>

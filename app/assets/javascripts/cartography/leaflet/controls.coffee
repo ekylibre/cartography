@@ -435,5 +435,8 @@
     enable: ->
       @_handler.enable()
 
+    getLayerGroup: ->
+      @_handler.getLayerGroup()
+
 
 )(window.Cartography = window.Cartography || {})

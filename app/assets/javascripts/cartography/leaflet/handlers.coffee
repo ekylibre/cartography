@@ -461,12 +461,18 @@
   class L.LayerImageOverlay extends L.Handler
     @TYPE: 'LayerImageOverlay'
 
+    options:
+      imageOverlayOptions:
+        opacity: 1
+        interactive: false       #If true, the image overlay will emit mouse events when clicked or hovered.
+        zIndex: 1
+        className: ''
+
     constructor: (map, options) ->
       @type = @constructor.TYPE
       @_map = map
       super map
       C.Util.setOptions @, options
-
       @_layerGroup = new L.LayerGroup
       @_featureGroup = @options.featureGroup
 
@@ -481,8 +487,8 @@
 
       super
 
-      @_featureGroup.on 'layeradd', @_enableLayerImageOverlay, @
-      @_featureGroup.on 'layerremove', @_disableLayerImageOverlay, @
+      @_featureGroup.on 'layeradd', @_bindLayerImageOverlay, @
+      @_featureGroup.on 'layerremove', @_unBindLayerImageOverlay, @
       return
 
     disable: ->
@@ -493,8 +499,8 @@
         @_map.removeLayer l
 
 
-      @_featureGroup.off 'layeradd', @_enableLayerImageOverlay, @
-      @_featureGroup.off 'layerremove', @_disableLayerImageOverlay, @
+      @_featureGroup.off 'layeradd', @_bindLayerImageOverlay, @
+      @_featureGroup.off 'layerremove', @_unBindLayerImageOverlay, @
 
       super
 
@@ -506,12 +512,27 @@
     removeHooks: ->
       @_featureGroup.eachLayer @_disableLayerImageOverlay, @
 
+    getLayerGroup: ->
+      @_layerGroup
+
+    _bindLayerImageOverlay: (e) ->
+      layer = e.layer or e.target or e
+      layer.on 'layerImageOverlay', @_enableLayerImageOverlay, @
+
+    _unBindLayerImageOverlay: (e) ->
+      layer = e.layer or e.target or e
+      layer.off 'layerImageOverlay', @_enableLayerImageOverlay, @
+      @_disableLayerImageOverlay layer
+
     _enableLayerImageOverlay: (e) ->
       layer = e.layer or e.target or e
-      layer.imageOverlay = L.imageOverlay('https://i2.wp.com/www.opnminded.com/wp-content/uploads/2013/10/coupe-mulet-enfant.jpg?resize=416%2C416&ssl=1', layer.getBounds()).addTo(@_layerGroup)
+      dataPoints = layer.feature.properties.dataPoints
+      return unless dataPoints.length > 0
+      layer.imageOverlay = L.imageOverlay('', layer.getBounds(), @options.imageOverlayOptions).addTo(@_layerGroup)
 
     _disableLayerImageOverlay: (e) ->
       layer = e.layer or e.target or e
+      return unless layer.imageOverlay
       @_layerGroup.removeLayer layer.imageOverlay
       delete layer.imageOverlay
 
