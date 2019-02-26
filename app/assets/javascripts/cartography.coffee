@@ -40,6 +40,7 @@
         home: true
         scale: true
         imageOverlay: false
+        titleDisplay: true
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -267,6 +268,11 @@
       , =>
         @controls.get('image_overlay').getControl().enable()
 
+      @controls.register 'tile_layer', false, =>
+        new C.Controls.TileLayerDisplay(@getMap(), { tileLayerDisplay: { featureGroup: @getFeatureGroup(name: 'crops') } })
+      , =>
+        @controls.get('tile_layer').getControl().enable()
+
       if @options.controls.layers
         @controls.add 'layers'
 
@@ -296,6 +302,9 @@
 
       if @options.controls.imageOverlay
         @controls.add 'image_overlay'
+
+      if @options.controls.tileLayer
+        @controls.add 'tile_layer'
 
       style = (feature) ->
         feature.properties.style ||= {}

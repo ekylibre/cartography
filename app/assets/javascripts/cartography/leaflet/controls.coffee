@@ -439,4 +439,25 @@
       @_handler.getLayerGroup()
 
 
+  class L.Control.TileLayerDisplay extends L.Control
+    @_toolbar: {}
+
+    options:
+      featureGroup: undefined
+
+    constructor: (map, options) ->
+      C.Util.setOptions @, options
+      super options
+
+      @_handler = new L.TileLayerDisplay map, featureGroup: @options.featureGroup
+
+      return
+
+    enable: ->
+      @_handler.enable()
+
+    getLayerGroup: ->
+      @_handler.getLayerGroup()
+
+
 )(window.Cartography = window.Cartography || {})

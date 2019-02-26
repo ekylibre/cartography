@@ -476,4 +476,21 @@
     getControl: ->
       @control
 
+
+  class C.Controls.TileLayerDisplay extends C.Controls
+    options:
+      tileLayerDisplay:
+        tms: true
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.TileLayerDisplay(map, @options.tileLayerDisplay)
+
+    getControl: ->
+      @control
+
 )(window.Cartography = window.Cartography || {}, jQuery)

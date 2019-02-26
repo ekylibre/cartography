@@ -457,6 +457,83 @@
         return
       return
 
+  class L.TileLayerDisplay extends L.Handler
+    @TYPE: 'TileLayerDisplay'
+
+    options:
+      tileLayerOptions:
+        opacity: 1
+        zIndex: 1
+        className: ''
+        tms: true
+
+    constructor: (map, options) ->
+      @type = @constructor.TYPE
+      @_map = map
+      super map
+      C.Util.setOptions @, options
+      @_layerGroup = new L.LayerGroup
+      @_featureGroup = @options.featureGroup
+
+      if !(@_featureGroup instanceof L.FeatureGroup)
+        throw new Error('options.featureGroup must be a L.FeatureGroup')
+
+    enable: ->
+      if @_enabled
+        return
+
+      @_layerGroup.addTo(@_map)
+
+      super
+
+      @_featureGroup.on 'layeradd', @_bindTileLayerDisplay, @
+      @_featureGroup.on 'layerremove', @_unBindTileLayerDisplay, @
+      return
+
+    disable: ->
+      if !@_enabled
+        return
+
+      @_layerGroup.eachLayer (l) =>
+        @_map.removeLayer l
+
+
+      @_featureGroup.off 'layeradd', @_bindTileLayerDisplay, @
+      @_featureGroup.off 'layerremove', @_unTileLayerDisplay, @
+
+      super
+
+      return
+
+    addHooks: ->
+      @_featureGroup.eachLayer @_enableTileLayerDisplay, @
+
+    removeHooks: ->
+      @_featureGroup.eachLayer @_disableTileLayerDisplay, @
+
+    getLayerGroup: ->
+      @_layerGroup
+
+    _bindTileLayerDisplay: (e) ->
+      layer = e.layer or e.target or e
+      layer.on 'tileLayerDisplay', @_enableTileLayerDisplay, @
+
+    _unBindTileLayerDisplay: (e) ->
+      layer = e.layer or e.target or e
+      layer.off 'tileLayerDisplay', @_enableTileLayerDisplay, @
+      @_disableTileLayerDisplay layer
+
+    _enableTileLayerDisplay: (e) ->
+      layer = e.layer or e.target or e
+      dataPoints = layer.feature.properties.dataPoints
+      return unless dataPoints.length > 0
+      layer.tileLayer = L.tileLayer('', C.Util.extend(layer.getBounds(), @options.tileLayerOptions)).addTo(@_layerGroup)
+
+    _disableTileLayerDisplay: (e) ->
+      layer = e.layer or e.target or e
+      return unless layer.tileLayer
+      @_layerGroup.removeLayer layer.tileLayer
+      delete layer.tileLayer
 
   class L.LayerImageOverlay extends L.Handler
     @TYPE: 'LayerImageOverlay'
