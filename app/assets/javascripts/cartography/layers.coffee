@@ -36,13 +36,26 @@
       layers = [layers] unless layers.constructor.name is "Array"
 
       newLayers = {}
+      providers = L.TileLayer.Provider.providers
 
       for layer in layers
-        if layer.constructor.name is "Array"
-          newLayers[layer] = L.tileLayer.provider(layer[0], layer[1])
-        else
+        layerName = layer[0] || layer[1].name
+        unless layer.constructor.name is "Array"
           newLayers[layer] = L.tileLayer.provider(layer)
+          break
 
+        unless layer[0]
+          newLayers[layerName] = L.tileLayer(layer[1].url)
+          break
+
+        parts = layer[0].split('.')
+        providerName = parts[0]
+        variantName = parts[1]
+        if providers[providerName]
+          newLayers[layerName] = L.tileLayer.provider(layer[0], layer[1])
+        else
+          newLayers[layerName] = L.tileLayer(layer[1].url, layer[1])
+                
       L.Util.extend(@layers, newLayers)
       newLayers
 
