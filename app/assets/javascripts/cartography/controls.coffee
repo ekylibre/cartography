@@ -87,10 +87,6 @@
   class C.Controls.BaseLayers extends C.Controls.Layers
     options:
       backgrounds: [
-        'Esri.WorldImagery'
-        'OpenStreetMap.Mapnik',
-        'OpenStreetMap.HOT',
-        'Thunderforest.Landscape',
       ]
 
     constructor: ( control, map, options = {} )->
@@ -143,7 +139,8 @@
           newLayers = @references.add(layers, type)
 
           for name, layer of newLayers
-            @getControl().addOverlay(layer, name)
+            layerLabel = layer.renderedLayer.layer.label || name
+            @getControl().addOverlay(layer, layerLabel)
         else
           @references.updateSerie(@references.getLayers()[properties.name], series[properties.name])
 
