@@ -14,7 +14,7 @@
         @_toolbar = new L.HomeToolbar @options
 
     onAdd: (map) ->
-      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
+      container = L.DomUtil.create('div', 'leaflet-draw')
       topClassName = 'leaflet-draw-toolbar-top'
       toolbarContainer = @_toolbar.addToolbar(map)
       if toolbarContainer
@@ -150,7 +150,7 @@
         new L.Control.ControlPanel.Cut @_toolbar, @options.panel
 
     onAdd: (map) ->
-      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
+      container = L.DomUtil.create('div', 'leaflet-draw')
       topClassName = 'leaflet-draw-toolbar-top'
       toolbarContainer = @_toolbar.addToolbar(map)
       if toolbarContainer
