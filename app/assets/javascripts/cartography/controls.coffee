@@ -457,4 +457,27 @@
     getControl: ->
       @control
 
+  class C.Controls.EditPolygonSides extends C.Controls
+    options:
+      cut:
+        featureGroup: undefined
+
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+
+      @control = new L.Control.OffsetPolygon(@options.cut)
+
+      @initHooks()
+
+    initHooks: ->
+      # @getMap().on "draw:editstart", (e) =>
+
+    getControl: ->
+      @control
+
+    getToolbar: ->
+      @control._toolbar
+
 )(window.Cartography = window.Cartography || {}, jQuery)

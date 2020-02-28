@@ -447,4 +447,136 @@
 
       button.setAttribute 'title', title
 
+  class L.OffsetPolygonToolbar extends L.Toolbar
+    @TYPE: 'offsetPolygon'
+
+    options:
+      position: 'topleft'
+      featureGroup: undefined
+      # color: "#A40"
+      className:"hello"
+      disabledPathOptions:
+        dashArray: null
+        fill: true
+        color: '#263238'
+        fillColor: '#263238'
+        opacity: 1
+        fillOpacity: 0.4
+        maintainColor: false
+      selectedPathOptions:
+        dashArray: null
+        fill: true
+        fillColor: '#fe57a1'
+        opacity: 1
+        fillOpacity: 1
+        maintainColor: true
+        weight: 3
+      cuttingPathOptions:
+        color: '#FF6226'
+        className: 'leaflet-polygon-splitter'
+        #dashArray: '10, 10'
+        #fill: true
+        # color: '#3f51b5'
+        # fillOpacity: 0.9
+        #maintainColor: true
+      #snap:
+        #guideLayers: []
+        #snapDistance: 30
+        #allowIntersection: false
+        #guidelineDistance: 8
+        #shapeOptions:
+          #dashArray: '8, 8'
+          #fill: false
+          #color: '#FF5722'
+          #opacity: 1
+
+    constructor: (options = {}) ->
+      C.Util.setOptions @, options
+      @type = @constructor.TYPE
+      @_toolbarClass = 'leaflet-toolbar'
+
+      super @options
+      this
+
+    #Get mode handlers information
+    getModeHandlers: (map) ->
+      [
+        {
+          enabled: true
+          handler: new L.Edit.OffsetPolygon map, @options
+
+          title: "Editer les tournières"
+        }
+      ]
+
+    #Get actions information
+    getActions: (handler) ->
+      [
+        {
+          type: "handlerAction"
+          title: L.drawLocal.split.toolbar.actions.save.title
+          text: L.drawLocal.split.toolbar.actions.save.text
+          callback: @_save
+          context: @
+        },
+        {
+          type: "handlerAction"
+          title: L.drawLocal.split.toolbar.actions.cancel.title
+          text: L.drawLocal.split.toolbar.actions.cancel.text
+          callback: @disable
+          context: @
+        },
+        {
+          type: "handlerFormAction"
+          title: "update"
+          text:  "update"
+          callback: @_updateSegmentsOffset
+          context: @
+        },
+      ]
+
+    addToolbar: (map) ->
+      container = super map
+
+      @_checkDisabled()
+
+      @options.featureGroup.on 'layeradd layerremove', @_checkDisabled, @
+
+      container
+
+    removeToolbar: ->
+      @options.featureGroup.off 'layeradd layerremove', @_checkDisabled, @
+      super
+
+    disable: ->
+      if !@enabled()
+        return
+
+      @_activeMode.handler.disable()
+
+    _save: ->
+      @_activeMode.handler.save()
+
+      if @_activeMode
+        @_activeMode.handler.disable()
+    
+    _updateSegmentsOffset: (e) ->
+      e.preventDefault();
+      offsetValue = parseFloat($(e.srcElement).parent().find('input')[0].value)
+      @_activeMode.handler.updateSegmentsOffset(offsetValue)
+
+    _checkDisabled: ->
+      featureGroup = @options.featureGroup
+      hasLayers = featureGroup.getLayers().length != 0
+      button = this._modes['offsetPolygon'].button
+
+      if hasLayers
+        L.DomUtil.removeClass button, 'leaflet-disabled'
+      else
+        L.DomUtil.addClass button, 'leaflet-disabled'
+
+      title = if hasLayers then L.drawLocal.split.toolbar.buttons.cutPolyline else L.drawLocal.edit.toolbar.buttons.editDisabled
+
+      button.setAttribute 'title', title
+
 )(window.Cartography = window.Cartography || {})

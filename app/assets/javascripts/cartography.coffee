@@ -255,6 +255,10 @@
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
         new C.Controls.Cut(@getMap(), @options)
 
+      @controls.register 'editPolygonSides', true, =>
+        C.Util.setOptions @, editPolygonSides: {featureGroup: @getFeatureGroup()}
+        new C.Controls.EditPolygonSides(@getMap(), @options)
+
       @controls.register 'shape_cut', false, =>
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
         new C.Controls.ShapeCut(@getMap(), @options)
@@ -287,6 +291,9 @@
 
       if @options.controls.cut
         @controls.add 'cut'
+      
+      if @options.controls.editPolygonSides
+        @controls.add 'editPolygonSides'
 
       style = (feature) ->
         feature.properties.style ||= {}

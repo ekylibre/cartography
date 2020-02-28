@@ -417,4 +417,34 @@
     disable: ->
       @_handler.disable()
 
+  class L.Control.OffsetPolygon extends L.Control
+    @_toolbar: {}
+
+    options:
+      position: 'topleft'
+      featureGroup: undefined
+      panel:
+        position: 'bottomleft'
+
+    constructor: (options) ->
+      C.Util.setOptions @, options
+      super options
+
+      if L.OffsetPolygonToolbar && !@_toolbar
+        @_toolbar = new L.OffsetPolygonToolbar @options
+      if @options.panel
+        new L.Control.OffsetPolygonPanel @_toolbar, @options.panel
+
+    onAdd: (map) ->
+      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-cut')
+      topClassName = 'leaflet-draw-toolbar-top'
+      toolbarContainer = @_toolbar.addToolbar(map)
+      if toolbarContainer
+        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
+      container.appendChild toolbarContainer
+      container
+
+    onRemove: ->
+      @_toolbar.removeToolbar()
+
 )(window.Cartography = window.Cartography || {})
