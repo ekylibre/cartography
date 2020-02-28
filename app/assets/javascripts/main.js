@@ -12,6 +12,7 @@
 //= require leaflet-reactive_measure/dist/reactive_measure.js
 
 //= require leaflet-draw-cut/dist/leaflet.draw.cut.js
+//= require leaflet-edit-offsetpolygon/dist/leaflet.edit.offsetpolygon.js
 // require leaflet-draw-merge/dist/leaflet.draw.merge.js
 //= require leaflet-controlpanel/dist/leaflet.controlpanel.js
 
