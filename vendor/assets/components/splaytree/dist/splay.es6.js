@@ -1,5 +1,5 @@
 /**
- * splaytree v2.0.2
+ * splaytree v2.0.3
  * Fast Splay tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
@@ -192,7 +192,8 @@ function remove (i, t, comparator, tree) {
   let x;
   if (t === null) return null;
   t = splay(i, t, comparator);
-  if (i === t.key) {               /* found it */
+  var cmp = comparator(i, t.key);
+  if (cmp === 0) {               /* found it */
     if (t.left === null) {
       x = t.right;
     } else {
@@ -763,3 +764,4 @@ function sort(keys, values, left, right, compare) {
 }
 
 export default Tree;
+//# sourceMappingURL=splay.es6.js.map

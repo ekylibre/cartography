@@ -1,17 +1,18 @@
-import {
-    FeatureCollection,
-    Feature,
-    Point,
-    LineString,
-    MultiLineString,
-    Polygon,
-    MultiPolygon
-} from '@turf/helpers'
-
+import { Feature, FeatureCollection, LineString, MultiLineString, MultiPolygon, Point, Polygon } from "@turf/helpers";
 /**
- * http://turfjs.org/docs/#lineintersect
+ * Takes any LineString or Polygon GeoJSON and returns the intersecting point(s).
+ *
+ * @name lineIntersect
+ * @param {GeoJSON} line1 any LineString or Polygon
+ * @param {GeoJSON} line2 any LineString or Polygon
+ * @returns {FeatureCollection<Point>} point(s) that intersect both
+ * @example
+ * var line1 = turf.lineString([[126, -11], [129, -21]]);
+ * var line2 = turf.lineString([[123, -18], [131, -14]]);
+ * var intersects = turf.lineIntersect(line1, line2);
+ *
+ * //addToMap
+ * var addToMap = [line1, line2, intersects]
  */
-export default function lineIntersect<T extends LineString, MultiLineString, Polygon, MultiPolygon>(
-    line1: Feature<T> | FeatureCollection<T> | T,
-    line2: Feature<T> | FeatureCollection<T> | T,
-): FeatureCollection<Point>;
+declare function lineIntersect<G1 extends LineString | MultiLineString | Polygon | MultiPolygon, G2 extends LineString | MultiLineString | Polygon | MultiPolygon>(line1: FeatureCollection<G1> | Feature<G1> | G1, line2: FeatureCollection<G2> | Feature<G2> | G2): FeatureCollection<Point>;
+export default lineIntersect;

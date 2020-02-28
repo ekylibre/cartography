@@ -50,6 +50,7 @@ class L.Cut.Polyline extends L.Handler
       throw new Error('options.featureGroup must be a L.FeatureGroup')
 
   enable: ->
+    debugger
     if @_enabled or !@_featureGroup.getLayers().length
       return
 
@@ -460,6 +461,7 @@ class L.Cut.Polyline extends L.Handler
 
     try
       drawnPolyline = @_activeLayer.cutting._poly
+      debugger
 
       #splitter = L.polyline(drawnPolyline.getLatLngs())
       splitter = L.polyline drawnPolyline.getLatLngs(), @options.cuttingPathOptions

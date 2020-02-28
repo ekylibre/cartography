@@ -1,27 +1,17 @@
-/// <reference types="geojson" />
-
-type LineString = GeoJSON.LineString;
-type MultiLineString = GeoJSON.MultiLineString;
-type Polygon = GeoJSON.Polygon;
-type MultiPolygon = GeoJSON.MultiPolygon;
-type GeometryObject = GeoJSON.GeometryObject;
-type GeometryCollection = GeoJSON.GeometryCollection;
-type Feature<Geom extends GeometryObject> = GeoJSON.Feature<Geom>;
-type FeatureCollection<Geom extends GeometryObject> = GeoJSON.FeatureCollection<Geom>;
-type Geoms = LineString | MultiLineString | Polygon | MultiPolygon;
-
-// Not correctly supported in @types/geojson
-interface FeatureGeometryCollection extends Feature<any> {
-  geometry: GeometryCollection
-}
-
-// Input & Output
-type Input = Feature<Geoms> | FeatureCollection<Geoms> | Geoms | GeometryCollection | FeatureGeometryCollection;
-type Output = FeatureCollection<LineString>;
-
+import { Feature, FeatureCollection, LineString, MultiLineString, MultiPolygon, Polygon } from "@turf/helpers";
 /**
- * http://turfjs.org/docs/#linesegment
+ * Creates a {@link FeatureCollection} of 2-vertex {@link LineString} segments from a
+ * {@link LineString|(Multi)LineString} or {@link Polygon|(Multi)Polygon}.
+ *
+ * @name lineSegment
+ * @param {GeoJSON} geojson GeoJSON Polygon or LineString
+ * @returns {FeatureCollection<LineString>} 2-vertex line segments
+ * @example
+ * var polygon = turf.polygon([[[-50, 5], [-40, -10], [-50, -10], [-40, 5], [-50, 5]]]);
+ * var segments = turf.lineSegment(polygon);
+ *
+ * //addToMap
+ * var addToMap = [polygon, segments]
  */
-declare function lineSegment(geojson: Input): Output;
-declare namespace lineSegment {}
-export = lineSegment;
+declare function lineSegment<G extends LineString | MultiLineString | Polygon | MultiPolygon>(geojson: Feature<G> | FeatureCollection<G> | G): FeatureCollection<LineString>;
+export default lineSegment;

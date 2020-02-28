@@ -1,6 +1,6 @@
 /*!
 **  Pure-UUID -- Pure JavaScript Based Universally Unique Identifier (UUID)
-**  Copyright (c) 2004-2017 Ralf S. Engelschall <rse@engelschall.com>
+**  Copyright (c) 2004-2020 Dr. Ralf S. Engelschall <rse@engelschall.com>
 **
 **  Permission is hereby granted, free of charge, to any person obtaining
 **  a copy of this software and associated documentation files (the
@@ -33,7 +33,10 @@ interface UUID {
     format(type?: string): string;
 
     /*  formatting (alias)  */
-    tostring(type?: string): string;
+    toString(type?: string): string;
+
+    /*  sensible JSON serialization  */
+    toJSON(): string;
 
     /*  importing  */
     import(arr: number[]): UUID;
@@ -42,7 +45,13 @@ interface UUID {
     export(): number[];
 
     /*  byte-wise comparison  */
-    compare(other: UUID): boolean;
+    compare(other: UUID): number;
+
+    /*  equal check  */
+    equal(other: UUID): boolean;
+
+    /*  fold 1-4 times  */
+    fold(k: number): number[];
 }
 
 export interface UUIDConstructor {

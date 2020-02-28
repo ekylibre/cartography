@@ -1,6 +1,6 @@
 'use strict';
 
-var jstsEs = require('jsts-es');
+var turfJsts = require('turf-jsts');
 
 /**
  * Takes two or more {@link Polygon|polygons} and returns a combined polygon. If the input polygons are not contiguous, this function returns a {@link MultiPolygon} feature.
@@ -30,14 +30,14 @@ var jstsEs = require('jsts-es');
  * var addToMap = [poly1, poly2, union];
  */
 function union() {
-    var reader = new jstsEs.GeoJSONReader();
+    var reader = new turfJsts.GeoJSONReader();
     var result = reader.read(JSON.stringify(arguments[0].geometry));
 
     for (var i = 1; i < arguments.length; i++) {
-        result = jstsEs.UnionOp.union(result, reader.read(JSON.stringify(arguments[i].geometry)));
+        result = turfJsts.UnionOp.union(result, reader.read(JSON.stringify(arguments[i].geometry)));
     }
 
-    var writer = new jstsEs.GeoJSONWriter();
+    var writer = new turfJsts.GeoJSONWriter();
     result = writer.write(result);
 
     return {

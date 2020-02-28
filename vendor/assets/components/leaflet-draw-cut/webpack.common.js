@@ -1,5 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UpdateCarto = require('./updateCarto.js');
 
 var glob = require("glob");
 
@@ -19,7 +20,16 @@ module.exports = {
   module: {
     rules: [{
         test: /\.coffee$/,
-        use: ['coffee-loader']
+        use: [
+          {
+            loader: 'coffee-loader',
+            options: { 
+              transpile: {
+                presets: ['env']
+              }
+            }
+          }
+        ]
       },
       {
         test: /\.scss$/,
@@ -50,6 +60,7 @@ module.exports = {
     extensions: ['.coffee', '.js']
   },
   plugins: [
+    new UpdateCarto(),
     new CleanWebpackPlugin(['dist']),
     new MiniCssExtractPlugin({
       filename: 'leaflet.draw.cut.css'

@@ -1,14 +1,12 @@
-import { getCoord } from '@turf/invariant';
-import { radiansToLength, isObject, degreesToRadians } from '@turf/helpers';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var invariant_1 = require("@turf/invariant");
+var helpers_1 = require("@turf/helpers");
 //http://en.wikipedia.org/wiki/Haversine_formula
 //http://www.movable-type.co.uk/scripts/latlong.html
-
 /**
- * Calculates the distance between two {@link Point|points} in degrees, radians,
- * miles, or kilometers. This uses the
- * [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula)
- * to account for global curvature.
+ * Calculates the distance between two {@link Point|points} in degrees, radians, miles, or kilometers.
+ * This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
  *
  * @name distance
  * @param {Coord} from origin point
@@ -29,22 +27,15 @@ import { radiansToLength, isObject, degreesToRadians } from '@turf/helpers';
  * to.properties.distance = distance;
  */
 function distance(from, to, options) {
-    // Optional parameters
-    options = options || {};
-    if (!isObject(options)) throw new Error('options is invalid');
-    var units = options.units;
-
-    var coordinates1 = getCoord(from);
-    var coordinates2 = getCoord(to);
-    var dLat = degreesToRadians((coordinates2[1] - coordinates1[1]));
-    var dLon = degreesToRadians((coordinates2[0] - coordinates1[0]));
-    var lat1 = degreesToRadians(coordinates1[1]);
-    var lat2 = degreesToRadians(coordinates2[1]);
-
+    if (options === void 0) { options = {}; }
+    var coordinates1 = invariant_1.getCoord(from);
+    var coordinates2 = invariant_1.getCoord(to);
+    var dLat = helpers_1.degreesToRadians((coordinates2[1] - coordinates1[1]));
+    var dLon = helpers_1.degreesToRadians((coordinates2[0] - coordinates1[0]));
+    var lat1 = helpers_1.degreesToRadians(coordinates1[1]);
+    var lat2 = helpers_1.degreesToRadians(coordinates2[1]);
     var a = Math.pow(Math.sin(dLat / 2), 2) +
-          Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-
-    return radiansToLength(2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), units);
+        Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
+    return helpers_1.radiansToLength(2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), options.units);
 }
-
-export default distance;
+exports.default = distance;

@@ -102,19 +102,9 @@ hexadecimal digits.
 Getting Pure-UUID
 -----------------
 
-You can conveniently get Pure-UUID in various ways:
-
-- Git: directly clone the official repository:<br/>
-  `$ git clone https://github.com/rse/pure-uuid.git`
-
-- Bower: install as client component via the Bower component manager:<br/>
-  `$ bower install pure-uuid`
-
-- NPM: install as server component via the NPM package manager:<br/>
-  `$ npm install pure-uuid`
-
-- cURL: downloading only the main file from the repository:<br/>
-  `$ curl -O https://raw.githubusercontent.com/rse/pure-uuid/master/uuid.js`
+```
+$ npm install pure-uuid
+```
 
 Using Pure-UUID
 ---------------
@@ -155,7 +145,10 @@ interface UUID {
     format(type?: string): string;
 
     /*  formatting (alias)  */
-    tostring(type?: string): string;
+    toString(type?: string): string;
+
+    /*  sensible JSON serialization  */
+    toJSON(): string;
 
     /*  importing  */
     import(arr: number[]): UUID;
@@ -165,6 +158,12 @@ interface UUID {
 
     /*  byte-wise comparison  */
     compare(other: UUID): boolean;
+
+    /*  equal check  */
+    equal(other: UUID): boolean;
+
+    /*  fold 1-4 times  */
+    fold(k: number): number[];
 }
 
 export interface UUIDConstructor {
@@ -201,12 +200,22 @@ uuid = new UUID(4);
 
 //  make a UUID version 5 (name-based, SHA-1)
 uuid = new UUID(5, "ns:URL", "http://example.com/");
+
+//  format a UUID in standard format
+str = uuid.format()
+str = uuid.format("std")
+
+//  format a UUID in Base16 format
+str = uuid.format("b16")
+
+//  format a UUID in ZeroMQ-Base85 format
+str = uuid.format("z85")
 ```
 
 License
 -------
 
-Copyright (c) 2004-2017 Ralf S. Engelschall (http://engelschall.com/)
+Copyright (c) 2004-2020 Dr. Ralf S. Engelschall (http://engelschall.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
