@@ -432,7 +432,8 @@
 
       if L.OffsetPolygonToolbar && !@_toolbar
         @_toolbar = new L.OffsetPolygonToolbar @options
-      if @options.panel
+      
+      if false #@options.panel
         new L.Control.OffsetPolygonPanel @_toolbar, @options.panel
 
     onAdd: (map) ->

@@ -526,13 +526,6 @@
           callback: @disable
           context: @
         },
-        {
-          type: "handlerFormAction"
-          title: "update"
-          text:  "update"
-          callback: @_updateSegmentsOffset
-          context: @
-        },
       ]
 
     addToolbar: (map) ->
@@ -559,11 +552,6 @@
 
       if @_activeMode
         @_activeMode.handler.disable()
-    
-    _updateSegmentsOffset: (e) ->
-      e.preventDefault();
-      offsetValue = parseFloat($(e.srcElement).parent().find('input')[0].value)
-      @_activeMode.handler.updateSegmentsOffset(offsetValue)
 
     _checkDisabled: ->
       featureGroup = @options.featureGroup
