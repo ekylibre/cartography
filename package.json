@@ -8,7 +8,7 @@
     "leaflet-controlpanel": "https://github.com/ekylibre/Leaflet.ControlPanel",
     "leaflet-draw": "0.4.12",
     "leaflet-draw-cut": "../Leaflet-Draw-Cut",
-    "leaflet-edit-offsetpolygon": "../Leaflet-Edit-OffsetPolygon",
+    "leaflet-edit-offsetpolygon": "https://gitlab.com/ekylibre-integration/leaflet-edit-offsetpolygon.git#feature/select-segment",
     "leaflet-draw-merge": "https://github.com/ekylibre/Leaflet.Draw.Merge",
     "leaflet-layerindex": "https://github.com/ekylibre/Leaflet.LayerIndex.git",
     "leaflet-providers": "1.1.17",
