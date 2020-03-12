@@ -14,6 +14,7 @@
       box:
         height: '85vh'
         width: undefined
+      multiSerie: false
       map:
         scrollWheelZoom: true
         zoomControl: false
@@ -302,6 +303,16 @@
         bounds = @options.bounds.split(',')
         @getMap().fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]],{ maxZoom: 21 })
         return
+      
+      if @options.multiSerie
+        featureGroups = Object.values(@controls.get('overlays').getLayers())
+        for featureGroup, index in featureGroups
+          if  index == 0
+            bounds = featureGroup.getBounds() if  index == 0
+            continue
+          bounds = bounds.extend(featureGroup.getBounds())
+        @getMap().fitBounds(bounds)
+        return
 
       if @getFeatureGroup().getLayers().length
         @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
@@ -527,7 +538,7 @@
 
       return @controls.get('overlays').getLayers()[options.name] if options.name
 
-      @controls.get('overlays').getMainLayer()
+      @controls.get('overlays').getMainLayer() if options.main
 
     clean: =>
       @getFeatureGroup(name: "edition").clearLayers()
