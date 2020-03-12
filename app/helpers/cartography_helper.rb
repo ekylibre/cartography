@@ -19,7 +19,7 @@ module Cartography
       @config[:layers] << { reference: name.to_s.camelcase(:lower) }.merge(options.merge(name: name, serie: serie.to_s.camelcase(:lower)))
     end
 
-    def simple(name, serie, options = {})
+    def simple(name, serie = name, options = {})
       layer(name, serie, options.merge(type: :simple))
     end
 

@@ -142,7 +142,7 @@
             layerLabel = layer.renderedLayer.layer.label || name
             @getControl().addOverlay(layer, layerLabel)
         else
-          @references.updateSerie(@references.getLayers()[properties.name], series[properties.name])
+          @references.updateSerie(@references.getLayers()[properties.name], series[properties.serie])
 
     remove: (name) ->
       layer = @getLayer name
