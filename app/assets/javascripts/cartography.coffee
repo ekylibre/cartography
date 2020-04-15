@@ -226,7 +226,7 @@
         C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
       , =>
-        return unless @options.controls.reactiveMeasure?
+        return unless @options.controls.reactiveMeasure
         @controls.register 'measure', true, =>
           new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
         @controls.add 'measure'
