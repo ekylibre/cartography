@@ -62,13 +62,14 @@
 
   class C.Controls.Layers extends C.Controls
     options:
-      position: 'topleft'
+      controlLayers:
+        position: 'topleft'
+
     constructor: ( control, map, options = {} ) ->
       super(map)
 
       C.Util.setOptions @, options
-
-      @control = control || new L.Control.Layers(undefined, undefined, @options)
+      @control = control || new L.Control.Layers(undefined, undefined, @options.controlLayers)
 
       @layers = {}
 
@@ -286,11 +287,9 @@
       super(map)
 
       C.Util.setOptions @, options
-
       @editionLayer = L.geoJson(undefined,
         style: (feature) =>
           C.Util.extend @options.edit.shapeOptions, feature.properties)
-
       @control = new L.Control.SnapEdit(@options)
 
       @initHooks()
