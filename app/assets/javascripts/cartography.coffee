@@ -40,6 +40,7 @@
         zoom: true
         home: true
         scale: true
+        fullscreen: false
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -261,6 +262,8 @@
         new C.Controls.ShapeCut(@getMap(), @options)
       , =>
         @controls.get('shape_cut').getControl().enable()
+      @controls.register 'fullscreen', true, =>
+        new C.Controls.Fullscreen(@getMap(), @options)
 
       if @options.controls.layers
         @controls.add 'layers'
@@ -288,6 +291,9 @@
 
       if @options.controls.cut
         @controls.add 'cut'
+
+      if @options.controls.fullscreen
+        @controls.add 'fullscreen'
 
       style = (feature) ->
         feature.properties.style ||= {}

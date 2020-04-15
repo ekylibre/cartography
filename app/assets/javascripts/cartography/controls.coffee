@@ -192,6 +192,25 @@
     getControl: ->
       @control
 
+  class C.Controls.Fullscreen extends C.Controls
+    options:
+      fullscreenControl: 
+        position: 'topleft',
+        title: 'Show me the fullscreen !',
+        titleCancel: 'Exit fullscreen mode',
+        content: null
+        forceSeparateButton: false,
+        forcePseudoFullscreen: false,
+        fullscreenElement: false
+
+    constructor: ( map, options = {} ) ->
+      super(map)
+      C.Util.setOptions @, options
+      @control = L.control.fullscreen(@options.fullscreenControl)
+
+    getControl: ->
+      @control
+  
   class C.Controls.Draw extends C.Controls
     options:
       draw:

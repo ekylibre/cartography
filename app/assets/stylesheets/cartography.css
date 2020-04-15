@@ -3,6 +3,7 @@
 *= require leaflet-draw/dist/leaflet.draw.css
 *= require leaflet-reactive_measure/dist/reactive_measure.css
 *= require leaflet-controlpanel/dist/leaflet.controlpanel.css
+*= require leaflet.fullscreen/Control.FullScreen.css
 */
 .leaflet-div-icon, .leaflet-mouse-marker{
 	/*background: #fff;*/

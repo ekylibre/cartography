@@ -621,8 +621,9 @@ jsts-es@*:
     leaflet-draw "^0.4.12"
     lodash "^4.17.4"
 
-leaflet-draw-cut@../Leaflet.Draw.Cut:
+"leaflet-draw-cut@https://github.com/ekylibre/Leaflet.Draw.Cut":
   version "0.0.1"
+  resolved "https://github.com/ekylibre/Leaflet.Draw.Cut#3c0fad1a546cb57834ca02d24c873e4ba5ea816e"
   dependencies:
     "@mapbox/polylabel" "^1.0.2"
     "@turf/area" "^6.0.1"
@@ -740,6 +741,11 @@ leaflet-providers@1.1.17:
     leaflet-geometryutil "*"
   optionalDependencies:
     leaflet-draw "^0.3.2"
+
+leaflet.fullscreen@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/leaflet.fullscreen/-/leaflet.fullscreen-1.6.0.tgz#daad9a6e07c8bdbca8e5af7e3d50272d31b0226a"
+  integrity sha512-Mr6STMeyKSfJ1CsKFcPZOm425LOe0c/6EHh0AK93GiTvteTAMFmO/oFDNe+0p1mk4+8yeGLcYgaXTSzPveEGhA==
 
 leaflet@*, leaflet@1.2.0:
   version "1.2.0"
