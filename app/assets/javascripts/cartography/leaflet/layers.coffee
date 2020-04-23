@@ -2,7 +2,6 @@ class L.IndexedGeoJSON extends L.GeoJSON
 
   constructor: (geojson, options) ->
     @_onEachFeature = options.onEachFeature
-
     onEachFeature = (geojson, layer) ->
       layer.on 'add', =>
         @indexLayer layer

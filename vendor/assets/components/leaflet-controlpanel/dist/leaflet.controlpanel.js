@@ -135,6 +135,7 @@ L.Control.ControlPanel = (function(superClass) {
     }
     this._propertiesContainer = L.DomUtil.create('div', this.options.propertiesClassName, this._container);
     L.DomEvent.disableScrollPropagation(this._container);
+    L.DomEvent.disableClickPropagation(this._container);
     if (!this.options.ignoreActions) {
       this._actionsContainer = L.DomUtil.create('div', this.options.actionsClassName, this._container);
       this._showActionsToolbar();
@@ -172,11 +173,11 @@ L.Control.ControlPanel = (function(superClass) {
         i++;
         continue;
       }
-      div = L.DomUtil.create('div', 'button', container);
       button = this._toolbar._createButton({
         title: buttons[i].title,
         text: buttons[i].text,
-        container: div,
+        container: this._actionsContainer,
+        className:'button',
         callback: buttons[i].callback,
         context: buttons[i].context
       });

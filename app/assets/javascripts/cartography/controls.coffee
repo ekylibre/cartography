@@ -223,14 +223,16 @@
           rectangle: false
           circle: false
           polygon:
+            allowOverlap: true
             allowIntersection: false
             showArea: false
       snap:
         polygon:
+          allowOverlap: true
+          allowIntersection: true
           guideLayers: []
           snapDistance: 15
           snapOriginDistance: 30
-          allowIntersection: false
           guidelineDistance: 8
           shapeOptions:
             dashArray: '8, 8'
@@ -241,10 +243,8 @@
     constructor: ( map, options = {} ) ->
       super(map)
       C.Util.setOptions @, options
-
       @control = new L.Control.Draw(@options.draw)
       @control.setDrawingOptions(@options.snap)
-
       @toolbar = @control._toolbars['draw']
       if @options.draw.panel
         new L.Control.ControlPanel.Draw @toolbar, @options.draw.panel
@@ -309,6 +309,26 @@
 
     addTo: (control) ->
       control.addOverlay @getLayer(), @options.label
+
+  class C.Controls.Remove extends C.Controls
+    constructor: (map, options = {}) ->
+      super(map)
+
+      C.Util.setOptions @, options
+      @options.draw = null
+      @options.edit.edit = false
+      @control = new L.Control.Draw(@options)
+
+      @initHooks()
+
+    initHooks: ->
+
+    getControl: ->
+      @control
+
+    addLayer: (layer) ->
+      @getLayer().addData layer.toGeoJSON()
+      # @getLayer().addLayer layer
 
 
   class C.Controls.Edit.ReactiveMeasure extends C.Controls
@@ -424,6 +444,7 @@
           rectangle: false
           circle: false
           polygon:
+            allowOverlap: true
             allowIntersection: false
             showArea: false
       snap:
@@ -454,6 +475,9 @@
 
     getControl: ->
       @control
+    
+    getToolbar: ->
+      @control._toolbar
 
   class C.Controls.ShapeCut extends C.Controls
     options:

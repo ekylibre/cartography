@@ -35,9 +35,9 @@
 
     constructor: (options) ->
       C.Util.setOptions @, options
-      super options
       toolbar = undefined
       @_toolbar = {}
+ 
       if L.SnapEditToolbar
         @options.snap.guideLayers = @options.snap.polygon.guideLayers
 
@@ -79,7 +79,7 @@
       container = L.DomUtil.create 'div', 'property', @_propertiesContainer
 
       containerTitle = L.DomUtil.create 'div', 'property-title', container
-      containerTitle.innerHTML = @options.surfaceProperty
+      containerTitle.innerHTML = @options.surfacesProperty
 
       @_areaContainer = L.DomUtil.create 'div', 'property-content', container
 
@@ -87,8 +87,8 @@
       @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
 
     _onEditingPolygon: (e) ->
-      area = if e and e.measure then e.measure.area else 0
-
+      debugger
+      area = if e and e.measure then e.measure.extrapolatedArea else 0
       L.DomUtil.empty(@_areaContainer)
 
       surface = L.DomUtil.create 'div', 'surface-row', @_areaContainer
@@ -216,9 +216,9 @@
 
 
   class L.Control.ControlPanel.Draw extends L.Control.ControlPanel
-    constructor: (options) ->
+    constructor: (@_toolbar, options) ->
       C.Util.setOptions @, options
-      super
+      super(@_toolbar, options)
 
     onAdd: (map) ->
       super map
@@ -241,7 +241,7 @@
       @_map.on L.ReactiveMeasure.Draw.Event.MOVE, @_onDrawingPolygon, @
 
     _onDrawingPolygon: (e) ->
-      area = if e and e.measure then e.measure.area else 0
+      area = if e and e.measure then e.measure.extrapolatedArea else 0
 
       L.DomUtil.empty(@_areaContainer)
 
@@ -329,6 +329,8 @@
 
   class L.Control.ShapeDraw extends L.Control
     options:
+      position:'topleft'
+      draw:{}
       featureGroup: undefined
       snapDistance: 15
       shapeOptions:
@@ -340,9 +342,24 @@
       super options
 
       @_handler = new L.Draw.Polygon map, @options
+      # @_map = map
 
-      @_map = map
+      @_toolbar = new L.Control.Draw(@options)._toolbars['draw']
+      if @options.draw.panel
+        new L.Control.ControlPanel.Draw @_toolbar, @options.draw.panel
       return
+    
+    onAdd: (map) ->
+      container = L.DomUtil.create('div', 'leaflet-draw leaflet-control-merge')
+      topClassName = 'leaflet-draw-toolbar-top'
+      toolbarContainer = @_toolbar.addToolbar(map)
+      if toolbarContainer
+        L.DomUtil.addClass toolbarContainer.childNodes[0], topClassName
+      container.appendChild toolbarContainer
+      container
+
+    onRemove: ->
+      @_toolbar.removeToolbar()
 
     _onDrawVertex: (e) ->
       @_map.fire C.Events.shapeDraw.start
@@ -380,14 +397,6 @@
         fillColor: '#263238'
         opacity: 1
         fillOpacity: 0.4
-        maintainColor: false
-      editablePathOptions:
-        dashArray: null
-        fill: true
-        color: '#1195F5'
-        fillColor: '#1195F5'
-        opacity: 1
-        fillOpacity: 0.35
         maintainColor: false
       selectedPathOptions:
         dashArray: null

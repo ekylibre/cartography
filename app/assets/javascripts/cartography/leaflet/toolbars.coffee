@@ -6,18 +6,22 @@
 
     options:
       edit:
-        selectedPathOptions:
-          dashArray: '10, 10'
-          fill: true
-          fillColor: '#fe57a1'
-          fillOpacity: 0.1
-          maintainColor: false
         disabledPathOptions:
           dashArray: null
           fill: true
+          color: '#263238'
+          fillColor: '#263238'
+          opacity: 1
+          fillOpacity: 0.4
+          maintainColor: false
+        selectedPathOptions:
+          dashArray: null
+          fill: true
           fillColor: '#fe57a1'
-          fillOpacity: 0.1
+          opacity: 1
+          fillOpacity: 1
           maintainColor: true
+          weight: 3
       remove: {}
       poly: null
       featureGroup: null
@@ -28,7 +32,6 @@
 
       # fallback for toolbar
       @options.featureGroup = @options.edit.featureGroup
-
 
       super @options
       @_selectedFeatureCount = 0
@@ -70,7 +73,7 @@
         {
           title: L.drawLocal.edit.toolbar.actions.cancel.title
           text: L.drawLocal.edit.toolbar.actions.cancel.text
-          callback: @disable
+          callback: @_disable
           context: @
         }
       ]
@@ -84,6 +87,15 @@
 
       actions
 
+    _save: ->
+      @_activeMode.handler.save()
+
+      if @_activeMode
+        @_activeMode.handler.disable()
+    
+    _disable: ->
+      if @_activeMode
+        @_activeMode.handler.disable()
 
   class L.LayerSelectionToolbar extends L.Toolbar
     @TYPE: 'layerSelection'

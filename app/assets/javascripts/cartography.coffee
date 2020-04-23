@@ -73,8 +73,8 @@
           fillOpacity: 0.35
           maintainColor: false
         panel:
-          title: 'Edit plot'
-          animatedHelper: undefined
+          coordinatesProperty: 'Coordinates'
+          surfacesProperty: 'Surfaces'
       remove: false
       controlLayers:
         position: 'topleft'
@@ -190,6 +190,33 @@
 
         @getMap().fire C.Events.edit.change, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
+      @getMap().on L.SnapEditing.Event.SELECT, layer: @_activeLayer =>
+        debugger
+
+      @getMap().on L.Draw.Event.EDITED, (e) =>
+        return if e.layers.length == 0
+        
+        data = []
+        for index, layer of e.layers
+          return unless layer.layerType == "polygon" or layer.layerType is undefined
+
+          feature = if layer instanceof L.Layer
+          then layer.toGeoJSON(17)
+          else layer
+
+          @getFeatureGroup(name: "edition").removeLayer(layer)
+          @getFeatureGroup(name: "edition").addData(feature)
+
+          uuid = feature.properties.uuid
+          type = feature.properties.type = @getMode()
+
+          layer = @getFeatureGroup(name: "edition").getLayers()[..].pop()
+          centroid = layer.getCenter()
+          area = L.GeometryUtil.geodesicArea(layer.getLatLngs()[0])
+
+        data.push({ uuid: uuid, type: type, shape: feature, area: area, centroid: centroid })
+
+        @getMap().fire C.Events.edit.complete, data: data
 
     controls: ->
       @controls = new C.Controls(@getMap(), @options)
@@ -223,14 +250,18 @@
         new C.Controls.Draw(@getMap(), @options)
 
       @controls.register 'edit', true, =>
-        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
+        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup(name:'edition')}
         new C.Controls.Edit(@getMap(), @options)
       , =>
         return unless @options.controls.reactiveMeasure
         @controls.register 'measure', true, =>
           new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
         @controls.add 'measure'
-        @removeControl 'edit'
+        # @removeControl 'edit'
+
+      @controls.register 'remove', true, =>
+        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup(name:'edition')}
+        new C.Controls.Remove(@getMap(), @options)
 
       @controls.register 'scale', true, =>
         new C.Controls.Scale(@getMap(), @options)
@@ -245,13 +276,11 @@
       , =>
         @controls.get('locking').getControl().enable()
 
-      @controls.register 'shape_draw', false, =>
+      @controls.register 'shape_draw', true, =>
         unless @options.draw.allowOverlap
           layers = @controls.get('overlays').getLayers()
           @options.draw.overlapLayers = Object.values(layers)
         new C.Controls.ShapeDraw(@getMap(), @options)
-      , =>
-        @controls.get('shape_draw').getControl().enable()
 
       @controls.register 'cut', true, =>
         C.Util.setOptions @, cut: {featureGroup: @getFeatureGroup()}
@@ -262,6 +291,7 @@
         new C.Controls.ShapeCut(@getMap(), @options)
       , =>
         @controls.get('shape_cut').getControl().enable()
+
       @controls.register 'fullscreen', true, =>
         new C.Controls.Fullscreen(@getMap(), @options)
 
@@ -270,12 +300,21 @@
 
       if @options.controls.zoom
         @controls.add 'zoom'
-
+      
       if @options.controls.home
         @controls.add 'home'
 
+      if @options.controls.fullscreen
+        @controls.add 'fullscreen'
+
+      if @options.controls.draw
+        @controls.add 'draw'
+      
       if @options.controls.edit
         @controls.add 'edit'
+
+      if @options.controls.remove
+        @controls.add 'remove'
 
       if @options.controls.scale
         @controls.add 'scale'
@@ -286,21 +325,18 @@
       if @options.controls.locking
         @controls.add 'locking'
 
-      if @options.controls.draw
-        @controls.add 'draw'
+      
 
       if @options.controls.cut
         @controls.add 'cut'
 
-      if @options.controls.fullscreen
-        @controls.add 'fullscreen'
-
       style = (feature) ->
         feature.properties.style ||= {}
         color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
-
-      serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
-      @addOverlay(serie)
+      
+      unless @getFeatureGroup( name: "edition" )
+        serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
+        @addOverlay(serie)
       @setView()
 
     ##### PUBLIC API ######

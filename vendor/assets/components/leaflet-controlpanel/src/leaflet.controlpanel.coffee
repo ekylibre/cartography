@@ -37,7 +37,6 @@ class L.Control.ControlPanel extends L.Control
   onAdd: (map) ->
     @_container = L.DomUtil.create 'div', @options.className
     L.DomUtil.addClass @_container, 'large' if @options.expanded
-
     if @options.title
       @_titleContainer = L.DomUtil.create 'div', @options.titleClassName, @_container
       @_titleContainer.innerHTML = @options.title

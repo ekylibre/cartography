@@ -302,17 +302,23 @@
 
       @_activeLayer = undefined
 
-
       if @options.snapOptions
         L.Util.extend @snapOptions, @options.snapOptions
       return
 
+    save: ->
+      editedLayers = @_featureGroup.getLayers().filter( (layer)-> layer.edited)
+      for index,layer of editedLayers
+        layer.setStyle(layer.options.original)
+        layer.edited = false
+      @_map.fire(L.Draw.Event.EDITED, {layers: editedLayers})
+
     enable: (layer) ->
-      @_enableLayer layer
-
+      layer = @featureGroup
       @_map.on L.SnapEditing.Event.SELECT, @_editMode, @
-
       @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
+      @_enableLayer layer
+      @.fire('enabled', {handler: @type})
 
     disable: ->
       @featureGroup.off 'layeradd', @_enableLayer, @
@@ -321,53 +327,61 @@
       @_map.off L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
 
       if @_activeLayer && @_activeLayer.editing
-        @_activeLayer.editing.disable()
-        delete @_activeLayer.editing._poly
-        delete @_activeLayer.editing
-        @_disableLayer @_activeLayer
-
         if @_activeLayer.options._backupLatLngs
           @_activeLayer.setLatLngs @_activeLayer.options._backupLatLngs
           delete @_activeLayer.options._backupLatLngs
+        @_unselectLayer(@_activeLayer)
+
+      editedLayers = @featureGroup.getLayers()
+      
+      for index, layer of editedLayers
+        delete layer.editing._poly if layer.editing and layer.editing._poly
+        delete layer.editing if layer.editing
+        @_disableLayer layer
 
       @clearGuideLayers()
       super
+      @fire 'disabled', handler: @type
 
     _onEditingPolygon: (e) ->
       @_map.fire C.Events.shapeDraw.edit, data: { measure: e.measure }
 
     _enableLayer: (e) ->
       layer = e.layer or e.target or e
-
-      layer.options.original = L.extend({}, layer.options)
-
+      
       if @options.disabledPathOptions
-        pathOptions = L.Util.extend {}, @options.disabledPathOptions
+        disabledPathOptions = L.Util.extend {}, @options.disabledPathOptions
 
         # Use the existing color of the layer
-        if pathOptions.maintainColor
-          pathOptions.color = layer.options.color
-          pathOptions.fillColor = layer.options.fillColor
-
-        layer.options.disabled = pathOptions
+        if disabledPathOptions.maintainColor
+          disabledPathOptions.color = layer.options.color
+          disabledPathOptions.fillColor = layer.options.fillColor
 
       if @options.selectedPathOptions
-        pathOptions = L.Util.extend {}, @options.selectedPathOptions
+        selectedPathOptions = L.Util.extend {}, @options.selectedPathOptions
 
         # Use the existing color of the layer
-        if pathOptions.maintainColor
-          pathOptions.color = layer.options.color
-          pathOptions.fillColor = layer.options.fillColor
+        if selectedPathOptions.maintainColor
+          selectedPathOptions.color = layer.options.color
+          selectedPathOptions.fillColor = layer.options.fillColor
 
-        layer.options.snapSelected = pathOptions
-
-      layer.setStyle layer.options.disabled
-
-      layer.on 'click', @_activate, @
+      if layer.getLayers().length > 1
+        layer.eachLayer (layer) ->
+          layer.options.original = L.extend({}, layer.options)
+          layer.options.disabled = disabledPathOptions
+          layer.options.snapSelected = selectedPathOptions
+          layer.setStyle layer.options.disabled
+          layer.on 'click', @_activate, @
+        , @
+      else
+        layer = layer.getLayers()[0]
+        layer.options.original = L.extend({}, layer.options)
+        layer.options.snapSelected = selectedPathOptions
+        @_activate(layer)
 
     _activate: (e) ->
       layer = e.target || e.layer || e
-
+      return if @_activeLayer == layer
       if !layer.snapSelected
         layer.snapSelected = true
         layer.setStyle layer.options.snapSelected
@@ -389,6 +403,7 @@
     _unselectLayer: (e) ->
       layer = e.layer or e.target or e
       layer.snapSelected = false
+      @_disableEditMode(@_activeLayer)
       if @options.selectedPathOptions
         layer.setStyle layer.options.disabled
 
@@ -411,7 +426,7 @@
     _editMode: (e) ->
       layer = e.layer
       if(layer.editing)
-        if layer.editing._poly.editing._verticesHandlers
+        if layer.editing._poly.editing._verticesHandlers and layer.editing._poly.editing._verticesHandlers[0]._markerGroup
           layer.editing._poly.editing._verticesHandlers[0]._markerGroup.clearLayers()
         delete layer.editing
       layer.editing = layer.snapediting = new L.Handler.PolylineSnap(layer._map, layer, @options.snapOptions)
@@ -435,6 +450,9 @@
         layer = e.target
         layer._map.fire L.SnapEditing.Event.CHANGE, layer: layer
 
+    _disableEditMode: (layer) ->
+      layer.snapediting.disable()
+
     addGuideLayer: (layer) ->
       index = @_guideLayers.findIndex((guideLayer) ->
         L.stamp(layer) == L.stamp(guideLayer)
@@ -456,6 +474,5 @@
           layer.snapediting._guides = []
         return
       return
-
 
 )(window.Cartography = window.Cartography || {})

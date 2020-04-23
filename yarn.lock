@@ -621,9 +621,8 @@ jsts-es@*:
     leaflet-draw "^0.4.12"
     lodash "^4.17.4"
 
-"leaflet-draw-cut@https://github.com/ekylibre/Leaflet.Draw.Cut":
+leaflet-draw-cut@../Leaflet-Draw-Cut:
   version "0.0.1"
-  resolved "https://github.com/ekylibre/Leaflet.Draw.Cut#3c0fad1a546cb57834ca02d24c873e4ba5ea816e"
   dependencies:
     "@mapbox/polylabel" "^1.0.2"
     "@turf/area" "^6.0.1"
