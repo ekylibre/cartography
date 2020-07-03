@@ -72,19 +72,20 @@ L.Draw.Polygon.include
     poly = turfLineToPolygon(linestring, autoComplete: true, orderCoords: true)
     valid = true
 
-    for layerGroup in @options.overlapLayers
-      continue unless layerGroup.getLayers.constructor.name == 'Function'
-      for layer in layerGroup.getLayers()
-        polygon = layer.toTurfFeature()
-        valid = turfBooleanDisjoint(polygon, poly)
-        unless valid
-          valid = @_shapeOverlapPolygon(linestring, polygon)
-
+    unless @options.allowOverlap
+      for layerGroup in @options.overlapLayers
+        continue unless layerGroup.getLayers.constructor.name == 'Function'
+        for layer in layerGroup.getLayers()
+          polygon = layer.toTurfFeature()
+          valid = turfBooleanDisjoint(polygon, poly)
           unless valid
-            valid = @_shapeTouchingPolygon(poly, polygon)
+            valid = @_shapeOverlapPolygon(linestring, polygon)
 
+            unless valid
+              valid = @_shapeTouchingPolygon(poly, polygon)
+
+          break unless valid
         break unless valid
-      break unless valid
 
     valid &&= @__shapeIsValid.apply @, arguments
 
