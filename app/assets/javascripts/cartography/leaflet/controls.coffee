@@ -87,7 +87,6 @@
       @_map.on L.ReactiveMeasure.Edit.Event.MOVE, @_onEditingPolygon, @
 
     _onEditingPolygon: (e) ->
-      debugger
       area = if e and e.measure then e.measure.extrapolatedArea else 0
       L.DomUtil.empty(@_areaContainer)
 

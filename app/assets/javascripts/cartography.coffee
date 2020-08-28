@@ -190,9 +190,6 @@
 
         @getMap().fire C.Events.edit.change, data: { uuid: uuid, type: type, shape: feature, area: area, centroid: centroid }
 
-      @getMap().on L.SnapEditing.Event.SELECT, layer: @_activeLayer =>
-        debugger
-
       @getMap().on L.Draw.Event.EDITED, (e) =>
         return if e.layers.length == 0
         
