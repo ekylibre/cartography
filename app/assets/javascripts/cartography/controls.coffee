@@ -310,6 +310,9 @@
     addTo: (control) ->
       control.addOverlay @getLayer(), @options.label
 
+    getToolbar: ->
+      @control._toolbar
+
   class C.Controls.Remove extends C.Controls
     constructor: (map, options = {}) ->
       super(map)
@@ -329,6 +332,9 @@
     addLayer: (layer) ->
       @getLayer().addData layer.toGeoJSON()
       # @getLayer().addLayer layer
+
+    getToolbar: ->
+      @control._toolbars['edit']
 
 
   class C.Controls.Edit.ReactiveMeasure extends C.Controls
