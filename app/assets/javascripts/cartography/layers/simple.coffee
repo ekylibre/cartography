@@ -12,8 +12,10 @@
 
       new klass @data,
         style: (feature) =>
-          if @layer.style
+          if @layer.style and typeof(@layer.style) == "function"
             @layer.style.apply @, arguments
+          else if @layer.style
+            @layer.style
           else
             C.Util.extend style, feature.properties
 
