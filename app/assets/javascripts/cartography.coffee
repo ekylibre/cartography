@@ -41,6 +41,7 @@
         home: true
         scale: true
         fullscreen: false
+        importer: false
       snap:
         panel:
           surfaceProperty: 'Surface'
@@ -81,6 +82,25 @@
       zoom:
         zoomInTitle: 'Zoom in'
         zoomOutTitle: 'Zoom out'
+      importer:
+        gml: true
+        geojson: true
+        kml: true
+        url: ''
+        title: 'Import'
+        icon: ''
+        content: ''
+        buttonTitle: "Import"
+        template: '<div class="modal-header"><i class="leaflet-importer-ctrl"></i><span>{title}</span></div>
+                   <div class="modal-body">{content}</div>
+                   <div class="modal-footer">
+                     <button type="submit" class="{OK_CLS}" data-editor-submit=true>{okText}</button>
+                     <button class="{CANCEL_CLS}" data-editor-cancel=true>{cancelText}</button>
+                   </div>'
+        okText: 'Ok'
+        cancelText: 'Cancel'
+        OK_CLS: 'btn'
+        CANCEL_CLS: 'btn'
 
     constructor: (id, options = {}) ->
       C.Util.setOptions @, options
@@ -292,6 +312,9 @@
       @controls.register 'fullscreen', true, =>
         new C.Controls.Fullscreen(@getMap(), @options)
 
+      @controls.register 'importer', true, =>
+        new C.Controls.Importer(@getMap(), @options)
+
       if @options.controls.layers
         @controls.add 'layers'
 
@@ -313,6 +336,9 @@
       if @options.controls.remove
         @controls.add 'remove'
 
+      if @options.controls.importer
+        @controls.add 'importer'
+
       if @options.controls.scale
         @controls.add 'scale'
 
@@ -323,14 +349,13 @@
         @controls.add 'locking'
 
       
-
       if @options.controls.cut
         @controls.add 'cut'
 
       style = (feature) ->
         feature.properties.style ||= {}
         color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
-      
+
       unless @getFeatureGroup( name: "edition" )
         serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
         @addOverlay(serie)
