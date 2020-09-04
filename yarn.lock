@@ -684,6 +684,13 @@ leaflet-draw@^0.4.12:
   version "0.4.14"
   resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
 
+leaflet-easybutton@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/leaflet-easybutton/-/leaflet-easybutton-2.4.0.tgz#3ad8ad31c9cf6d5ca7a6a1988f82eed13ff2c1af"
+  integrity sha512-O+qsQq4zTF6ds8VClnytobTH/MKalctlPpiA8L+bNKHP14J3lgJpvEd/jSpq9mHTI6qOzRAvbQX6wS6qNwThvg==
+  dependencies:
+    leaflet "^1.0.1"
+
 "leaflet-geographicutil@git+https://github.com/ekylibre/Leaflet.GeographicUtil.git":
   version "0.0.1"
   resolved "git+https://github.com/ekylibre/Leaflet.GeographicUtil.git#c2a7777155c8b16d1d350ff849fe8e687863f319"
@@ -709,6 +716,13 @@ leaflet-geometryutil@^0.8.0:
   dependencies:
     leaflet "*"
     rtree "*"
+
+leaflet-modal@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet-modal/-/leaflet-modal-0.2.0.tgz#f631ba22d1f3a13ebf22a110c3f0686dc224c772"
+  integrity sha512-vHg6RFk1fOu65oB6q5ENFiAWUA1xlefLqIPMnij58371+4odeprsaiNnO9E/Gct+5a/x1VsJJ9ekoHDd9/7Lhg==
+  dependencies:
+    leaflet "^1.6.0"
 
 leaflet-providers@1.1.17:
   version "1.1.17"
@@ -757,6 +771,11 @@ leaflet@>=0.7.0, leaflet@^1.2.0:
 leaflet@^0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
+
+leaflet@^1.0.1, leaflet@^1.6.0:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
+  integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==
 
 lodash@^4.17.4:
   version "4.17.10"
