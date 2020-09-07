@@ -65,6 +65,7 @@
           animatedHelper: undefined
           ignoreActions: true
       edit:
+        addToMap: false
         selectedPathOptions:
           dashArray: null
           fill: true
@@ -78,7 +79,8 @@
           surfacesProperty: 'Surfaces'
       remove: false
       controlLayers:
-        position: 'topleft'
+        addToMap: false
+        position: 'topright'
       zoom:
         zoomInTitle: 'Zoom in'
         zoomOutTitle: 'Zoom out'
@@ -238,7 +240,7 @@
     controls: ->
       @controls = new C.Controls(@getMap(), @options)
 
-      @controls.register 'layers', false, =>
+      @controls.register 'layers', @options.controlLayers.addToMap, =>
         new C.Controls.Layers(undefined, @getMap(), @options)
       , =>
         @controls.register 'backgrounds', false, =>
@@ -266,6 +268,7 @@
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
 
+      @controls.register 'edit', @options.edit.addToMap, =>
         C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
       , =>
