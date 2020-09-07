@@ -266,8 +266,7 @@
       @controls.register 'draw', true, =>
         new C.Controls.Draw(@getMap(), @options)
 
-      @controls.register 'edit', true, =>
-        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup(name:'edition')}
+        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
       , =>
         return unless @options.controls.reactiveMeasure
@@ -277,7 +276,7 @@
         # @removeControl 'edit'
 
       @controls.register 'remove', true, =>
-        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup(name:'edition')}
+        C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Remove(@getMap(), @options)
 
       @controls.register 'scale', true, =>
