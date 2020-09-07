@@ -42,6 +42,7 @@
         scale: true
         fullscreen: false
         importer: false
+        remove: false
       snap:
         panel:
           surfaceProperty: 'Surface'
