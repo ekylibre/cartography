@@ -25,11 +25,7 @@ module.exports =
       @options.measure.perimeter = 0
       @options.measure.area = 0
       if layers.getLayers().length > 0
-        layers.eachLayer (layer) =>
-          if typeof layer.getMeasure is 'function'
-            m = layer.getMeasure()
-            @options.measure.perimeter += m.perimeter
-            @options.measure.area += m.area
+        @options.measure =  layers.getMeasure()
 
     onAdd: (map) ->
       @_container = L.DomUtil.create('div', "reactive-measure-control #{map._leaflet_id}")
@@ -41,10 +37,10 @@ module.exports =
 
     updateContent: (measure = {}, options = {}) ->
       text = ''
-      if measure['perimeter']
-        text += "<span class='leaflet-draw-tooltip-measure perimeter'>#{L.GeometryUtil.readableDistance(measure.perimeter, !!@options.metric, !!options.feet)}</span>"
-      if measure['area']
-        text += "<span class='leaflet-draw-tooltip-measure area'>#{L.GeometryUtil.readableArea(measure.area, !!@options.metric)}</span>"
+      if measure['extrapolatedPerimeter']?
+        text += "<span class='leaflet-draw-tooltip-measure perimeter'>#{L.GeometryUtil.readableDistance(measure.extrapolatedPerimeter, !!@options.metric, !!options.feet)}</span>"
+      if measure['extrapolatedArea']?
+        text += "<span class='leaflet-draw-tooltip-measure area'>#{L.GeometryUtil.readableArea(measure.extrapolatedArea, !!@options.metric)}</span>"
 
       if options.selection? && options.selection is true
         L.DomUtil.addClass @_container, 'selection'
@@ -60,13 +56,15 @@ L.FeatureGroup.include
   getMeasure: () ->
 
     measure =
+      extrapolatedPerimeter: 0,
+      extrapolatedArea: 0,
       perimeter: 0
-      area: 0
 
     this.eachLayer (layer) ->
       m = layer.getMeasure()
+      measure.extrapolatedPerimeter += m.extrapolatedPerimeter
       measure.perimeter += m.perimeter
-      measure.area += m.area
+      measure.extrapolatedArea += m.extrapolatedArea
 
     measure
 
@@ -252,11 +250,6 @@ L.Draw.Polyline.include
 
   removeHooks: () ->
     if @_map.reactiveMeasureControl
-
-      measure = L.GeographicUtil.Polygon @_poly.getLatLngsAsArray()
-
-      @._poly._map.reactiveMeasureControl.updateContent measure, {selection: false} if @_poly._map?
-
       @_map.off 'mousemove'
     @__removeHooks.apply this, arguments
     return
@@ -283,11 +276,6 @@ L.Edit.Poly.include
     this._poly.on 'editdrag', @__onHandlerDrag, this
 
   removeHooks: () ->
-
-    measure = L.GeographicUtil.Polygon @_poly.getLatLngsAsArray()
-
-    @._poly._map.reactiveMeasureControl.updateContent measure, {selection: false} if @_poly._map?
-
     if L.EditToolbar.reactiveMeasure
       this._poly.off 'editdrag'
 
@@ -336,11 +324,11 @@ L.Draw.Tooltip.include
     labelText =
       text: ''
     #TODO: use L.drawLocal to i18n tooltip
-    if measure['perimeter']
-      labelText['text'] += "<span class='leaflet-draw-tooltip-measure perimeter'>#{L.GeometryUtil.readableDistance(measure.perimeter, !!options.metric, !!options.feet)}</span>"
+    if measure['extrapolatedPerimeter']?
+      labelText['text'] += "<span class='leaflet-draw-tooltip-measure perimeter'>#{L.GeometryUtil.readableDistance(measure.extrapolatedPerimeter, !!options.metric, !!options.feet)}</span>"
 
-    if measure['area']
-      labelText['text']  += "<span class='leaflet-draw-tooltip-measure area'>#{L.GeometryUtil.readableArea(measure.area, !!options.metric)}</span>"
+    if measure['extrapolatedArea']?
+      labelText['text']  += "<span class='leaflet-draw-tooltip-measure area'>#{L.GeometryUtil.readableArea(measure.extrapolatedArea, !!options.metric)}</span>"
 
     if latLng
       @updateContent labelText
