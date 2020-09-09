@@ -67,6 +67,7 @@
           ignoreActions: true
       edit:
         addToMap: false
+        reactiveMeasure: true
         selectedPathOptions:
           dashArray: null
           fill: true
@@ -273,7 +274,7 @@
         C.Util.setOptions @, edit: {featureGroup: @getFeatureGroup()}
         new C.Controls.Edit(@getMap(), @options)
       , =>
-        return unless @options.controls.reactiveMeasure
+        return unless @options.edit.reactiveMeasure
         @controls.register 'measure', true, =>
           new C.Controls.Edit.ReactiveMeasure(@getMap(), @controls.get('edit'), @options)
         @controls.add 'measure'
@@ -318,6 +319,9 @@
       @controls.register 'importer', true, =>
         new C.Controls.Importer(@getMap(), @options)
 
+      @controls.register 'reactive-measure', true, =>
+        new C.Controls.ReactiveMeasure(@getMap(), @getFeatureGroup(), @options)
+
       if @options.controls.layers
         @controls.add 'layers'
 
@@ -332,7 +336,7 @@
 
       if @options.controls.draw
         @controls.add 'draw'
-      
+
       if @options.controls.edit
         @controls.add 'edit'
 
@@ -351,9 +355,11 @@
       if @options.controls.locking
         @controls.add 'locking'
 
-      
       if @options.controls.cut
         @controls.add 'cut'
+
+      if  @options.controls.reactiveMeasure
+        @controls.add 'reactive-measure'
 
       style = (feature) ->
         feature.properties.style ||= {}
