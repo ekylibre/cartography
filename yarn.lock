@@ -892,6 +892,11 @@ leaflet-providers@1.1.17:
   optionalDependencies:
     leaflet-draw "^0.3.2"
 
+leaflet.fullscreen@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/leaflet.fullscreen/-/leaflet.fullscreen-1.6.0.tgz#daad9a6e07c8bdbca8e5af7e3d50272d31b0226a"
+  integrity sha512-Mr6STMeyKSfJ1CsKFcPZOm425LOe0c/6EHh0AK93GiTvteTAMFmO/oFDNe+0p1mk4+8yeGLcYgaXTSzPveEGhA==
+
 leaflet@*, leaflet@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
