@@ -1,7 +1,7 @@
 module Cartography
   class Engine < ::Rails::Engine
     initializer 'cartography.assets.precompile' do |app|
-      app.config.assets.precompile += %w[cartography.scss cartography.js]
+      app.config.assets.precompile += %w[cartography.css cartography.js]
     end
 
     initializer :i18n do |app|
