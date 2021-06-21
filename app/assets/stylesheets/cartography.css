@@ -1,9 +1,11 @@
-/*
-*= require leaflet/dist/leaflet.css
-*= require leaflet-draw/dist/leaflet.draw.css
-*= require leaflet-reactive_measure/dist/reactive_measure.css
-*= require leaflet-controlpanel/dist/leaflet.controlpanel.css
-*/
+@import 'leaflet/dist/leaflet';
+@import 'leaflet-draw/dist/leaflet.draw';
+@import 'leaflet-reactive_measure/dist/reactive_measure';
+@import 'leaflet-controlpanel/dist/leaflet.controlpanel';
+@import 'leaflet.fullscreen/Control.FullScreen';
+@import 'leaflet-easybutton/src/easy-button';
+@import 'leaflet-modal/dist/leaflet.modal';
+
 .leaflet-div-icon, .leaflet-mouse-marker{
 	/*background: #fff;*/
   border: 1px solid rgb(44,83,158);
