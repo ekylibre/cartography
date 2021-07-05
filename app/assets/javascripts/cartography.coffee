@@ -26,6 +26,7 @@
         doubleClickZoom: true
         boxZoom: true
         tap: true
+        zoom: 6
       controls:
         draw: false
         cut: false
@@ -324,7 +325,7 @@
       if @getFeatureGroup().getLayers().length
         @getMap().fitBounds(@getFeatureGroup().getBounds(),{ maxZoom: 21 })
       else
-        @center @defaultCenter(), 6
+        @center @defaultCenter(), this.options.map.zoom
 
     setMode: (mode) ->
       @_mode = mode
