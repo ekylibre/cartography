@@ -3,8 +3,6 @@
 @import 'leaflet-reactive_measure/dist/reactive_measure';
 @import 'leaflet-controlpanel/dist/leaflet.controlpanel';
 @import 'leaflet.fullscreen/Control.FullScreen';
-@import 'leaflet-easybutton/src/easy-button';
-@import 'leaflet-modal/dist/leaflet.modal';
 
 .leaflet-div-icon, .leaflet-mouse-marker{
 	/*background: #fff;*/
