@@ -301,8 +301,9 @@
         feature.properties.style ||= {}
         color: feature.properties.style.color || "#1195F5", fillOpacity: feature.properties.style.opacity || 0.35, opacity: 1, fill: true
 
-      serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
-      @addOverlay(serie)
+      unless @getFeatureGroup( name: "edition" )
+        serie = [{edition: []}, [name: 'edition', type: 'simple', index: true, serie: 'edition', style: style]]
+        @addOverlay(serie)
       @setView()
 
     ##### PUBLIC API ######
