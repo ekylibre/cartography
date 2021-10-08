@@ -242,7 +242,7 @@
         @controls.get('selection').getControl().enable()
 
       @controls.register 'locking', false, =>
-        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup(name: 'crops')}})
+        new C.Controls.LayerLocking(@getMap(), {layerLocking: {featureGroup: @getFeatureGroup()}})
       , =>
         @controls.get('locking').getControl().enable()
 
