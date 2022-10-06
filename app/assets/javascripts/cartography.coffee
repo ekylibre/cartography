@@ -198,7 +198,7 @@
       @controls.register 'layers', false, =>
         new C.Controls.Layers(undefined, @getMap(), @options)
       , =>
-        @controls.register 'backgrounds', false, =>
+        @controls.register 'backgrounds', true, =>
           new C.Controls.BaseLayers(@controls.get('layers').getControl(), @getMap(), @options)
 
         @controls.register 'overlays', false, =>
