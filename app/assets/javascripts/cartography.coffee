@@ -196,7 +196,7 @@
       @controls = new C.Controls(@getMap(), @options)
 
       @controls.register 'layers', false, =>
-        new C.Controls.Layers(undefined, @getMap(), @options)
+        new C.Controls.Layers(undefined, @getMap(), Object.assign({}, @options, @options.controlLayers))
       , =>
         @controls.register 'backgrounds', true, =>
           new C.Controls.BaseLayers(@controls.get('layers').getControl(), @getMap(), @options)
